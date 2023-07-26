@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { USER_ROLES } = require("../constants");
 
 
 const schema = new mongoose.Schema({
@@ -19,6 +20,11 @@ const schema = new mongoose.Schema({
       type: String,
       required: true,
    },
+   role: {
+      type: String,
+      enum: Object.values(USER_ROLES),
+      required: true,
+   }
 }, { timestamps: true });
 
 

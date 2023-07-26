@@ -20,6 +20,8 @@ const BASE_KEYS = [
    'SENTRY_DSN',
    'DB_URL',
    'PORT',
+   'SUPER_USER_EMAIL',
+   'SUPER_USER_PASSWORD',
 ];
 
 

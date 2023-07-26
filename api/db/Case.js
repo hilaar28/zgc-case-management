@@ -1,5 +1,6 @@
 
 const mongoose = require("mongoose");
+const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER } = require("../constants");
 
 
 const caseUpdateSchema = new mongoose.Schema({
@@ -33,10 +34,12 @@ const personalDetails = {
    },
    gender: {
       type: String,
+      enum: Object.values(GENDER),
       required: true,
    },
    marital_status: {
       type: String,
+      enum: Object.values(MARITAL_STATUS),
       required: true,
    },
    residential_address: {
@@ -85,6 +88,7 @@ const schema = new mongoose.Schema({
    },
    source: {
       type: String,
+      enum: Object.values(CASE_SOURCES),
       required: true,
    },
    case_officer: {
@@ -114,15 +118,15 @@ const schema = new mongoose.Schema({
          required: true,
       },
       details: {
-         type: Boolean,
+         type: String,
          required: true,
       },
       location: {
-         type: Boolean,
+         type: String,
          required: true,
       },
       witness_details: {
-         type: Boolean,
+         type: String,
          required: true,
       },
    },
@@ -154,7 +158,14 @@ const schema = new mongoose.Schema({
    updates: {
       type: [ caseUpdateSchema ],
       required: true,
-   }
+   },
+   status: {
+      type: String,
+      enum: Object.values(CASE_STATUS),
+      default: CASE_STATUS.NOT_ASSESSED,
+      required: true,
+   },
+   referred_to: String,
 }, { timestamps: true });
 
 

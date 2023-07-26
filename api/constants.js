@@ -1,0 +1,44 @@
+
+
+const USER_ROLES = {
+   AGENT: 'agent',
+   CASE_OFFICER: 'case_officer',
+   INVESTIGATING_OFFICER: 'investigating_officer',
+   SUPERVISOR: 'supervisor',
+   SUPER_ADMIN: 'super_admin',
+}
+
+const GENDER = {
+   MALE: 'M',
+   FEMALE: 'F',
+}
+
+const MARITAL_STATUS = {
+   MARRIED: 'MARRIED',
+   WIDOWED: 'WIDOWED',
+   SEPARATED: 'SEPARATED',
+   DIVORCED: 'DIVORCED',
+   SINGLE: 'SINGLE',
+}
+
+const CASE_SOURCES = {
+   CALL_CENTER: 'CALL_CENTER',
+   WALK_IN: 'WALK_IN',
+}
+
+const CASE_STATUS = {
+   NOT_ASSESSED: 'NOT_ASSESSED',
+   REJECTED: 'REJECTED',
+   REFERRED: 'REFERRED',
+   NOT_ASSIGNED: 'NOT_ASSIGNED',
+   IN_PROGRESS: 'IN_PROGRESSED',
+   RESOLVED: 'RESOLVED',
+}
+
+module.exports = {
+   CASE_SOURCES,
+   CASE_STATUS,
+   GENDER,
+   MARITAL_STATUS,
+   USER_ROLES,
+}
