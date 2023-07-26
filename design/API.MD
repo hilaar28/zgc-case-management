@@ -174,7 +174,6 @@
 [
    {
       _id: String,
-      case_no: String,
       title: String,
       applicant: {
          name: String,
