@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { USER_ROLES } = require("../constants");
+const { hash } = require("bcrypt");
 
 
 const schema = new mongoose.Schema({
@@ -26,6 +27,18 @@ const schema = new mongoose.Schema({
       required: true,
    }
 }, { timestamps: true });
+
+
+schema.pre("save", async function(next) {
+   
+   if (this.password) {
+      const passwordSaltRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS) || 12;
+      this.password = await hash(this.password, passwordSaltRounds);
+   }
+
+   next();
+   
+})
 
 
 const User = mongoose.model('User', schema);
