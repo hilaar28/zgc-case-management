@@ -46,7 +46,7 @@ erDiagram
       string victim_email_address
       string victim_next_of_kin_phone
       string victim_friend_phone
-      string why_completing_form
+      string why_completing_form_on_behalf
       string relationship_to_victim
       
       date date_of_violation
@@ -55,7 +55,7 @@ erDiagram
       TEXT violation_witness_details
       TEXT other_entity_reported_to
       TEXT other_entity_reported_actions
-      TEXT why_reporting_to_us
+      TEXT why_reporting_to_us_as_well
       TEXT violation_details
       TEXT why_violation_is_important_to_our_mandate
       TEXT applicant_expectations_from_us
@@ -66,6 +66,8 @@ erDiagram
 
       ENUM source
       int case_officer FK
+      ENUM status
+      TEXT referred_to
 
    }
 
