@@ -6,6 +6,7 @@ erDiagram
       string surname
       string email UK
       string password
+      string role
    }
 
    Case {
