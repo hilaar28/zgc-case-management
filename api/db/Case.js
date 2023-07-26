@@ -1,6 +1,13 @@
 
 const mongoose = require("mongoose");
-const CaseUpdate = require("./CaseUpdate");
+
+
+const caseUpdateSchema = new mongoose.Schema({
+   description: {
+      type: String,
+      required: true,
+   },
+}, { timestamps: true });
 
 
 const personalDetails = {
@@ -145,7 +152,7 @@ const schema = new mongoose.Schema({
       required: true,
    },
    updates: {
-      type: [ CaseUpdate.schema ],
+      type: [ caseUpdateSchema ],
       required: true,
    }
 }, { timestamps: true });
