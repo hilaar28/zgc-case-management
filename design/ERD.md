@@ -75,6 +75,7 @@ erDiagram
       int id PK
       datetime createdAt
       int case FK
+      TEXT description
    }
 
    Case ||--o{ CaseUpdate: "Has"
