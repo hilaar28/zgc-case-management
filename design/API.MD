@@ -237,5 +237,22 @@
 }
 ```
 
+#### Edit case update
+**PATCH** `/api/cases/:caseId/updates/:updateId`
+
+**expects**:
+```js
+// body
+{
+   set: {
+      description: String,
+   }
+}
+```
+
+#### Delete case update
+**DELETE** `/api/cases/:caseId/updates/:updateId`
+
+
 ## Reports
 <span style="color:red">TBD</span>
