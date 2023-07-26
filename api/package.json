@@ -1,0 +1,32 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "mocha --ui tdd --exit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sentry/node": "^7.60.0",
+    "@xavisoft/auth": "^2.0.0",
+    "@xavisoft/joi": "^0.2.0",
+    "bcrypt": "^5.1.0",
+    "capitalize": "^2.0.4",
+    "casual": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.4.1",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.4"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.4.0",
+    "chai-spies": "^1.0.0",
+    "jsonwebtoken": "^9.0.1",
+    "mocha": "^10.2.0"
+  }
+}
