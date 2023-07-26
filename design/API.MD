@@ -28,6 +28,8 @@
 ```
 
 ## User management
+**Security policy**: Only users with the role of `super user` can use this endpoints.
+
 ### Add user
 **POST** `/api/users`
 **expects**:
@@ -47,8 +49,26 @@
 ```js
 // body
 {
-   id: Number,
+   _id: String,
 }
+```
+
+### Retrieve users
+**GET** `/api/users`
+
+**returns**:
+```js
+// body
+[
+   {
+      _id: String,
+      name: String,
+      surname: String,
+      email: String,
+      role: String,
+   },
+   ...
+]
 ```
 
 ### Update user
@@ -134,6 +154,7 @@
    language: String,
    who_referred_you_to_us: String,
    source: String,
+   title: String,
 }
 ```
 
@@ -141,8 +162,35 @@
 ```js
 // body
 {
-   id: Number
+   _id: String
 }
+```
+
+### Retrieve cases
+**GET** `/api/cases/?offset=:offset&limit=:limit`
+
+```js
+// body
+[
+   {
+      _id: String,
+      case_no: String,
+      title: String,
+      applicant: {
+         name: String,
+         surname: String,
+      },
+      victim: {
+         name: String,
+         surname: String,
+      },
+      violation: {
+         details: String,
+      },
+      status: String,
+   },
+   ...
+]
 ```
 
 ### Update case
@@ -186,7 +234,7 @@
 ```js
 // body
 {
-   id: Number,
+   _id: String,
 }
 ```
 

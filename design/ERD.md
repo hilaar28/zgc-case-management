@@ -11,6 +11,7 @@ erDiagram
 
    Case {
       int id PK
+      string title
    
       string applicant_name
       string applicant_surname
