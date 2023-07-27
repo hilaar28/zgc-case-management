@@ -113,6 +113,7 @@ function createCase(attributes={}) {
             who_referred_you_to_us: casual.text,
             source: casual.random_element(Object.values(CASE_SOURCES)),
             title: casual.text,
+            recorded_by: new mongoose.mongo.ObjectId(),
 
             ...attributes,
          });

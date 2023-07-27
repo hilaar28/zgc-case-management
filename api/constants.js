@@ -24,6 +24,10 @@ const MARITAL_STATUS = {
 const CASE_SOURCES = {
    CALL_CENTER: 'CALL_CENTER',
    WALK_IN: 'WALK_IN',
+   EMAIL: 'EMAIL',
+   MAIL: 'MAIL',
+   FIELD_FORM: 'FIELD_FORM',
+   OTHER: 'OTHER',
 }
 
 const CASE_STATUS = {

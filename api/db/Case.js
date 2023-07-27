@@ -20,18 +20,9 @@ const personalDetails = {
       type: String,
       required: true,
    },
-   national_id: {
-      type: String,
-      required: true,
-   },
-   dob: {
-      type: Date,
-      required: true,
-   },
-   place_of_birth: {
-      type: String,
-      required: true,
-   },
+   national_id: String,
+   dob: String,
+   place_of_birth: String,
    gender: {
       type: String,
       enum: Object.values(GENDER),
@@ -42,42 +33,18 @@ const personalDetails = {
       enum: Object.values(MARITAL_STATUS),
       required: true,
    },
-   residential_address: {
-      type: String,
-      required: true,
-   },
-   work_address: {
-      type: String,
-      required: true,
-   },
-   postal_address: {
-      type: String,
-      required: true,
-   },
-   telephone: {
-      type: String,
-      required: true,
-   },
+   residential_address: String,
+   work_address: String,
+   postal_address: String,
+   telephone: String,
    mobile: {
       type: String,
       required: true,
    },
-   fax: {
-      type: String,
-      required: true,
-   },
-   email: {
-      type: String,
-      required: true,
-   },
-   next_of_kin_phone: {
-      type: String,
-      required: true,
-   },
-   friend_phone: {
-      type: String,
-      required: true,
-   },
+   fax: String,
+   email: String,
+   next_of_kin_phone: String,
+   friend_phone: String,
 }
 
 

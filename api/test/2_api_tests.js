@@ -71,7 +71,7 @@ suite("API Tests", function () {
          const iMax = casual.integer(0, 3);
 
          for (let i = 0; i <= iMax; i++)
-            await createCase();
+            await createUser();
 
          // send request
          const res  = await requester
@@ -199,7 +199,7 @@ suite("API Tests", function () {
                friend_phone: casual.phone,
             },
             violation: {
-               date: casual.date('YYYY-MM-DD'),
+               date: [ casual.date('YYYY-MM-DD') ],
                continuing: casual.boolean,
                details: casual.text,
                location: casual.text,
@@ -275,6 +275,16 @@ suite("API Tests", function () {
                details: Joi.string().required(),
             },
             status: Joi.string().required(),
+            recorded_by: Joi.object({
+               _id: Joi.string(),
+               name: Joi.string().required(),
+               surname: Joi.string().required(),
+            }).allow(null),
+            case_officer: Joi.object({
+               _id: Joi.string(),
+               name: Joi.string().required(),
+               surname: Joi.string().required(),
+            }).allow(null),
          });
 
          const error = Joi.getError(res.body, schema);
@@ -293,7 +303,9 @@ suite("API Tests", function () {
 
          const payload = {
             set: {
-               status: casual.random_element([ CASE_STATUS.RESOLVED, CASE_STATUS.NOT_ASSIGNED, CASE_STATUS.REFERRED ]),
+               applicant: {
+                  name: casual.first_name,
+               },
             }
          }
 
@@ -306,7 +318,7 @@ suite("API Tests", function () {
 
          // check db
          case_ = await Case.findById(case_._id);
-         assert.equal(case_.status, payload.set.status);
+         assert.equal(case_.applicant.name, payload.set.applicant.name);
 
       });
 
@@ -329,8 +341,8 @@ suite("API Tests", function () {
          // check db
          case_ = await Case.findById(case_._id);
 
-         assert.isNull(case_.status, CASE_STATUS.REFERRED);
-         assert.isNull(case_.referred_to, payload.refer_to);
+         assert.equal(case_.status, CASE_STATUS.REFERRED);
+         assert.equal(case_.referred_to, payload.refer_to);
 
       });
 
@@ -394,26 +406,19 @@ suite("API Tests", function () {
 
          // send request
          let case_ = await findLastInserted(Case);
-
-         const payload = {
-            set: {
-               description: casual.catch_phrase,
-            }
-         }
-
          const caseUpdateId = case_.updates[0]._id;
 
          const res = await requester
-            .patch(`/api/cases/${case_._id}/updates/${caseUpdateId}`)
+            .delete(`/api/cases/${case_._id}/updates/${caseUpdateId}`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
-            .send(payload);
+            .send();
 
          assert.equal(res.status, 200);
 
          // check db
          case_ = await Case.findById(case_._id);
          const update = case_.updates.find(item => String(item.id) === String(caseUpdateId));
-         assert.isNull(update);
+         assert.isUndefined(update);
          
       });
    });

@@ -9,6 +9,7 @@ const { init: initAuth } = require('./auth');
 const { init: initDB } = require('./db');
 const morgan = require('morgan');
 const users = require('./users');
+const cases = require('./cases');
 
 const app = express();
 
@@ -25,6 +26,7 @@ const api = express.Router();
 app.use('/api', api);
 
 api.use('/users', users);
+api.use('/cases', cases);
 
 // initialization
 const PORT = process.env.PORT;
