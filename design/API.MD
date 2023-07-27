@@ -90,6 +90,48 @@
 ### Remove user
 **DELETE** `/api/users/:id`
 
+## Account management
+### Get account data
+**GET** `/api/accounts`
+
+**returns**:
+```js
+// body
+{
+   _id: String,
+   name: String,
+   surname: String,
+   email: String,
+   role: String,
+}
+```
+
+### Update password
+**POST** `/api/accounts/new-password`
+
+**expects**:
+```js
+//body
+{
+   old_password: String,
+   new_password: String,
+}
+```
+
+### Reset password
+**POST** `/api/accounts/password-reset`
+
+**expects**:
+```js
+// body
+{
+   email: String
+}
+```
+
+### Verify password reset
+**POST** `/api/accounts/password-reset/:ref_code/verification`
+
 ## Case management
 ### Record case
 **POST** `/api/cases`
@@ -202,6 +244,62 @@
 ]
 ```
 
+### Retrieve case
+**GET** `/api/cases/:id`
+
+**returns**:
+```js
+// body
+{
+   ..., // case entity attributes
+   status: String,
+   recorded_by: {
+      _id: String,
+      name: String,
+      surname: String,
+   },
+   case_officer: {
+      _id: String,
+      name: String,
+      surname: String,
+   },
+   referred_to: String,
+   createdAt: Date,
+   updates: [
+      {
+         _id: String,
+         description: String,
+         createdAt: Date,
+      },
+      ...
+   ]
+}
+```
+
+### Update case status
+**POST** `/api/cases/:id/status`
+
+**expects**:
+```js
+// body
+{
+   status: String,
+}
+```
+
+
+### Assign case to officer
+**POST** `/api/cases/:id/assignment`
+
+**expects**:
+```js
+// body
+{
+   case_officer: String,
+}
+```
+
+
 ### Update case
 **PATCH** `/api/cases/:id`
 
@@ -265,4 +363,40 @@
 
 
 ## Reports
-<span style="color:red">TBD</span>
+### Get case trend data
+**GET** `/api/cases/summary?from=:from&to=:to&period=:period`
+
+**returns**:
+```js
+// body
+[
+   {
+      start: Date,
+      count: Number,
+   },
+   ...
+]
+```
+
+### Get case summary statistics
+**GET** `/api/cases/summary?from=:from&to=:to`
+
+**returns**:
+```js
+// body
+{
+   gender: {
+      male: Number,
+      female: Number,
+   },
+   province: {
+      "Harare Metropolitan": Number,
+      ...
+   },
+   status: {
+      REJECTED: Number,
+      ...
+   }
+}
+```
+
