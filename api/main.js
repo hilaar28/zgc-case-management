@@ -8,6 +8,7 @@ const express = require('express');
 const { init: initAuth } = require('./auth');
 const { init: initDB } = require('./db');
 const morgan = require('morgan');
+const users = require('./users');
 
 const app = express();
 
@@ -20,9 +21,14 @@ if (process.env.NODE_ENV !== 'test')
 initAuth(app);
 
 // routes
-const PORT = process.env.PORT;
+const api = express.Router();
+app.use('/api', api);
+
+api.use('/users', users);
 
 // initialization
+const PORT = process.env.PORT;
+
 (async () => {
    
    // db init

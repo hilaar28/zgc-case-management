@@ -36,6 +36,10 @@ schema.pre("save", async function(next) {
       this.password = await hash(this.password, passwordSaltRounds);
    }
 
+   if (this.email) {
+      this.email = this.email.toLowerCase();
+   }
+
    next();
    
 })

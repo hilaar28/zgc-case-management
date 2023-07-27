@@ -68,10 +68,10 @@ suite("API Tests", function () {
       test("Retrieve users", async () => {
 
          // create some more users
-         const iMax = casual.integer(5, 10);
+         const iMax = casual.integer(0, 3);
 
          for (let i = 0; i <= iMax; i++)
-            await createUser();
+            await createCase();
 
          // send request
          const res  = await requester
