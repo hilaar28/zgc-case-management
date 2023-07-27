@@ -67,6 +67,7 @@ erDiagram
 
       ENUM source
       int case_officer FK
+      int recorded_by FK
       ENUM status
       TEXT referred_to
 

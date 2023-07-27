@@ -166,6 +166,11 @@ const schema = new mongoose.Schema({
       required: true,
    },
    referred_to: String,
+   recorded_by: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: true,
+   }
 }, { timestamps: true });
 
 

@@ -187,6 +187,16 @@
          details: String,
       },
       status: String,
+      recorded_by: {
+         _id: String,
+         name: String,
+         surname: String,
+      },
+      case_officer: {
+         _id: String,
+         name: String,
+         surname: String,
+      },
    },
    ...
 ]
