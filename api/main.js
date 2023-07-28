@@ -10,6 +10,7 @@ const { init: initDB } = require('./db');
 const morgan = require('morgan');
 const users = require('./users');
 const cases = require('./cases');
+const accounts = require('./accounts');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api', api);
 
 api.use('/users', users);
 api.use('/cases', cases);
+api.use('/accounts', accounts);
 
 // initialization
 const PORT = process.env.PORT;
@@ -38,6 +40,7 @@ const PORT = process.env.PORT;
 
    // start server
    app.listen(PORT, () => {
-      console.log("Server started!!!");
+      if (process.env.NODE_ENV !== 'test')
+         console.log("Server started!!!");
    });
 })();

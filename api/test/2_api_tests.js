@@ -227,6 +227,7 @@ suite("API Tests", function () {
             who_referred_you_to_us: casual.text,
             source: casual.random_element(Object.values(CASE_SOURCES)),
             title: casual.text,
+            province: casual.random_element(Object.values(PROVINCES))
          }
 
          const res = await requester
@@ -260,7 +261,7 @@ suite("API Tests", function () {
          
          // retrieve cases
          const offset = 0;
-         const limit = casual.integer(10, 20);
+         const limit = 50;
 
          const res = await requester
             .get(`/api/cases/?offset=${offset}&limit=${limit}`)
@@ -320,7 +321,7 @@ suite("API Tests", function () {
          assert.equal(res.status, 200);
 
          // validate schema
-         const schema = Joi.array().items({
+         const schema = {
             _id: Joi.string().required(),
             title: Joi.string().required(),
             applicant: Joi.object().required(),
@@ -337,7 +338,22 @@ suite("API Tests", function () {
                name: Joi.string().required(),
                surname: Joi.string().required(),
             }).allow(null),
-         });
+            source: Joi.string().required(),
+            other_entity_reported_to: Joi.object(),
+            why_violation_is_important_to_our_mandate: Joi.string().required(),
+            expectations_from_us: Joi.string(),
+            lawyer_details: Joi.string(),
+            language: Joi.string(),
+            who_referred_you_to_us: Joi.string(),
+            province: Joi.valid(...Object.values(PROVINCES)),
+            updates: Joi.array().items({
+               _id: Joi.string().required(),
+               description: Joi.string().required(),
+               createdAt: Joi.date().required(),
+            }),
+            createdAt: Joi.date().required(),
+            updatedAt: Joi.date()
+         };
 
          const error = Joi.getError(res.body, schema);
          assert.isNull(error);
@@ -549,6 +565,7 @@ suite("API Tests", function () {
             surname: Joi.string().required(),
             email: Joi.string().email().required(),
             role: Joi.valid(...Object.values(USER_ROLES)).required(),
+            createdAt: Joi.date().required(),
          };
 
          const error = Joi.getError(res.body, schema);
@@ -565,7 +582,7 @@ suite("API Tests", function () {
          }
 
          const res = await requester 
-            .post('/api/accounts')
+            .post('/api/accounts/new-password')
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 
@@ -600,7 +617,7 @@ suite("API Tests", function () {
 
          // verify db changes
          const temp = await findLastInserted(Temp);
-         assert.equal(temp.data.user, userId);
+         assert.equal(temp.data.user.toHexString(), userId);
 
          // verify spy
          expect(mail.send).to.have.been.called(1);
@@ -636,7 +653,7 @@ suite("API Tests", function () {
       let accessToken;
 
       this.beforeAll(async () => {
-         const user = await createUser({ password });
+         const user = await createUser({ role: USER_ROLES.SUPERVISOR });
          accessToken = createAccessToken(user);
       });
 
@@ -674,9 +691,9 @@ suite("API Tests", function () {
          }
 
          const caseCount = await Case.countDocuments();
-         const totalFromGender = sumNumbers(req.body.gender);
-         const totalFromProvince = sumNumbers(req.body.province);
-         const totalFromStatus = sumNumbers(req.body.status);
+         const totalFromGender = sumNumbers(res.body.gender);
+         const totalFromProvince = sumNumbers(res.body.province);
+         const totalFromStatus = sumNumbers(res.body.status);
 
          assert.equal(caseCount, totalFromGender);
          assert.equal(caseCount, totalFromProvince);

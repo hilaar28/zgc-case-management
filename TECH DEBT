@@ -1,0 +1,3 @@
+
+- Try to use an inline middleware for endpoints that requires case_officer priviledges, instead of using a `doYouHaveCaseOfficerPriviledgesOnCase()` inside each endpoint handler.
+- 

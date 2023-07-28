@@ -1,11 +1,11 @@
 const { Router } = require("express");
-const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS } = require("./constants");
+const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES } = require("./constants");
 const status_500 = require("./status_500");
 const Joi = require("@xavisoft/joi");
 const Case = require("./db/Case");
 const { flattenDocumentUpdate } = require("./utils");
 const { default: mongoose } = require("mongoose");
-
+const User = require("./db/User");
 
 // helpers
 function thisRoleOrHigher(minRole, role) {
@@ -32,13 +32,50 @@ async function areYouAssignedToThisCase(userId, caseId) {
    return count == 1;
 }
 
-
 async function doYouHaveCaseOfficerPriviledgesOnCase(userRole, userId, caseId ) {
    if (userRole === USER_ROLES.CASE_OFFICER) {
       return  await areYouAssignedToThisCase(userId, caseId);
    } else {
       return thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, userRole)
    }
+}
+
+
+function canViewReports(req, res, next) {
+
+   const userRole = req.auth.user.role;
+
+   if (!thisRoleOrHigher(USER_ROLES.SUPERVISOR, userRole))
+      return res.sendStatus(403);
+
+   next();
+}
+
+
+async function countCasesByField(from, to, attr) {
+
+   const results = await Case.aggregate([
+      {
+         $match: {
+            $and: [
+               { createdAt: { $gte: new Date(from) } },
+               { createdAt: { $lte: new Date(to) } }
+            ]
+         },
+      },
+      {
+         $group: {
+            _id: `$${attr}`,
+            count: { $sum: 1 }
+         }
+      }
+   ]);
+
+   return results.reduce((obj, item) => {
+      obj[item._id] = item.count;
+      return obj;
+   }, {});
+
 }
 
 
@@ -107,6 +144,7 @@ cases.post('/', async (req, res) => {
          who_referred_you_to_us: Joi.string().required(),
          source: Joi.valid(...Object.values(CASE_SOURCES)).required(),
          title: Joi.string().required(),
+         province: Joi.valid(...Object.values(PROVINCES)).required(),
       }
 
       const error = Joi.getError(req.body, schema);
@@ -155,6 +193,158 @@ cases.get('/', async (req, res) => {
 
       // respond
       res.send(cases);
+
+   } catch (err) {
+      status_500(err, res);
+   }
+});
+
+/// retrieve summary statistics
+cases.get('/summary', canViewReports,async (req, res) => {
+
+   try {
+
+      // retrieve stats
+      const from = req.query.from || 0
+      const to = req.query.to || Date.now();
+
+      /// gender
+      const male = await Case
+         .countDocuments({
+            createdAt: {
+               $gte: from,
+               $lte: to,
+            },
+            $or: [
+               { "victim.gender": GENDER.MALE, },
+               {
+                  victim: {
+                     $exists: false,
+                  },
+                  "applicant.gender": GENDER.MALE,
+               }
+            ],
+         });
+      
+      const count = await Case.countDocuments();
+      const female = count - male;
+
+      const gender = { male, female };
+      
+      /// location
+      const province = await countCasesByField(from, to, "province");
+
+      /// status
+      const status = await countCasesByField(from, to, "status");
+   
+      // respond
+      res.send({
+         gender,
+         province,
+         status,
+      });
+
+   } catch (err) {
+      status_500(err, res);
+   }
+});
+
+/// retrieve case trend
+cases.get('/trend', canViewReports,async (req, res) => {
+
+   try {
+
+      const TREND_PERIODS = {
+         WEEKLY: 'WEEKLY',
+         MONTHLY: 'MONTHLY',
+      }
+
+      // retrieve stats
+      const from = parseInt(req.query.from) || 0;
+      const to = parseInt(req.query.to) || Date.now();
+      let period = req.query.period || TREND_PERIODS.WEEKLY;
+
+      let interval;
+      const DAY_MILLIS = 24 * 3600 * 1000;
+
+      switch (period) {
+         case TREND_PERIODS.WEEKLY:
+            interval = 7 * DAY_MILLIS;
+            break;
+      
+         case TREND_PERIODS.MONTHLY:
+            interval = 30 * DAY_MILLIS;
+            break
+
+         default:
+            return res.status(400).send('Invalid period param: ' + period);
+      }
+      
+      const results = [];
+      let start = from;
+      let end = start + interval;
+
+      while (true) {
+
+         if (end > to)
+            end = to;
+
+         const count = await Case.countDocuments({
+            createdAt: {
+               $gte: start,
+               $lt: end
+            }
+         });
+
+         results.push({ start, count });
+         
+         if (end == to)
+            break;
+
+         start = end;
+         end = start + interval;
+      }
+
+      // respond
+      res.send(results);
+
+   } catch (err) {
+      status_500(err, res);
+   }
+});
+
+/// retrieve case 
+cases.get('/:id', async (req, res) => {
+
+   try {
+
+      // retrieve
+      const caseId = req.params.id;
+
+      const where = {
+         _id: caseId
+      };
+
+      /// authorization
+      if (req.auth.user.role === USER_ROLES.AGENT) {
+         where.recorded_by = req.auth.user._id;
+      } else if (req.auth.user.role === USER_ROLES.CASE_OFFICER) {
+         where.case_officer = req.auth.user._id;
+      }
+
+      const case_ = await Case
+         .findOne()
+         .where(where)
+         .populate("recorded_by", "_id name surname")
+         .populate("case_officer", "_id name surname")
+
+      if (!case_)
+         return res.sendStatus(404);
+
+      // respond
+      const result = case_.toObject();
+      delete result.__v;
+      res.send(result);
 
    } catch (err) {
       status_500(err, res);
@@ -214,6 +404,7 @@ cases.patch('/:id', async (req, res) => {
             who_referred_you_to_us: Joi.string(),
             source: Joi.valid(...Object.values(CASE_SOURCES)),
             title: Joi.string(),
+            province: Joi.valid(...Object.values(PROVINCES)),
          }
       }
 
@@ -242,6 +433,88 @@ cases.patch('/:id', async (req, res) => {
 
       // update
       const $set = flattenDocumentUpdate(req.body.set);
+      await Case.updateOne({ _id: caseId }, { $set });
+
+      // respond
+      res.send();
+
+   } catch (err) {
+      status_500(err, res);
+   }
+});
+
+/// update case status
+cases.post('/:id/status', async (req, res) => {
+
+   try {
+
+      // validate
+      const schema = {
+         status: Joi.valid(...Object.values(CASE_STATUS)).required(),
+      }
+
+      const error = Joi.getError(req.body, schema); 
+      if (error)
+         return res.status(400).send(error);
+
+      // authorize
+      const userRole = req.auth.user.role;
+      const userId = req.auth.user._id;
+      const caseId = req.params.id;
+
+      const proceed = await doYouHaveCaseOfficerPriviledgesOnCase(userRole, userId, caseId);
+      if (!proceed)
+         return res.sendStatus(403);
+
+      // update
+      const $set = {
+         status: req.body.status,
+      }
+
+      await Case.updateOne({ _id: caseId }, { $set });
+
+      // respond
+      res.send();
+
+   } catch (err) {
+      status_500(err, res);
+   }
+});
+
+/// assign person to case
+cases.post('/:id/assignment', async (req, res) => {
+
+   try {
+
+      // validate
+      const schema = {
+         case_officer: Joi.string().hex().required(),
+      }
+
+      const error = Joi.getError(req.body, schema); 
+      if (error)
+         return res.status(400).send(error);
+
+      // authorize
+      const userRole = req.auth.user.role;
+      const caseId = req.params.id;
+
+      if (!thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, userRole)) 
+         return res.sendStatus(403);
+
+
+      // is case_officer really a case officer
+      const caseOfficerId = req.body.case_officer;
+      const count = await User.countDocuments().where({ _id: caseOfficerId, role: USER_ROLES.CASE_OFFICER });
+
+      if (count === 0)
+         return res.status(400).send('Not a case officer');
+
+      // update
+      const $set = {
+         case_officer: caseOfficerId,
+      }
+
       await Case.updateOne({ _id: caseId }, { $set });
 
       // respond
