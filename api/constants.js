@@ -39,10 +39,24 @@ const CASE_STATUS = {
    RESOLVED: 'RESOLVED',
 }
 
+const PROVINCES = {
+   MASVINGO: 'Masvingo',
+   HARARE: 'Harare',
+   BULAWAYO: 'Bulawayo',
+   MIDLANDS: 'Midlands',
+   MANICALAND: 'Manicaland',
+   MASH_EAST: 'Mashonaland East',
+   MASH_CENTRAL: 'Mashonaland Central',
+   MASH_WEST: 'Mashonaland West',
+   MAT_SOUTH: 'Matebeleland South',
+   MAT_NORTH: 'Matebeleland North',
+};
+
 module.exports = {
    CASE_SOURCES,
    CASE_STATUS,
    GENDER,
    MARITAL_STATUS,
+   PROVINCES,
    USER_ROLES,
 }

@@ -364,7 +364,7 @@
 
 ## Reports
 ### Get case trend data
-**GET** `/api/cases/summary?from=:from&to=:to&period=:period`
+**GET** `/api/cases/trend?from=:from&to=:to&period=:period`
 
 **returns**:
 ```js

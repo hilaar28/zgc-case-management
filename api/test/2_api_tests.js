@@ -1,6 +1,6 @@
 const casual = require("casual");
 const { waitForServer, createRequester, createAccessToken, createUser, findLastInserted, createCase } = require("./utils");
-const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS } = require("../constants");
+const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS, PROVINCES } = require("../constants");
 const User = require("../db/User");
 const { ACCESS_TOKEN_HEADER_NAME } = require("@xavisoft/auth/constants");
 const chai = require("chai");
@@ -8,9 +8,19 @@ const chaiSpies = require('chai-spies');
 const mail = require("../mail");
 const Case = require("../db/Case");
 const Joi = require('@xavisoft/joi');
+const { compare } = require("bcrypt");
+const Temp = require("../db/Temp");
 
 const { assert, expect } = chai;
 const requester = createRequester();
+
+
+// helpers
+function generateSchemaObjectFromKeyList(values=[], joi) {
+   const schema = {};
+   values.forEach(value => schema[value] = joi);
+   return schema;
+}
 
 
 chai.use(chaiSpies);
@@ -296,6 +306,46 @@ suite("API Tests", function () {
 
       });
 
+      test("Retrieve case", async () => {
+
+         // create case
+         const case_ = await createCase();
+
+         // retrieve cases
+         const res = await requester
+            .get(`/api/cases/${case_._id}`)
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send();
+
+         assert.equal(res.status, 200);
+
+         // validate schema
+         const schema = Joi.array().items({
+            _id: Joi.string().required(),
+            title: Joi.string().required(),
+            applicant: Joi.object().required(),
+            victim: Joi.object(),
+            violation: Joi.object().required(),
+            status: Joi.string().required(),
+            recorded_by: Joi.object({
+               _id: Joi.string(),
+               name: Joi.string().required(),
+               surname: Joi.string().required(),
+            }).allow(null),
+            case_officer: Joi.object({
+               _id: Joi.string(),
+               name: Joi.string().required(),
+               surname: Joi.string().required(),
+            }).allow(null),
+         });
+
+         const error = Joi.getError(res.body, schema);
+         assert.isNull(error);
+
+         assert.equal(res.body._id, String(case_._id));
+
+      });
+
       test("Update case", async () => {
 
          // send request
@@ -319,6 +369,28 @@ suite("API Tests", function () {
          // check db
          case_ = await Case.findById(case_._id);
          assert.equal(case_.applicant.name, payload.set.applicant.name);
+
+      });
+
+      test("Update case status", async () => {
+
+         // send request
+         let case_ = await findLastInserted(Case);
+
+         const payload = {
+            status: casual.random_element([ CASE_STATUS.REJECTED, CASE_STATUS.NOT_ASSIGNED ])
+         }
+
+         const res = await requester
+            .post(`/api/cases/${case_._id}/status`)
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send(payload);
+
+         assert.equal(res.status, 200);
+
+         // check db
+         case_ = await Case.findById(case_._id);
+         assert.equal(case_.status, payload.status);
 
       });
 
@@ -421,5 +493,218 @@ suite("API Tests", function () {
          assert.isUndefined(update);
          
       });
+
+      test("Assign a case", async () => {
+
+         // send request
+         let case_ = await createCase();
+         const user = await createUser({ role: USER_ROLES.CASE_OFFICER });
+
+         const payload = {
+            case_officer: user._id
+         }
+
+         const res = await requester
+            .post(`/api/cases/${case_._id}/assignment`)
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send(payload);
+
+         assert.equal(res.status, 200);
+
+         // check db
+         case_ = await Case.findById(case_._id);
+         assert.equal(case_.case_officer, String(payload.case_officer));
+
+      });
    });
+
+   suite("Account management", function () {
+
+      let accessToken, userId;
+      let password = casual.password;
+
+      this.beforeAll(async () => {
+
+         const user = await createUser({ password });
+         userId = user._id;
+         accessToken = createAccessToken(user);
+
+      });
+
+      test("Retrieve account info", async () => {
+
+         // send request
+
+         const res = await requester 
+            .get('/api/accounts')
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send();
+
+         assert.equal(res.status, 200)
+
+         // verify schema
+         const schema = {
+            _id: Joi.string().hex().required(),
+            name: Joi.string().required(),
+            surname: Joi.string().required(),
+            email: Joi.string().email().required(),
+            role: Joi.valid(...Object.values(USER_ROLES)).required(),
+         };
+
+         const error = Joi.getError(res.body, schema);
+         assert.isNull(error);
+
+      });
+
+      test("Update password", async () => {
+
+         // send request
+         const payload = {
+            old_password: password,
+            new_password: casual.password,
+         }
+
+         const res = await requester 
+            .post('/api/accounts')
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send(payload);
+
+         assert.equal(res.status, 200)
+
+         // verify db changes
+         const user = await User.findById(userId);
+         const isPasswordvalid = await compare(payload.new_password, user.password);
+
+         assert.isTrue(isPasswordvalid);
+
+      });
+
+      test("Reset password", async () => {
+
+         // setup spy
+         chai.spy.restore();
+         chai.spy.on(mail, 'send', () => {})
+
+         // send request
+         const user = await User.findById(userId);
+
+         const payload = {
+            email: user.email,
+         }
+
+         const res = await requester 
+            .post('/api/accounts/password-reset')
+            .send(payload);
+
+         assert.equal(res.status, 200)
+
+         // verify db changes
+         const temp = await findLastInserted(Temp);
+         assert.equal(temp.data.user, userId);
+
+         // verify spy
+         expect(mail.send).to.have.been.called(1);
+
+      });
+
+      test("Verify password reset", async () => {
+
+         // send request
+         let temp = await findLastInserted(Temp);
+
+         const res = await requester 
+            .post(`/api/accounts/password-reset/${temp._id}/verification`)
+            .send();
+
+         assert.equal(res.status, 200)
+
+         // verify db changes
+         /// password change
+         const user = await User.findById(userId);
+         const isPasswordvalid = await compare(temp.data.password, user.password);
+         assert.isTrue(isPasswordvalid);
+
+         /// temp instance deletion
+         temp = await Temp.findById(temp._id);
+         assert.isNull(temp)
+         
+      });
+   });
+
+   suite("Reports", function () {
+
+      let accessToken;
+
+      this.beforeAll(async () => {
+         const user = await createUser({ password });
+         accessToken = createAccessToken(user);
+      });
+
+      test("Retrieve summary statistics", async () => {
+
+         // create some cases
+         for (let i = 0; i < 10; i++) {
+            await createCase()
+         }
+
+         // send request
+         const res = await requester 
+            .get('/api/cases/summary')
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send();
+
+         assert.equal(res.status, 200)
+
+         // verify schema
+         const schema = {
+            gender: {
+               male: Joi.number().integer().required(),
+               female: Joi.number().integer().required(),
+            },
+            province: generateSchemaObjectFromKeyList(Object.values(PROVINCES), Joi.number().integer()),
+            status: generateSchemaObjectFromKeyList(Object.values(CASE_STATUS), Joi.number().integer()),
+         };
+
+         const error = Joi.getError(res.body, schema);
+         assert.isNull(error);
+
+         // tally with db
+         const sumNumbers = (obj) => {
+            return Object.values(obj).reduce((sum, value) => sum + value, 0);
+         }
+
+         const caseCount = await Case.countDocuments();
+         const totalFromGender = sumNumbers(req.body.gender);
+         const totalFromProvince = sumNumbers(req.body.province);
+         const totalFromStatus = sumNumbers(req.body.status);
+
+         assert.equal(caseCount, totalFromGender);
+         assert.equal(caseCount, totalFromProvince);
+         assert.equal(caseCount, totalFromStatus);
+
+      });
+
+      test("Retrieve trend data", async () => {
+
+         // send request
+         const res = await requester 
+            .get('/api/cases/trend?period=WEEKLY')
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send();
+
+         assert.equal(res.status, 200)
+
+         // check schema
+         const schema = Joi.array().items({
+            start: Joi.date().required(),
+            count: Joi.number().integer().required(),
+         });
+
+         const error = Joi.getError(res.body, schema);
+         assert.isNull(error);
+
+      });
+
+   });
+
 });   

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = require('./User');
 const Case = require('./Case');
 const { USER_ROLES } = require("../constants");
+const Temp = require("./Temp");
 
 async function init() {
 
@@ -12,6 +13,7 @@ async function init() {
    // initialize models
    await User.init();
    await Case.init();
+   await Temp.init();
 
    // empty test database
    if (process.env.NODE_ENV === 'test') {
