@@ -208,6 +208,24 @@ suite("API Tests", function () {
                next_of_kin_phone: casual.phone,
                friend_phone: casual.phone,
             },
+            defendant: {
+               name: casual.text,
+               surname: casual.text,
+               national_id: casual.text,  
+               dob: casual.date('YYYY-MM-DD'), // datestring,
+               place_of_birth: casual.city,
+               gender: casual.random_element(Object.values(GENDER)), // enum
+               marital_status: casual.random_element(Object.values(MARITAL_STATUS)),
+               residential_address: casual.address,
+               work_address: casual.address,
+               postal_address: casual.address,
+               telephone: casual.phone,
+               mobile: casual.phone,
+               fax: casual.phone,
+               email: casual.phone,
+               next_of_kin_phone: casual.phone,
+               friend_phone: casual.phone,
+            },
             violation: {
                date: [ casual.date('YYYY-MM-DD') ],
                continuing: casual.boolean,
@@ -274,10 +292,14 @@ suite("API Tests", function () {
          const schema = Joi.array().items({
             _id: Joi.string().required(),
             title: Joi.string().required(),
-            applicant: {
+            applicant: Joi.object({
                name: Joi.string().required(),
                surname: Joi.string().required(),
-            },
+            }).required(),
+            defendant: Joi.object({
+               name: Joi.string().required(),
+               surname: Joi.string().required(),
+            }).required(),
             victim: {
                name: Joi.string().required(),
                surname: Joi.string().required(),
@@ -325,6 +347,7 @@ suite("API Tests", function () {
             _id: Joi.string().required(),
             title: Joi.string().required(),
             applicant: Joi.object().required(),
+            defendant: Joi.object().required(),
             victim: Joi.object(),
             violation: Joi.object().required(),
             status: Joi.string().required(),
