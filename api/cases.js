@@ -124,6 +124,10 @@ cases.post('/', async (req, res) => {
             relationship_to_victim: Joi.string().required(),
             why_completing_form_on_behalf: Joi.string(),
          }).required(),
+         defendant: Joi.object({
+            ...personalDetailsSchema,
+            institution_name: Joi.string(),
+         }).required(),
          victim: Joi.object().keys(personalDetailsSchema),
          violation: Joi.object({
             date: Joi.array().items(Joi.date()),
@@ -185,7 +189,7 @@ cases.get('/', async (req, res) => {
       const cases = await Case
          .find()
          .where(where)
-         .select("_id title applicant.name applicant.surname victim.name victim.surname violation.details status ")
+         .select("_id title applicant.name applicant.surname defendant.name defendant.surname victim.name victim.surname violation.details status ")
          .skip(offset)
          .limit(limit)
          .populate("recorded_by", "_id name surname")
@@ -383,6 +387,10 @@ cases.patch('/:id', async (req, res) => {
                institution_name: Joi.string(),
                relationship_to_victim: Joi.string(),
                why_completing_form_on_behalf: Joi.string(),
+            }),
+            applicant: Joi.object({
+               ...personalDetailsSchema,
+               institution_name: Joi.string(),
             }),
             victim: Joi.object().keys(personalDetailsSchema),
             violation: Joi.object({
