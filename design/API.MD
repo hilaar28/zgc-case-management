@@ -178,6 +178,25 @@
       next_of_kin_phone: String,
       friend_phone: String,
    },
+   defendant: {
+      name: String,
+      surname: String,
+      national_id: String,      
+      dob: String, // datestring,
+      place_of_birth: String,
+      gender: String, // enum
+      marital_status: String,
+      residential_address: String,
+      work_address: String,
+      postal_address: String,
+      telephone: String,
+      mobile: String,
+      fax: String,
+      email: String,
+      next_of_kin_phone: String,
+      friend_phone: String,
+      institution_name: String,
+   },
    violation: {
       date: String | Array<String>,
       continuing: Boolean,
@@ -222,6 +241,10 @@
          surname: String,
       },
       victim: {
+         name: String,
+         surname: String,
+      },
+      defendant: {
          name: String,
          surname: String,
       },

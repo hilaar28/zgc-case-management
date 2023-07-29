@@ -49,6 +49,24 @@ erDiagram
       string victim_friend_phone
       string why_completing_form_on_behalf
       string relationship_to_victim
+
+      string defendant_name
+      string defendant_surname
+      string defendant_national_id_no
+      string defendant_dob
+      string defendant_place_of_birth
+      ENUM   defendant_gender
+      string defendant_marital_status
+      string defendant_residential_address
+      string defendant_work_address
+      string defendant_postal_address
+      string defendant_telephone_number
+      string defendant_mobile_number
+      string defendant_fax_number
+      string defendant_email_address
+      string defendant_next_of_kin_phone
+      string defendant_friend_phone
+      string defendant_institution_name
       
       date date_of_violation
       boolean is_violation_still_continuing
