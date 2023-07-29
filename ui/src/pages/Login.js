@@ -38,7 +38,7 @@ export default class Login extends Page {
          showLoading();
 
          await request.post('/api/login', data);
-         actions.setAutheticated();
+         actions.setAuthenticated();
          window.App.redirect('/menu');
 
       } catch (err) {
@@ -117,7 +117,7 @@ async function checkAuthentication() {
 		return false;
 
 	// consider as logged in
-	actions.setAutheticated(true);
+	actions.setAuthenticated(true);
    await delay(200)
 	window.App.redirect('/dashboard');
    

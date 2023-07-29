@@ -9,10 +9,17 @@ function setCurrentRoute(route) {
    });
 }
 
-function setAutheticated(authenticated=true) {
+function setAuthenticated(authenticated=true) {
    store.dispatch({
       type: ACTION_TYPES.SET_AUTHENTICATED,
       payload: authenticated
+   });
+}
+
+function setUser(user) {
+   store.dispatch({
+      type: ACTION_TYPES.SET_USER,
+      payload: user,
    });
 }
 
@@ -87,9 +94,10 @@ function setEntities(Entity, entities) {
 const actions = {
    addEntity,
    deleteEntity,
-   setAutheticated,
+   setAuthenticated,
    setCurrentRoute,
    setEntities,
+   setUser,
    updateEntity,
 }
 

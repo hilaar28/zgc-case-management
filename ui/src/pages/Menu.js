@@ -3,6 +3,8 @@ import AddIcon from '@mui/icons-material/Add';
 import PeopleIcon from '@mui/icons-material/People';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import ArticleIcon from '@mui/icons-material/Article';
+import request from '../request';
+import actions from "../actions";
 
 
 function Option(props) {
@@ -34,6 +36,30 @@ function Option(props) {
 
 
 export default class Menu extends Page {
+
+
+   fetchUserData = async () => {
+      try {
+         
+         const res = await request.get('/api/accounts');
+         const user = res.data;
+         actions.setUser(user);
+
+         console.log(user);
+
+      } catch (err) {
+
+      }
+   }
+
+
+   componentDidMount() {
+
+      super.componentDidMount();
+
+      this.fetchUserData();
+
+   }
 
    _render() {
       
