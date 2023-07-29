@@ -75,9 +75,7 @@ function DropDown(props) {
    let fullName, userAvailableOptions;
 
    if (user) {
-
-      alert(JSON.stringify(user))
-
+      
       fullName = `${user.name} ${user.surname}`;
 
       userAvailableOptions = <>
