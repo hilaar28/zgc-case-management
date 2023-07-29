@@ -8,9 +8,11 @@ const express = require('express');
 const { init: initAuth } = require('./auth');
 const { init: initDB } = require('./db');
 const morgan = require('morgan');
+const cors = require('cors');
 const users = require('./users');
 const cases = require('./cases');
 const accounts = require('./accounts');
+const { ACCESS_TOKEN_HEADER_NAME, REFRESH_TOKEN_HEADER_NAME } = require('@xavisoft/auth/constants');
 
 const app = express();
 
@@ -19,6 +21,14 @@ app.use(express.json());
 
 if (process.env.NODE_ENV !== 'test')
    app.use(morgan('tiny'));
+
+const allowedHeaders = [ ACCESS_TOKEN_HEADER_NAME, REFRESH_TOKEN_HEADER_NAME, 'content-type', 'baggage', 'sentry-trace' ];
+
+app.use(cors({
+   allowedHeaders: allowedHeaders,
+   exposedHeaders: allowedHeaders,
+   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+}));
 
 initAuth(app);
 
