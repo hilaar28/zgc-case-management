@@ -16,6 +16,7 @@ import capitalize from 'capitalize';
 import MenuSelect from "../components/MenuSelect";
 import { USER_ROLES } from "../backend-constants";
 import Component from "@xavisoft/react-component";
+import Editable from "../components/Editable";
 
 
 class RoleSelector extends Component {
@@ -34,7 +35,7 @@ class RoleSelector extends Component {
          await request.patch(`/api/users/${userId}`, { set: { role }});
 
          actions.updateEntity(UserSchema, userId, { role });
-         
+
       } catch (err) {
          swal(String(err))
       } finally {
@@ -97,6 +98,24 @@ class UnconnectedUsers extends Page {
       }
    }
 
+   attributeUpdatorGenerator = (attribute, _id ) => {
+
+      return async function(value) {
+
+         const data = {
+            set: {
+               [attribute]: value
+            }
+         }
+
+         console.log(data)
+
+         await request.patch(`/api/users/${_id}`, data);
+         actions.updateEntity(UserSchema, _id, data.set);
+
+      }
+   }
+
    fetchUsers = async () => {
       try {
 
@@ -154,16 +173,34 @@ class UnconnectedUsers extends Page {
                   {
                      this.props.users.map(user => {
 
-                        const disabled = user._id === ownUserId;
+                        const _id = user._id;
+                        const disabled = _id === ownUserId;
                         const textColorClass = disabled ? 'text-gray-600 opacity-30' : 'text-red-400';
 
-                        return <TableRow key={user._id}>
-                           <TableCell>{user.name}</TableCell>
-                           <TableCell>{user.surname}</TableCell>
-                           <TableCell>{user.email}</TableCell>
+                        return <TableRow key={_id}>
+                           <TableCell>
+                              <Editable 
+                                 content={user.name} 
+                                 onBlur={this.attributeUpdatorGenerator('name', _id)} 
+                              />
+                           </TableCell>
+
+                           <TableCell>
+                              <Editable 
+                                 content={user.surname} 
+                                 onBlur={this.attributeUpdatorGenerator('surname', _id)} 
+                              />
+                           </TableCell>
+
+                           <TableCell>
+                              <Editable 
+                                 content={user.email} 
+                                 onBlur={this.attributeUpdatorGenerator('email', _id)} 
+                              />
+                           </TableCell>
                            
                            <TableCell>
-                              <RoleSelector _id={user._id} role={user.role} />
+                              <RoleSelector _id={_id} role={user.role} />
                            </TableCell>
 
                            <TableCell>

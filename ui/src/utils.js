@@ -23,6 +23,7 @@ function requestConfirmation({
          }
       ],
       closeOnClickOutside: false,
+      closeOnEsc: false,
    });
 }
 
