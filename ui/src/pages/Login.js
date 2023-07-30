@@ -119,7 +119,7 @@ async function checkAuthentication() {
 	// consider as logged in
 	actions.setAuthenticated(true);
    await delay(200)
-	window.App.redirect('/dashboard');
+	window.App.redirect('/menu');
    
    return true;
 

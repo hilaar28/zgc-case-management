@@ -2,16 +2,18 @@
 import { schema } from 'normalizr';
 
 
+const opt = { idAttribute: '_id' }
+
 // users
-export const User = new schema.Entity('users');
+export const User = new schema.Entity('users', {}, opt);
 
 // case updates
-export const CaseUpdate = new schema.Entity('case_updates');
+export const CaseUpdate = new schema.Entity('case_updates', {}, opt);
 
 // cases
 export const Case = new schema.Entity('cases', {
    updates: [ CaseUpdate ],
-});
+}, opt);
 
 
 

@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Login from './pages/Login';
 import Component from '@xavisoft/react-component';
 import Menu from './pages/Menu';
+import Users from './pages/Users';
 
 
 Component.prototype.updateState = function (updates={}) {
@@ -51,6 +52,7 @@ function App() {
 			<Route path="/" component={Login} />
 			<Route path="/login" component={Login} />
 			<Route path="/menu" component={Menu} />
+			<Route path="/users" component={Users} />
 
 			<Route path="/test" component={Test} />
 
