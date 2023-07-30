@@ -35,7 +35,7 @@ users.post('/', async (req, res) => {
       const schema = {
          name: Joi.string().required(),
          surname: Joi.string().required(),
-         email: Joi.string().required(),
+         email: Joi.string().email().required(),
          role: Joi.valid(...Object.values(USER_ROLES)).required(),
       }
 
@@ -103,7 +103,7 @@ users.patch('/:id', async (req, res) => {
          set: Joi.object().keys({
             name: Joi.string(),
             surname: Joi.string(),
-            email: Joi.string(),
+            email: Joi.string().email(),
             role: Joi.valid(...Object.values(USER_ROLES)),
          }).min(1).required(),
       }
