@@ -12,16 +12,17 @@ function requestConfirmation({
          {
             text: confirmButtonCaption,
             value: true,
-            className: "red-bg white-text",
+            className: "bg-red-600 text-white",
             visible: true,
          },
          {
             text: cancelButtonCaption,
             value: false,
             visible: true,
-            className: "white-bg primary-text"
+            className: "bg-white primary-text"
          }
-      ]
+      ],
+      closeOnClickOutside: false,
    });
 }
 

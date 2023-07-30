@@ -11,6 +11,8 @@ import Page from "./Page";
 import { connect } from "react-redux";
 import UserEditor from "../components/UserEditor";
 import AddIcon from '@mui/icons-material/Add';
+import { requestConfirmation } from '../utils'
+import capitalize from 'capitalize';
 
 
 class UnconnectedUsers extends Page {
@@ -27,6 +29,34 @@ class UnconnectedUsers extends Page {
       return this.updateState({ addingUser: false });
    }
 
+   deleteUser = async (event) => {
+      const _id = event.currentTarget.getAttribute('data-id');
+      const user = this.props.users.find(user => user._id === _id);
+
+      if (!user)
+         return;
+
+      const fullName = capitalize.words(`${user.name} ${user.surname}`);
+      const question = `Do you really want to delete user "${fullName}"`
+      const confirmation = await requestConfirmation({ question });
+
+      if (!confirmation)
+         return;
+
+      try {
+
+         showLoading();
+
+         await request.delete(`/api/users/${_id}`);
+         actions.deleteEntity(UserSchema, _id);
+         
+      } catch (err) {
+         swal(String(err))
+      } finally {
+         hideLoading();
+      }
+   }
+
    fetchUsers = async () => {
       try {
 
@@ -36,8 +66,6 @@ class UnconnectedUsers extends Page {
          const users = res.data;
          const normalizedUsers = normalize(users, [ UserSchema ]).entities[UserSchema.key];
          actions.setEntities(UserSchema, normalizedUsers);
-
-         console.log(normalizedUsers);
 
       } catch (err) {
          swal(String(err));
@@ -65,7 +93,7 @@ class UnconnectedUsers extends Page {
             />
          }
 
-         const ownUserId = this.props.user._id;
+         const ownUserId = this.props.user ? this.props.user._id : '';
 
          jsx = <>
             <h1 className="text-3xl font-extrabold">Users</h1>
@@ -87,8 +115,7 @@ class UnconnectedUsers extends Page {
                      this.props.users.map(user => {
 
                         const disabled = user._id === ownUserId;
-
-                        const textColorClass = disabled ? 'text-gray-600 opacity-30' :'text-red-400'
+                        const textColorClass = disabled ? 'text-gray-600 opacity-30' : 'text-red-400'
 
                         return <TableRow key={user._id}>
                            <TableCell>{user.name}</TableCell>
@@ -97,7 +124,12 @@ class UnconnectedUsers extends Page {
                            <TableCell>{user.role.replaceAll('_', ' ').toUpperCase()}</TableCell>
 
                            <TableCell>
-                              <IconButton disabled={disabled} className={textColorClass}>
+                              <IconButton 
+                                 disabled={disabled} 
+                                 className={textColorClass}
+                                 data-id={user._id}
+                                 onClick={this.deleteUser}
+                              >
                                  <DeleteIcon />
                               </IconButton>
                            </TableCell>
