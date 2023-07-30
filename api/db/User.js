@@ -31,12 +31,12 @@ const schema = new mongoose.Schema({
 
 schema.pre("save", async function(next) {
    
-   if (this.password) {
+   if (this.isModified("password")) {
       const passwordSaltRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS) || 12;
       this.password = await hash(this.password, passwordSaltRounds);
    }
 
-   if (this.email) {
+   if (this.isModified("email")) {
       this.email = this.email.toLowerCase();
    }
 
