@@ -13,6 +13,46 @@ import UserEditor from "../components/UserEditor";
 import AddIcon from '@mui/icons-material/Add';
 import { requestConfirmation } from '../utils'
 import capitalize from 'capitalize';
+import MenuSelect from "../components/MenuSelect";
+import { USER_ROLES } from "../backend-constants";
+import Component from "@xavisoft/react-component";
+
+
+class RoleSelector extends Component {
+
+   static roleOptions = Object.values(USER_ROLES).map(role => ({
+      value: role,
+      caption: role.replaceAll('_', ' ').toUpperCase(),
+   }));
+
+   onUserRoleChange = async (role) => {
+      
+      try {
+         showLoading();
+
+         const userId = this.props._id;
+         await request.patch(`/api/users/${userId}`, { set: { role }});
+
+         actions.updateEntity(UserSchema, userId, { role });
+         
+      } catch (err) {
+         swal(String(err))
+      } finally {
+         hideLoading();
+      }
+   }
+
+   render() {
+
+
+      return <MenuSelect
+         options={RoleSelector.roleOptions}
+         current={this.props.role.replaceAll('_', ' ')}
+         onSelect={this.onUserRoleChange}
+      />
+   }
+}
+
 
 
 class UnconnectedUsers extends Page {
@@ -115,13 +155,16 @@ class UnconnectedUsers extends Page {
                      this.props.users.map(user => {
 
                         const disabled = user._id === ownUserId;
-                        const textColorClass = disabled ? 'text-gray-600 opacity-30' : 'text-red-400'
+                        const textColorClass = disabled ? 'text-gray-600 opacity-30' : 'text-red-400';
 
                         return <TableRow key={user._id}>
                            <TableCell>{user.name}</TableCell>
                            <TableCell>{user.surname}</TableCell>
                            <TableCell>{user.email}</TableCell>
-                           <TableCell>{user.role.replaceAll('_', ' ').toUpperCase()}</TableCell>
+                           
+                           <TableCell>
+                              <RoleSelector _id={user._id} role={user.role} />
+                           </TableCell>
 
                            <TableCell>
                               <IconButton 
