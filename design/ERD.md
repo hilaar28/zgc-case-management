@@ -49,6 +49,9 @@ erDiagram
       string victim_friend_phone
       string why_completing_form_on_behalf
       string relationship_to_victim
+      string relation_to_incident
+      string nature_of_gender_violation
+      string nature_of_violation
 
       string defendant_name
       string defendant_surname
@@ -81,7 +84,7 @@ erDiagram
       TEXT lawyer_details
       TEXT language
       TEXT who_referred_you_to_us
-
+      STRING location_of_reporter
 
       ENUM source
       int case_officer FK
@@ -98,7 +101,13 @@ erDiagram
       TEXT description
    }
 
+   Evidence {
+      int case FK
+      string file
+   }
+
    Case ||--o{ CaseUpdate: "Has"
+   Case ||--o{ Evidence: "Has"
    User ||--o{ Case: "Is assigned to"
 
 ```

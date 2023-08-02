@@ -156,8 +156,10 @@
       email: String,
       next_of_kin_phone: String,
       friend_phone: String,
+      location: String,
       institution_name: String,
       relationship_to_victim: String,
+      relationship_to_incident: String,
       why_completing_form_on_behalf: String,
    },
    victim: {
@@ -200,6 +202,8 @@
    violation: {
       date: String | Array<String>,
       continuing: Boolean,
+      nature: String,
+      nature_gender: String,
       details: String,
       location: String,
       witness_details: String,
