@@ -220,6 +220,13 @@
    who_referred_you_to_us: String,
    source: String,
    title: String,
+   evidence: [
+      {
+         data: String,
+         ext: String,
+      },
+      ...
+   ]
 }
 ```
 
@@ -299,7 +306,8 @@
          createdAt: Date,
       },
       ...
-   ]
+   ],
+   evidence: [ String, ... ]
 }
 ```
 
