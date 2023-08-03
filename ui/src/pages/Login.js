@@ -69,7 +69,7 @@ export default class Login extends Page {
                   <img src={logo} alt="" className="w-[90%]" />
                </div>
             
-               <span className="block text-xl text-orange-900 text-center font-bold">
+               <span className="block text-xl text-gray-500 text-center font-bold">
                   CASE MANAGEMENT SYSTEM
                </span>
 

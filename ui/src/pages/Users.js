@@ -155,7 +155,7 @@ class UnconnectedUsers extends Page {
          const ownUserId = this.props.user ? this.props.user._id : '';
 
          jsx = <>
-            <h1 className="text-3xl font-extrabold">Users</h1>
+            <h1 className="text-3xl font-extrabold">USERS</h1>
 
             <Table>
 
@@ -244,7 +244,7 @@ class UnconnectedUsers extends Page {
          </div>
       }
 
-      return <div className="page-size relative">
+      return <div className="page-size relative p-4">
          {jsx}
       </div>
    }

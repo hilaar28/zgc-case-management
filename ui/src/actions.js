@@ -23,6 +23,23 @@ function setUser(user) {
    });
 }
 
+function openCaseEditor() {
+   const action = {
+      type: ACTION_TYPES.OPEN_CASE_EDITOR
+   }
+
+   store.dispatch(action);
+}
+
+function closeCaseEditor() {
+   const action = {
+      type: ACTION_TYPES.CLOSE_CASE_EDITOR
+   }
+
+   store.dispatch(action);
+}
+
+
 /**
  * 
  * @param {import("normalizr").schema.Entity} Entity 
@@ -73,7 +90,6 @@ function deleteEntity(Entity, id) {
    
 }
 
-
 /**
  * 
  * @param {import("normalizr").schema.Entity} Entity 
@@ -93,7 +109,9 @@ function setEntities(Entity, entities) {
 
 const actions = {
    addEntity,
+   closeCaseEditor,
    deleteEntity,
+   openCaseEditor,
    setAuthenticated,
    setCurrentRoute,
    setEntities,

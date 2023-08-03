@@ -4,6 +4,7 @@ import authenticatedReducer from "./authenticatedReducer";
 import sensorHistoryReducer from "./sensorHistoryReducer";
 import entitiesReducer from "./entitiesReducer";
 import userReducer from "./userReducer";
+import caseEditorOpenReducer from "./caseEditorOpenReducer";
 
 
 const reducer = combineReducers({
@@ -12,6 +13,7 @@ const reducer = combineReducers({
    sensorHistory: sensorHistoryReducer,
    entities: entitiesReducer,
    user: userReducer,
+   caseEditorOpen: caseEditorOpenReducer
 });
 
 export default reducer;

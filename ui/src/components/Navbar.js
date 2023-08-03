@@ -3,19 +3,20 @@ import Component from "@xavisoft/react-component";
 import AppBar from '@mui/material/AppBar';
 import { connect } from "react-redux";
 import logo from '../media/img/logo.png';
-
 import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import HomeIcon from '@mui/icons-material/Home';
 import Divider from '@mui/material/Divider';
 import LogoutIcon from '@mui/icons-material/Lock';
 import QuitIcon from '@mui/icons-material/Logout';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { deleteAuthTokens } from '../utils';
 import actions from "../actions";
+
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -71,6 +72,23 @@ function DropDown(props) {
       setAnchorEl(null);
    };
 
+
+   let goToMenu;
+
+   if (![ '/login', '/', '/menu' ].includes(props.currentRoute)) {
+      goToMenu = <MenuItem 
+         onClick={
+            () => {
+               window.App.redirect('/menu');
+               handleClose();
+            }
+         } 
+         disableRipple>
+         <HomeIcon />
+         Go to menu
+      </MenuItem>
+   }
+
    const user = props.user;
    let fullName, userAvailableOptions;
 
@@ -86,6 +104,8 @@ function DropDown(props) {
 
          <Divider sx={{ my: 0.5 }} />
 
+         {goToMenu}
+
          <MenuItem 
             onClick={
                () => {
@@ -100,6 +120,8 @@ function DropDown(props) {
          </MenuItem>
       </>
 
+   } else {
+      userAvailableOptions = goToMenu
    }
 
    return (
@@ -142,6 +164,7 @@ function DropDown(props) {
                <QuitIcon />
                Exit App
             </MenuItem>
+
 
          </StyledMenu>
       </div>
@@ -202,18 +225,25 @@ class NavbarUnconnected extends Component {
    render() {
 
       return <AppBar id="navbar" className="bg-transparent">
-         <div className="grid grid-cols-[150px,auto] m-2">
-            <div>
+         <div className="grid grid-cols-[1fr,auto] m-2">
+            <div className="v-align">
                <img
                   src={logo}
                   alt=""
-                  className="w-[100%]"
+                  className="w-[150px]"
                />
+
+               <div className="ml-2 text-3xl text-orange-700 font-extrabold">
+                  CASE MANAGEMENT
+               </div>
             </div>
 
             <div className="h-full v-align ">
                <div className="w-full text-right">
-                  <DropDown user={this.props.user} />
+                  <DropDown 
+                     user={this.props.user} 
+                     currentRoute={this.props.currentRoute}
+                  />
                </div>
             </div>
          </div>

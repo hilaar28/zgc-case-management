@@ -44,7 +44,7 @@ function Option(props) {
    const disabledClasses = props.disabled ? 'pointer-events-none opacity-50' : ''
 
    return <div 
-      className={`vh-align border-solid border-current border-2 aspect-square text-orange-900 cursor-pointer hover:scale-[1.03] ${disabledClasses}`}
+      className={`vh-align border-solid border-current border-[1px] aspect-square text-orange-900 cursor-pointer hover:scale-[1.03] ${disabledClasses} rounded-${props.roundedCorner}-2xl`}
       onClick={onClick}
    >
 
@@ -97,10 +97,10 @@ class UnconnectedMenu extends Page {
          const userRole = this.props.user.role;
 
          jsx = <div className="w-[500px] grid grid-cols-2 gap-2">
-            <Option icon={AddIcon} caption="Add case" onClick={() => alert("Not yet implemented")} />
-            <Option icon={ArticleIcon} caption="View Cases" path="/cases" />
-            <Option icon={PeopleIcon} caption="Manage users" path="/users" disabled={userRole !== USER_ROLES.SUPER_ADMIN} />
-            <Option icon={AssessmentIcon} caption="Reports"  path="/reports" disabled={!thisRoleOrHigher(USER_ROLES.SUPERVISOR, userRole)} />
+            <Option icon={AddIcon} caption="Add case" onClick={actions.openCaseEditor} roundedCorner='tl' />
+            <Option icon={ArticleIcon} caption="View Cases" path="/cases" roundedCorner='tr' />
+            <Option icon={PeopleIcon} caption="Manage users" path="/users" disabled={userRole !== USER_ROLES.SUPER_ADMIN} roundedCorner='bl' />
+            <Option icon={AssessmentIcon} caption="Reports"  path="/reports" disabled={!thisRoleOrHigher(USER_ROLES.SUPERVISOR, userRole)} roundedCorner='br' />
          </div>
       } else {
          jsx = <div className="w-[300px]">

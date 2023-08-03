@@ -80,7 +80,7 @@ export default class UserEditor extends Component {
       return <Dialog open>
          <DialogTitle>Add User</DialogTitle>
 
-         <DialogContent>
+         <DialogContent dividers>
             <div className="max-w-[400px] [&>*]:my-3">
                <TextField
                   id="txt-name"

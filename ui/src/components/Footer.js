@@ -5,21 +5,21 @@ import { connect } from "react-redux";
 
 
 function Copyright() {
-   return <div className="text-center text-sm text-gray-500">
+   return <div className="text-center text-lg text-gray-500">
       &copy; {new Date().getFullYear()} Zimbabwe Gender Commission
    </div>
 }
 
 
 function Developers() {
-   return <div className="text-right pr-6 text-xs text-gray-500">
-      Developers: <a 
+   return <div className="text-center pt-1 text-xs text-gray-500">
+      Developed by <a 
          href="https://qurious.consulting"
          className="no-underline text-orange-800 font-bold"
-      >Quorious Consulting</a> & <a 
+      >Quorious Consulting</a> {/*in partnership with <a 
          href="https://xavisoft.co.zw"
          className="no-underline text-orange-800 font-bold"
-      >Xavisoft Digital</a>
+>Xavisoft Digital</a>*/}
    </div>
 }
 
@@ -50,12 +50,16 @@ class FooterUnconnected extends Component {
 
    render() {
 
-      let jsx = <div 
+      let jsx
+      
+      if ([ '/login', '/menu' ].includes(this.props.currentRoute)) {
+         jsx = <div 
             className="py-7 bg-gradient-to-br from-orange-300 to-white" 
-      >
-         <Copyright />
-         <Developers />
-      </div>
+         >
+            <Copyright />
+            <Developers />
+         </div>
+      }
 
       return <footer id="footer">
          {jsx}

@@ -1,0 +1,265 @@
+
+import Component from '@xavisoft/react-component';
+import { GENDER, MARITAL_STATUS } from '../backend-constants';
+import ChakraTextBox from './ChakraTextbox';
+import { Divider } from '@chakra-ui/react'
+import ChakraSelect from './ChakraSelect';
+import capitalize from 'capitalize';
+
+function FieldGroupLabel(props) {
+   return <div className='text-sm text-gray-500 font-extrabold mt-5'>
+      {props.children}
+   </div>
+}
+
+export default class PersonalDetailsForm extends Component {
+
+   render() {
+
+      // define fields
+      const name = <ChakraTextBox
+         id='txt-name'
+         label="Name"
+      />
+      
+      const surname = <ChakraTextBox
+         id='txt-surname'
+         label="Surname"
+      /> 
+
+      const nationalId = <ChakraTextBox
+         id='txt-national-id'
+         label="National ID"
+      />
+
+      const gender = <ChakraSelect
+         id='txt-gender'
+         label="Gender"
+      >
+         {
+            Object.keys(GENDER).map(key => {
+
+               const gender = GENDER[key];
+
+               return <option value={gender} key={gender}>
+                  {capitalize(key)}
+               </option>
+            })
+         }
+      </ChakraSelect>
+
+      const placeOfBirth = <ChakraTextBox
+         id='txt-place-of-birth'
+         label="Place of Birth"
+      />
+
+      const dob = <ChakraTextBox
+         id='txt-dob'
+         label="Date of Birth"
+         size='small'
+         variant='standard'
+         type="date"
+         InputLabelProps={{ shrink: true }}
+         fullWidth
+      />
+
+      const maritalStatus = <ChakraSelect
+         id='txt-marital-status'
+         label="Marital Status"
+      >
+         {
+            Object.values(MARITAL_STATUS).map(status => {
+               return <option value={status} key={status}>
+                  {status.toUpperCase()}
+               </option>
+            })
+         }
+      </ChakraSelect>
+
+      const residentialAddress = <ChakraTextBox
+         id='txt-residential-address'
+         label="Residential Address"
+         multiline
+      />
+
+      const workAddress = <ChakraTextBox
+         id='txt-work-address'
+         label="Work Address"
+         multiline
+      />
+
+      const postalAddress = <ChakraTextBox
+         id='txt-postal-address'
+         label="Postal Address"
+         multiline
+      />
+
+      const telephone = <ChakraTextBox
+         id='txt-telephone'
+         label="Telephone Number"
+      />
+
+      const mobile = <ChakraTextBox
+         id='txt-mobile'
+         label="Mobile Number"
+      />
+
+      const fax = <ChakraTextBox
+         id='txt-fax'
+         label="Fax Number"
+      />
+
+      const email =<ChakraTextBox
+         id='txt-email'
+         label="Email address"
+      />
+
+      const nextOfKinPhone = <ChakraTextBox
+         id='txt-next-of-kin-phone'
+         label="Next of kin phone number"
+      />
+
+      const friendPhone = <ChakraTextBox
+         id='txt-friend-phone'
+         label="Friend phone number"
+         size='small'
+      />
+
+
+      const insitution = <ChakraTextBox
+         id='txt-institution'
+         label="Institution"
+      />
+
+      const location = <ChakraTextBox
+         id='txt-location'
+         label="Location"
+      />
+
+      const relationshipToVictim = <ChakraTextBox
+         id='txt-relationship-to-victim'
+         label="Relationship to victim"
+      />
+
+      const relationshipToIncident = <ChakraTextBox
+         id='txt-relationship-to-incident'
+         label="Relationship to incident"
+      />
+
+      const whyCompletingFormOnBehalf = <ChakraTextBox
+         id='txt-why-completing-form-on-behalf'
+         label="Why are you completing the form on behalf of the victim?"
+         multiline
+      />
+
+      // create form
+      let form;
+
+      if (this.props.electoral) {
+         form = <div className="grid grid-cols-2 gap-6">
+            {name}
+            {surname}
+
+            {dob}
+            {gender}
+
+            {mobile}
+            {email}
+            
+            {location}
+            {relationshipToIncident}
+            {residentialAddress}
+
+         </div>
+      } else {
+
+         const insitutionJSX = this.props.displayInstitutionField ? insitution : undefined;
+         const relationshipToVictimJSX = this.props.displayRelationshipToVictimField ? relationshipToVictim : undefined;
+         const whyCompletingFormOnBehalfJSX = this.props.displayWhyCompletingFormOnBehalfField ? whyCompletingFormOnBehalf : undefined;
+
+         let moreFields
+
+         if (insitutionJSX || relationshipToIncident || whyCompletingFormOnBehalf) {
+            moreFields = <>
+               <FieldGroupLabel>
+                  MORE INFO
+               </FieldGroupLabel>
+
+               <div className='grid grid-cols-2 gap-6'>
+                  {insitutionJSX}
+                  {relationshipToVictimJSX}
+                  {whyCompletingFormOnBehalfJSX}
+               </div>
+            </>
+         }
+
+         form = <>
+            <FieldGroupLabel>
+               BASIC INFO
+            </FieldGroupLabel>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {name}
+               {surname}
+            </div>
+            
+            <div className='grid grid-cols-2 gap-6'>
+               {nationalId}
+               {gender}
+            </div>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {placeOfBirth}
+               {dob}
+            </div>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {maritalStatus}
+            </div>
+
+            <Divider />
+
+            <FieldGroupLabel>
+               ADDRESSES
+            </FieldGroupLabel>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {residentialAddress}
+               {workAddress}
+            </div>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {postalAddress}
+            </div>
+
+            <Divider />
+
+            <FieldGroupLabel>
+               CONTACT DETAILS
+            </FieldGroupLabel>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {telephone}
+               {mobile}
+            </div>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {fax}
+               {email}
+            </div>
+
+            <div className='grid grid-cols-2 gap-6'>
+               {nextOfKinPhone}
+               {friendPhone}
+            </div>
+
+            {moreFields}
+
+         </>
+      }
+
+      return <div className='[&>*]:my-5'>
+         {form}
+      </div>
+   }
+}
