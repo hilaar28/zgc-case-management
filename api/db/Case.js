@@ -12,35 +12,24 @@ const caseUpdateSchema = new mongoose.Schema({
 
 
 const personalDetails = {
-   name: {
-      type: String,
-      required: true,
-   },
-   surname: {
-      type: String,
-      required: true,
-   },
+   name: String,
+   surname: String,
    national_id: String,
    dob: String,
    place_of_birth: String,
    gender: {
       type: String,
       enum: Object.values(GENDER),
-      required: true,
    },
    marital_status: {
       type: String,
       enum: Object.values(MARITAL_STATUS),
-      required: true,
    },
    residential_address: String,
    work_address: String,
    postal_address: String,
    telephone: String,
-   mobile: {
-      type: String,
-      required: true,
-   },
+   mobile: String,
    fax: String,
    email: String,
    next_of_kin_phone: String,
@@ -64,10 +53,9 @@ const schema = new mongoose.Schema({
    },
    applicant: {
       ...personalDetails,
-      relationship_to_victim: {
-         type: String,
-         required: true,
-      },
+      location: String,
+      relationship_to_victim: String,
+      relationship_to_incident: String,
       institution_name: String,
       why_completing_form_on_behalf: String,
    },
@@ -100,6 +88,12 @@ const schema = new mongoose.Schema({
          type: String,
          required: true,
       },
+      nature: {
+         type: String,
+         required: true,
+      },
+      nature_gender: String,
+      impact: String,
    },
    other_entity_reported_to: {
       type: {
@@ -122,10 +116,7 @@ const schema = new mongoose.Schema({
    expectations_from_us: String,
    lawyer_details: String,
    language: String,
-   who_referred_you_to_us: {
-      type: String,
-      required: true,
-   },
+   who_referred_you_to_us: String,
    updates: {
       type: [ caseUpdateSchema ],
       required: true,
@@ -146,7 +137,9 @@ const schema = new mongoose.Schema({
       type: String,
       enum: Object.values(PROVINCES),
       required: true,
-   }
+   },
+   evidence: [ String ],
+   more_assistance_required: String,
 }, { timestamps: true });
 
 

@@ -232,6 +232,7 @@ suite("API Tests", function () {
                details: casual.text,
                location: casual.text,
                witness_details: casual.text,
+               nature: casual.word,
             },
             other_entity_reported_to: {
                details: casual.text,
@@ -375,7 +376,8 @@ suite("API Tests", function () {
                createdAt: Joi.date().required(),
             }),
             createdAt: Joi.date().required(),
-            updatedAt: Joi.date()
+            updatedAt: Joi.date(),
+            evidence: Joi.array().items(Joi.string()),
          };
 
          const error = Joi.getError(res.body, schema);

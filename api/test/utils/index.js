@@ -119,6 +119,8 @@ function createCase(attributes={}) {
          details: casual.text,
          location: casual.text,
          witness_details: casual.text,
+         nature: casual.word,
+         nature_gender: casual.word,
       },
       other_entity_reported_to: {
          details: casual.text,

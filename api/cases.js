@@ -7,6 +7,67 @@ const { flattenDocumentUpdate } = require("./utils");
 const { default: mongoose } = require("mongoose");
 const User = require("./db/User");
 
+// constants
+const personalDetailsSchema = {
+   name: Joi.string(),
+   surname: Joi.string(),
+   national_id: Joi.string(),      
+   dob: Joi.string(), // datestring,
+   place_of_birth: Joi.string(),
+   gender: Joi.valid(...Object.values(GENDER)), // enum
+   marital_status: Joi.valid(...Object.values(MARITAL_STATUS)),
+   residential_address: Joi.string(),
+   work_address: Joi.string(),
+   postal_address: Joi.string(),
+   telephone: Joi.string(),
+   mobile: Joi.string(),
+   fax: Joi.string(),
+   email: Joi.string(),
+   next_of_kin_phone: Joi.string(),
+   friend_phone: Joi.string(),
+}
+
+
+const caseJoiSchema = {
+   applicant: Joi.object({
+      ...personalDetailsSchema,
+      institution_name: Joi.string(),
+      relationship_to_victim: Joi.string(),
+      relationship_to_incident: Joi.string(),
+      why_completing_form_on_behalf: Joi.string(),
+      location: Joi.string(),
+   }),
+   defendant: Joi.object({
+      ...personalDetailsSchema,
+      institution_name: Joi.string(),
+   }),
+   victim: Joi.object().keys(personalDetailsSchema),
+   violation: Joi.object({
+      date: Joi.array().items(Joi.date()),
+      continuing: Joi.boolean(),
+      details: Joi.string(),
+      location: Joi.string(),
+      witness_details: Joi.string(),
+      nature: Joi.string(),
+      nature_gender: Joi.string(),
+      impact: Joi.string(),
+   }),
+   other_entity_reported_to: Joi.object().keys({
+      details: Joi.string(),
+      actions: Joi.string(),
+      why_reporting_to_us_as_well: Joi.string(),
+   }),
+   why_violation_is_important_to_our_mandate: Joi.string(),
+   expectations_from_us: Joi.string(),
+   lawyer_details: Joi.string(),
+   language: Joi.string(),
+   who_referred_you_to_us: Joi.string(),
+   source: Joi.valid(...Object.values(CASE_SOURCES)),
+   title: Joi.string(),
+   province: Joi.valid(...Object.values(PROVINCES)),
+   more_assistance_required: Joi.string(),
+}
+
 // helpers
 function thisRoleOrHigher(minRole, role) {
    const roles = [
@@ -98,60 +159,7 @@ cases.post('/', async (req, res) => {
 
    try {
       // validate
-      const personalDetailsSchema = {
-         name: Joi.string().required(),
-         surname: Joi.string().required(),
-         national_id: Joi.string(),      
-         dob: Joi.string(), // datestring,
-         place_of_birth: Joi.string(),
-         gender: Joi.valid(...Object.values(GENDER)).required(), // enum
-         marital_status: Joi.valid(...Object.values(MARITAL_STATUS)).required(),
-         residential_address: Joi.string(),
-         work_address: Joi.string(),
-         postal_address: Joi.string(),
-         telephone: Joi.string(),
-         mobile: Joi.string().required(),
-         fax: Joi.string(),
-         email: Joi.string(),
-         next_of_kin_phone: Joi.string(),
-         friend_phone: Joi.string(),
-      }
-
-      const schema = {
-         applicant: Joi.object({
-            ...personalDetailsSchema,
-            institution_name: Joi.string(),
-            relationship_to_victim: Joi.string().required(),
-            why_completing_form_on_behalf: Joi.string(),
-         }).required(),
-         defendant: Joi.object({
-            ...personalDetailsSchema,
-            institution_name: Joi.string(),
-         }).required(),
-         victim: Joi.object().keys(personalDetailsSchema),
-         violation: Joi.object({
-            date: Joi.array().items(Joi.date()),
-            continuing: Joi.boolean(),
-            details: Joi.string(),
-            location: Joi.string(),
-            witness_details: Joi.string(),
-         }).required(),
-         other_entity_reported_to: Joi.object().keys({
-            details: Joi.string().required(),
-            actions: Joi.string().required(),
-            why_reporting_to_us_as_well: Joi.string().required(),
-         }),
-         why_violation_is_important_to_our_mandate: Joi.string(),
-         expectations_from_us: Joi.string().required(),
-         lawyer_details: Joi.string(),
-         language: Joi.string(),
-         who_referred_you_to_us: Joi.string().required(),
-         source: Joi.valid(...Object.values(CASE_SOURCES)).required(),
-         title: Joi.string().required(),
-         province: Joi.valid(...Object.values(PROVINCES)).required(),
-      }
-
-      const error = Joi.getError(req.body, schema);
+      const error = Joi.getError(req.body, caseJoiSchema);
       if (error)
          return res.status(400).send(error);
 
@@ -361,59 +369,8 @@ cases.patch('/:id', async (req, res) => {
    try {
 
       // validate
-      const personalDetailsSchema = {
-         name: Joi.string(),
-         surname: Joi.string(),
-         national_id: Joi.string(),      
-         dob: Joi.string(), // datestring,
-         place_of_birth: Joi.string(),
-         gender: Joi.valid(...Object.values(GENDER)), // enum
-         marital_status: Joi.valid(...Object.values(MARITAL_STATUS)),
-         residential_address: Joi.string(),
-         work_address: Joi.string(),
-         postal_address: Joi.string(),
-         telephone: Joi.string(),
-         mobile: Joi.string(),
-         fax: Joi.string(),
-         email: Joi.string(),
-         next_of_kin_phone: Joi.string(),
-         friend_phone: Joi.string(),
-      }
-
       const schema = {
-         set: {
-            applicant: Joi.object({
-               ...personalDetailsSchema,
-               institution_name: Joi.string(),
-               relationship_to_victim: Joi.string(),
-               why_completing_form_on_behalf: Joi.string(),
-            }),
-            applicant: Joi.object({
-               ...personalDetailsSchema,
-               institution_name: Joi.string(),
-            }),
-            victim: Joi.object().keys(personalDetailsSchema),
-            violation: Joi.object({
-               date: Joi.array().items(Joi.date()),
-               continuing: Joi.boolean(),
-               details: Joi.string(),
-               location: Joi.string(),
-               witness_details: Joi.string(),
-            }),
-            other_entity_reported_to: Joi.object().keys({
-               details: Joi.string(),
-               actions: Joi.string(),
-               why_reporting_to_us_as_well: Joi.string(),
-            }),
-            why_violation_is_important_to_our_mandate: Joi.string(),
-            expectations_from_us: Joi.string(),
-            lawyer_details: Joi.string(),
-            language: Joi.string(),
-            who_referred_you_to_us: Joi.string(),
-            source: Joi.valid(...Object.values(CASE_SOURCES)),
-            title: Joi.string(),
-            province: Joi.valid(...Object.values(PROVINCES)),
-         }
+         set: caseJoiSchema,
       }
 
       const error = Joi.getError(req.body, schema); 

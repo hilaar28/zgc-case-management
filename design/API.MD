@@ -207,6 +207,7 @@
       details: String,
       location: String,
       witness_details: String,
+      impact: String,
    },
    other_entity_reported_to: {
       details: String,
@@ -226,7 +227,8 @@
          ext: String,
       },
       ...
-   ]
+   ],
+   more_assistance_required: String,
 }
 ```
 

@@ -85,6 +85,8 @@ erDiagram
       TEXT language
       TEXT who_referred_you_to_us
       STRING location_of_reporter
+      TEXT impact_of_incident
+      TEXT more_assistance_required
 
       ENUM source
       int case_officer FK
