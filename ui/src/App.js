@@ -33,6 +33,7 @@ import Menu from './pages/Menu';
 import Users from './pages/Users';
 import CaseEditor from './components/CaseEditor';
 import NotFound from './pages/NotFound';
+import Cases from './pages/Cases';
 
 
 Component.prototype.updateState = function (updates={}) {
@@ -74,6 +75,7 @@ function App() {
 			<Route path="/login" component={Login} />
 			<Route path="/menu" component={Menu} />
 			<Route path="/users" component={Users} />
+			<Route path="/cases" component={Cases} />
 
 			<Route path="/test" component={Test} />
 
