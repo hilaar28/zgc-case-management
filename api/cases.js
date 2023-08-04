@@ -194,6 +194,10 @@ cases.get('/', async (req, res) => {
       const offset = parseInt(req.query.offset) || 0;
       const limit = parseInt(req.query.limit) || 50;
 
+      const count = await Case
+         .countDocuments()
+         .where(where);
+
       const cases = await Case
          .find()
          .where(where)
@@ -204,7 +208,7 @@ cases.get('/', async (req, res) => {
          .populate("case_officer", "_id name surname")
 
       // respond
-      res.send(cases);
+      res.send({ cases, count });
 
    } catch (err) {
       status_500(err, res);

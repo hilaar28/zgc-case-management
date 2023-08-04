@@ -245,39 +245,42 @@
 
 ```js
 // body
-[
-   {
-      _id: String,
-      title: String,
-      applicant: {
-         name: String,
-         surname: String,
-      },
-      victim: {
-         name: String,
-         surname: String,
-      },
-      defendant: {
-         name: String,
-         surname: String,
-      },
-      violation: {
-         details: String,
-      },
-      status: String,
-      recorded_by: {
+{
+   cases: [
+      {
          _id: String,
-         name: String,
-         surname: String,
+         title: String,
+         applicant: {
+            name: String,
+            surname: String,
+         },
+         victim: {
+            name: String,
+            surname: String,
+         },
+         defendant: {
+            name: String,
+            surname: String,
+         },
+         violation: {
+            details: String,
+         },
+         status: String,
+         recorded_by: {
+            _id: String,
+            name: String,
+            surname: String,
+         },
+         case_officer: {
+            _id: String,
+            name: String,
+            surname: String,
+         },
       },
-      case_officer: {
-         _id: String,
-         name: String,
-         surname: String,
-      },
-   },
-   ...
-]
+      ...
+   ],
+   count: Number,
+}
 ```
 
 ### Retrieve case

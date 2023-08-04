@@ -290,43 +290,48 @@ suite("API Tests", function () {
          assert.equal(res.status, 200);
 
          // validate schema
-         const schema = Joi.array().items({
-            _id: Joi.string().required(),
-            title: Joi.string().required(),
-            applicant: Joi.object({
-               name: Joi.string().required(),
-               surname: Joi.string().required(),
-            }).required(),
-            defendant: Joi.object({
-               name: Joi.string().required(),
-               surname: Joi.string().required(),
-            }).required(),
-            victim: {
-               name: Joi.string().required(),
-               surname: Joi.string().required(),
-            },
-            violation: {
-               details: Joi.string().required(),
-            },
-            status: Joi.string().required(),
-            recorded_by: Joi.object({
-               _id: Joi.string(),
-               name: Joi.string().required(),
-               surname: Joi.string().required(),
-            }).allow(null),
-            case_officer: Joi.object({
-               _id: Joi.string(),
-               name: Joi.string().required(),
-               surname: Joi.string().required(),
-            }).allow(null),
-         });
+         const schema = {
+            cases: Joi.array().items({
+               _id: Joi.string().required(),
+               title: Joi.string().required(),
+               applicant: Joi.object({
+                  name: Joi.string().required(),
+                  surname: Joi.string().required(),
+               }).required(),
+               defendant: Joi.object({
+                  name: Joi.string().required(),
+                  surname: Joi.string().required(),
+               }).required(),
+               victim: {
+                  name: Joi.string().required(),
+                  surname: Joi.string().required(),
+               },
+               violation: {
+                  details: Joi.string().required(),
+               },
+               status: Joi.string().required(),
+               recorded_by: Joi.object({
+                  _id: Joi.string(),
+                  name: Joi.string().required(),
+                  surname: Joi.string().required(),
+               }).allow(null),
+               case_officer: Joi.object({
+                  _id: Joi.string(),
+                  name: Joi.string().required(),
+                  surname: Joi.string().required(),
+               }).allow(null),
+            }),
+            count: Joi.number().integer(),
+         }
 
          const error = Joi.getError(res.body, schema);
          assert.isNull(error);
 
+         assert.isAtLeast(res.body.count, res.body.cases.length);
+
          // compare with db
          const dbCount = await Case.countDocuments();
-         assert.equal(dbCount, res.body.length);
+         assert.equal(dbCount, res.body.cases.length);
 
       });
 
