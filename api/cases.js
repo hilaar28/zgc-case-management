@@ -191,6 +191,10 @@ cases.get('/', async (req, res) => {
          where.case_officer = req.auth.user._id;
       }
 
+      if (req.query.status) {
+         where.status = req.query.status
+      }
+
       const offset = parseInt(req.query.offset) || 0;
       const limit = parseInt(req.query.limit) || 50;
 

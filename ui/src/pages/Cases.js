@@ -8,32 +8,37 @@ import { normalize } from 'normalizr';
 import { Case as CaseSchema } from '../reducer/schema';
 import actions from '../actions';
 import CaseThumbnail from '../components/CaseThumbnail';
-import { Fab, Pagination } from '@mui/material';
+import { Fab, MenuItem, Pagination, Select } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { CASE_STATUS } from '../backend-constants';
+import capitalize from 'capitalize';
 
 const PAGE_SIZE = 50;
-
+const ALL_STATUS_FILTER = 'all';
 class UnconnectedCases extends Page {
 
 
    state = {
       page: 1,
       numberOfCases: 1,
+      status: ALL_STATUS_FILTER,
    }
 
-   fetchCases = async (page=this.state.page) => {
+   fetchCases = async (page=this.state.page, status=this.state.status) => {
 
       try {
 
          showLoading();
 
          const offset = (page - 1) * PAGE_SIZE;
-         const res = await request.get(`/api/cases?offset=${offset}&limit=${PAGE_SIZE}`);
+         const statusFilter = status === ALL_STATUS_FILTER ? '' : status;
+         const res = await request.get(`/api/cases?offset=${offset}&limit=${PAGE_SIZE}&status=${statusFilter}`);
+
          const normalizedCases = normalize(res.data.cases, [ CaseSchema ]);
          actions.setEntities(CaseSchema, normalizedCases.entities.cases);
 
          const numberOfCases = res.data.count;
-         this.updateState({ numberOfCases, page });
+         this.updateState({ numberOfCases, page, status });
 
       } catch (err) {
          swal(String(err));
@@ -48,12 +53,20 @@ class UnconnectedCases extends Page {
    }
 
    _render() {
-      return <div className='page-size grid grid-rows-[1fr,auto]'>
-         <div className='overflow-auto'>
 
-            {
-               this.props.cases.map(case_ => <CaseThumbnail {...case_} />)
-            }
+      let cases;
+
+      if (this.props.cases.length > 0) {
+         cases = this.props.cases.map(case_ => <CaseThumbnail {...case_} />);
+      } else {
+         cases = <p className='text-gray-600 text-2xl px-4'>
+            No cases yet.
+         </p>
+      }
+
+      return <div className='page-size grid grid-rows-[1fr,auto]'>
+         <div className='overflow-auto py-5'>
+            {cases}
          </div>
 
          <div className='bg-orange-700 text-white grid grid-cols-[1fr,auto] py-3'>
@@ -63,6 +76,29 @@ class UnconnectedCases extends Page {
                   count={Math.ceil(this.state.numberOfCases / PAGE_SIZE)}
                   onChange={(e, page) => this.fetchCases(page)}
                />
+
+               <span className='text-xs font-bold pl-10'>
+                  FILTER BY STATUS
+               </span>
+
+               <Select
+                  value={this.state.status}
+                  onChange={e => this.fetchCases(1, e.target.value)}
+                  select
+                  size="small"
+                  className='ml-5 border-[#FFF]'
+               >
+                  <MenuItem value={ALL_STATUS_FILTER}>All</MenuItem>
+                  {
+                     Object
+                        .values(CASE_STATUS)
+                        .map(value => (
+                           <MenuItem key={value} value={value}>
+                              {capitalize.words(value.replaceAll('_', ' '))}
+                           </MenuItem>
+                        ))
+                  }
+               </Select>
             </div>
 
             <div className='h-full v-align pr-3'>

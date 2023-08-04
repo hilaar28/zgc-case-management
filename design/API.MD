@@ -241,7 +241,7 @@
 ```
 
 ### Retrieve cases
-**GET** `/api/cases/?offset=:offset&limit=:limit`
+**GET** `/api/cases/?offset=:offset&limit=:limit&status=:status`
 
 ```js
 // body
