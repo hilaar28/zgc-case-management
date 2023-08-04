@@ -1,3 +1,3 @@
 
 - Try to use an inline middleware for endpoints that requires case_officer priviledges, instead of using a `doYouHaveCaseOfficerPriviledgesOnCase()` inside each endpoint handler.
-- Make sure `POST /api/cases` and `PATCH /api/cases/:id` uses a variation of the same Joi schema object, so it's easy to maintain
+- Add indexes to speed all `countDocuments()`, especially for **report generation** and **pagination**
