@@ -69,29 +69,16 @@ const schema = new mongoose.Schema({
    },
    violation: {
       date: {
-         type: [ Date ],
-         required: true
+         type: [ Date ]
       },
-      continuing: {
-         type: Boolean,
-         required: true,
-      },
+      continuing: Boolean,
       details: {
          type: String,
          required: true,
       },
-      location: {
-         type: String,
-         required: true,
-      },
-      witness_details: {
-         type: String,
-         required: true,
-      },
-      nature: {
-         type: String,
-         required: true,
-      },
+      location: String,
+      witness_details: String,
+      nature: String,
       nature_gender: String,
       impact: String,
    },
