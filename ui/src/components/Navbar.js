@@ -184,6 +184,15 @@ function exitApp() {
 }
 
 
+const routeToPageTitleMap = {
+   '/': 'LOGIN',
+   '/login': 'LOGIN',
+   '/menu': 'MENU',
+   '/users': 'MANAGE USERS',
+   '/cases': 'MANAGE CASES',
+};
+
+
 class NavbarUnconnected extends Component {
 
 
@@ -224,6 +233,22 @@ class NavbarUnconnected extends Component {
    
    render() {
 
+
+      let pageTitle;
+      const title = routeToPageTitleMap[this.props.currentRoute];
+
+      if (title) {
+         pageTitle = <>
+            <div className="ml-2 text-3xl text-orange-700">
+               |
+            </div>
+
+            <div className="ml-2 text-xl text-gray-600 font-extrabold uppercase">
+               {title}
+            </div>
+         </>
+      }
+
       return <AppBar id="navbar" className="bg-transparent">
          <div className="grid grid-cols-[1fr,auto] m-2">
             <div className="v-align">
@@ -234,8 +259,11 @@ class NavbarUnconnected extends Component {
                />
 
                <div className="ml-2 text-3xl text-orange-700 font-extrabold">
-                  CASE MANAGEMENT
+                  CASE MANAGEMENT 
                </div>
+
+               {pageTitle}
+
             </div>
 
             <div className="h-full v-align ">
