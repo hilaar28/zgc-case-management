@@ -8,13 +8,16 @@ import { normalize } from 'normalizr';
 import { Case as CaseSchema } from '../reducer/schema';
 import actions from '../actions';
 import CaseThumbnail from '../components/CaseThumbnail';
-import { Fab, MenuItem, Pagination, Select } from '@mui/material';
+import { Fab, IconButton, MenuItem, Pagination, Select } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { CASE_STATUS } from '../backend-constants';
 import capitalize from 'capitalize';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const PAGE_SIZE = 50;
 const ALL_STATUS_FILTER = 'all';
+
+
 class UnconnectedCases extends Page {
 
 
@@ -99,6 +102,10 @@ class UnconnectedCases extends Page {
                         ))
                   }
                </Select>
+
+               <IconButton className='ml-5 text-3xl' onClick={this.fetchCases}>
+                  <RefreshIcon fontSize='inherit' />
+               </IconButton>
             </div>
 
             <div className='h-full v-align pr-3'>
