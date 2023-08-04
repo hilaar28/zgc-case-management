@@ -12,7 +12,7 @@ import { errorToast, successToast } from '../toast';
 import ChakraCheckbox from './ChakraCheckbox';
 import ViolationDetailsForm from './ViolationDetailsForm';
 import ChakraTextBox from './ChakraTextbox';
-import { CASE_SOURCES } from '../backend-constants';
+import { CASE_SOURCES, PROVINCES } from '../backend-constants';
 import MoreCaseInfoForm from './MoreCaseInfoForm';
 import swal from 'sweetalert'
 import { hideLoading, showLoading } from '../loading'
@@ -92,7 +92,8 @@ const defaultState = {
    other: null,
    applicantIsVictim: false,
    title: '',
-   source: CASE_SOURCES.CALL_CENTER,
+   source: '',
+   province: '',
 }
 
 
@@ -147,7 +148,7 @@ class UnconnectedCaseEditor extends Component {
       let national_id;
 
       if (txtNationalID) {
-         national_id = txtNationalID;
+         national_id = txtNationalID.value;
       }
 
       /// gender
@@ -336,6 +337,16 @@ class UnconnectedCaseEditor extends Component {
                   throw new Error('Provide the case title');
                }
 
+               if (!this.state.source) {
+                  document.getElementById('txt-source').focus();
+                  throw new Error('Provide the source');
+               }
+
+               if (!this.state.province) {
+                  document.getElementById('txt-province').focus();
+                  throw new Error('Select the province');
+               }
+
                update.applicant = this.retrievePersonalDetails();
                break;
 
@@ -394,6 +405,7 @@ class UnconnectedCaseEditor extends Component {
             language,
             expectations_from_us,
             lawyer_details,
+            province,
          } = this.state;
 
          const data =  {
@@ -402,6 +414,7 @@ class UnconnectedCaseEditor extends Component {
             defendant,
             violation,
             title,
+            province,
             source,
             evidence,
             why_violation_is_important_to_our_mandate,
@@ -480,14 +493,32 @@ class UnconnectedCaseEditor extends Component {
                      />
 
                      <ChakraSelect
+                        id="txt-source"
                         label="Source"
-                        value={this.state.title}
-                        onChange={title => this.updateState({ title })}
+                        value={this.state.source}
+                        onChange={source => this.updateState({ source })}
+                        allowDefaultEmptySelection
                      >
                         {
                            Object.values(CASE_SOURCES).map(type => {
                               return <option value={type}>
                                  {capitalize.words(type).replaceAll('_', ' ')}
+                              </option>
+                           })
+                        }
+                     </ChakraSelect>
+
+                     <ChakraSelect
+                        id="txt-province"
+                        label="Which province did the case occur?"
+                        value={this.state.province}
+                        onChange={province => this.updateState({ province })}
+                        allowDefaultEmptySelection
+                     >
+                        {
+                           Object.values(PROVINCES).map(province => {
+                              return <option value={province}>
+                                 {province}
                               </option>
                            })
                         }
@@ -506,6 +537,8 @@ class UnconnectedCaseEditor extends Component {
                   displayInstitutionField={!formIsElectoral}
                   displayRelationshipToVictimField={!formIsElectoral}
                   displayWhyCompletingFormOnBehalfField={!formIsElectoral}
+                  displayRelationshipToIncidentField={formIsElectoral}
+                  displayLocationField={formIsElectoral}
                />
                
             </>

@@ -73,6 +73,7 @@ export default function MoreCaseInfoForm(props) {
    const iHaveReportedToOtherEntity = <ChakraCheckbox
       checked={haveReportedToThirdParty}
       onChange={setIHaveReportedToThirdParty}
+      label="I have reported this case to another party"
    />
 
    // create form
@@ -103,12 +104,19 @@ export default function MoreCaseInfoForm(props) {
             {language}
             {whoReferredYouToUs}
 
-            <Divider className="my-5" />
-
-            {iHaveReportedToOtherEntity}
-            {thirdPartyFields}
 
          </div>
+
+         
+         <Divider className="my-5" />
+
+         <div className="text-sm font-bold text-gray-600">
+            THIRDY PARTY INSITUTION REPORTED TO
+         </div>
+         <div className="my-5">
+            {iHaveReportedToOtherEntity}
+         </div>
+         {thirdPartyFields}
       </>
    }
 

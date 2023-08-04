@@ -1,10 +1,11 @@
 
 import Component from '@xavisoft/react-component';
-import { GENDER, MARITAL_STATUS } from '../backend-constants';
+import { GENDER, MARITAL_STATUS, RELATIONSHIP_TO_INCIDENT } from '../backend-constants';
 import ChakraTextBox from './ChakraTextbox';
 import { Divider } from '@chakra-ui/react'
 import ChakraSelect from './ChakraSelect';
 import capitalize from 'capitalize';
+import ChakraAutoComplete from './ChakraAutoComplete';
 
 function FieldGroupLabel(props) {
    return <div className='text-sm text-gray-500 font-extrabold mt-5'>
@@ -141,9 +142,18 @@ export default class PersonalDetailsForm extends Component {
          label="Relationship to victim"
       />
 
-      const relationshipToIncident = <ChakraTextBox
+      const relationshipToIncident = <ChakraAutoComplete
          id='txt-relationship-to-incident'
          label="Relationship to incident"
+         freeSolo
+         items={
+            Object
+               .values(RELATIONSHIP_TO_INCIDENT)
+               .map(value => ({ 
+                  value, 
+                  caption: capitalize.words(value).replaceAll('_', ' '),
+               }))
+         }
       />
 
       const whyCompletingFormOnBehalf = <ChakraTextBox
@@ -156,6 +166,10 @@ export default class PersonalDetailsForm extends Component {
       let form;
 
       if (this.props.electoral) {
+
+         const relationshipToIncidentJSX = this.props.displayRelationshipToIncidentField ? relationshipToIncident : undefined;
+         const locationJSX = this.props.displayLocationField ? location : undefined;
+
          form = <div className="grid grid-cols-2 gap-6">
             {name}
             {surname}
@@ -166,8 +180,9 @@ export default class PersonalDetailsForm extends Component {
             {mobile}
             {email}
             
-            {location}
-            {relationshipToIncident}
+            {locationJSX}
+            {relationshipToIncidentJSX}
+
             {residentialAddress}
 
          </div>
@@ -179,7 +194,7 @@ export default class PersonalDetailsForm extends Component {
 
          let moreFields
 
-         if (insitutionJSX || relationshipToIncident || whyCompletingFormOnBehalf) {
+         if (insitutionJSX || relationshipToVictimJSX || whyCompletingFormOnBehalfJSX) {
             moreFields = <>
                <FieldGroupLabel>
                   MORE INFO

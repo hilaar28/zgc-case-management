@@ -4,15 +4,25 @@ import { FormControl, FormLabel, Select } from "@chakra-ui/react";
 export default function ChakraSelect(props) {
 
 
-   const onChange = props.onChange || (() => {})
+   const onChange = props.onChange || (() => {});
+   let defaultSelection;
+
+   if (props.allowDefaultEmptySelection) {
+      defaultSelection = <option value="" disabled selected>
+         {props.placeholder || "Select option"}
+      </option>
+   }
    
    return <FormControl>
       <FormLabel className="text-gray-600 text-sm">{props.label}</FormLabel>
       <Select 
          type={props.type} 
          id={props.id} 
-         children={props.children} 
          value={props.value} 
-         onChange={e => onChange(e.target.value)} />
+         onChange={e => onChange(e.target.value)} 
+      >
+         {defaultSelection}
+         {props.children}
+      </Select>
    </FormControl>
 }

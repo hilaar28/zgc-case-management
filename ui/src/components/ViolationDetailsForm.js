@@ -1,3 +1,6 @@
+import capitalize from "capitalize";
+import { GENDER_VIOLATION_NATURE, VIOLATION_IMPACT, VIOLATION_NATURE } from "../backend-constants";
+import ChakraAutoComplete from "./ChakraAutoComplete";
 import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraSelect from "./ChakraSelect";
 import ChakraTextBox from "./ChakraTextbox";
@@ -19,13 +22,31 @@ export default function ViolationDetailsForm(props) {
    const nature = <ChakraSelect
       id="txt-nature"
       label="What's the nature of the violation?"
+      allowDefaultEmptySelection
    >
+      {
+         Object.values(VIOLATION_NATURE)
+            .map(value => {
+               return <option key={value} value={value}>
+                  {capitalize.words(value).replaceAll('_', ' ')}
+               </option>
+            })
+      }
    </ChakraSelect>
 
    const natureGender = <ChakraSelect
       id="txt-nature-gender"
       label="What's the nature of the gender violation?"
+      allowDefaultEmptySelection
    >
+      {
+         Object.values(GENDER_VIOLATION_NATURE)
+            .map(value => {
+               return <option key={value} value={value}>
+                  {capitalize.words(value).replaceAll('_', ' ')}
+               </option>
+            })
+      }
    </ChakraSelect>
 
    const details = <ChakraTextBox
@@ -45,12 +66,19 @@ export default function ViolationDetailsForm(props) {
       multiline
    />
 
-   const impact = <ChakraSelect
+   const impact = <ChakraAutoComplete
       id="txt-impact"
       label="How did the incident impact?"
-   >
-
-   </ChakraSelect>
+      freeSolo
+      items={
+         Object
+            .values(VIOLATION_IMPACT)
+            .map(value => ({ 
+               value, 
+               caption: capitalize.words(value).replaceAll('_', ' '),
+            }))
+      }
+   />
 
    // create form
    let form
