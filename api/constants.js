@@ -52,11 +52,47 @@ const PROVINCES = {
    MAT_NORTH: 'Matebeleland North',
 };
 
+
+const VIOLATION_NATURE = {
+   RAPE: 'rape',
+   ASSAULT: 'assault',
+   MALICIOUS_DAMAGE_TO_PROPERTY: 'malicious_damage_to_property',
+   UNLAWFUL_ARREST: 'unlawful_arrest',
+   UNLAWFUL_DETENTION: 'unlawful_detention',
+   ABDUCTION: 'abduction',
+   HOMICIDE: 'homicide',   
+}
+
+const GENDER_VIOLATION_NATURE = {
+   PHYSICAL_ASSAULT: 'physical_assault',
+   SEXUAL_HARASSMENT: 'sexual_harassment',
+   VERBAL_ABUSE: 'verbal_abuse',
+   EMOTIONAL_ABUSE: 'emotional_abuse',
+   INTIMIDATION: 'intimidation',
+   DISCRIMINATION: 'discrimination',
+}
+
+const RELATIONSHIP_TO_INCIDENT = {
+   VICTIM: 'victim',
+   WITNESS: 'witness',
+   ELECTION_OBSERVER: 'election_observer',
+}
+
+const VIOLATION_IMPACT = {
+   PHYSICAL_INJURY: 'physical_injury',
+   DEATH: 'death',
+   DESTITUTION: 'destitution',
+}
+
 module.exports = {
    CASE_SOURCES,
    CASE_STATUS,
    GENDER,
+   GENDER_VIOLATION_NATURE,
    MARITAL_STATUS,
    PROVINCES,
+   RELATIONSHIP_TO_INCIDENT,
    USER_ROLES,
+   VIOLATION_IMPACT,
+   VIOLATION_NATURE,
 }
