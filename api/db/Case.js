@@ -66,6 +66,7 @@ const schema = new mongoose.Schema({
    victim: {
       type: personalDetails,
       required: false,
+      _id: false,
    },
    violation: {
       date: {
