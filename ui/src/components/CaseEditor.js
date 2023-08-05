@@ -71,7 +71,7 @@ async function getFilesData(files) {
 const steps = [
    { title: 'Applicant', _description: 'Information about the person reporting the case' },
    { title: 'Victim', _description: 'Information about the victim' },
-   { title: 'Defendant', _description: 'Information about the person/insitution being accused' },
+   { title: 'Defendant', _description: 'Information about the person/institution being accused' },
    { title: 'Violation', _description: 'Details about the violation' },
    { title: 'More', }
 ]
@@ -185,7 +185,7 @@ class UnconnectedCaseEditor extends Component {
       const friend_phone = txtFriendNumber ? txtFriendNumber.value : undefined;
 
       /// institution, relationship to victim and reason for completing the form
-      const insitution = txtInsititution ? txtInsititution.value : undefined;
+      const institution_name = txtInsititution ? txtInsititution.value : undefined;
       const relationship_to_victim = txtRelationshipToVictim ? txtRelationshipToVictim.value : undefined;
       const why_completing_form_on_behalf = txtWhyCompletingOnBehalf ? txtWhyCompletingOnBehalf.value : undefined;
 
@@ -209,7 +209,8 @@ class UnconnectedCaseEditor extends Component {
          email,
          next_of_kin_phone,
          friend_phone,
-         insitution,relationship_to_victim,
+         institution_name,
+         relationship_to_victim,
          why_completing_form_on_behalf,
       }
 
@@ -253,7 +254,7 @@ class UnconnectedCaseEditor extends Component {
       const impact = txtImpact ? txtImpact.value : undefined; // impact
 
       return {
-         date,
+         date: [ date ],
          continuing,
          nature,
          nature_gender,
