@@ -1,8 +1,11 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton } from "@mui/material";
 import Component from "@xavisoft/react-component";
 import swal from "sweetalert";
 import { hideLoading, showLoading } from "../loading";
 import request from "../request";
+import { useState } from "react";
+import CollapsIcon from '@mui/icons-material/KeyboardArrowDown';
+import ExpandIcon from '@mui/icons-material/KeyboardArrowRight';
 
 
 function InfoPiece(props) {
@@ -15,7 +18,6 @@ function InfoPiece(props) {
       </span>
    </div>
 }
-
 
 function SectionTitle(props) {
    return <div className="text-gray-600 text-sm font-bold">
@@ -40,7 +42,6 @@ function Section(props) {
 
    </div>
 }
-
 
 function PersonalDetails(props) {
 
@@ -70,11 +71,11 @@ function PersonalDetails(props) {
                Object.keys(details)
                   .map(key => {
                      return <>
-                        <div className="uppercase text-gray-500 font-bold text-sm">
+                        <div className="uppercase text-gray-500 font-bold text-xs">
                            {key.replaceAll('_', ' ')}
                         </div>
 
-                        <div className="text-gray-500">
+                        <div className="text-gray-500 text-xs">
                            {details[key]}
                         </div>
                      </>
@@ -83,6 +84,45 @@ function PersonalDetails(props) {
          </div>
       </div>
    </div>
+}
+
+function Question(props) {
+
+   const [ expanded, setExpanded ] = useState(false);
+   const Icon = expanded ? CollapsIcon : ExpandIcon;
+
+   let answer;
+
+   if (expanded) {
+      answer = <p className="text-sm">
+         {props.answer}
+      </p>
+   }
+
+
+   return <div className="grid grid-cols-[auto,1fr]">
+      <div>
+         <IconButton onClick={() => setExpanded(!expanded)}>
+            <Icon />
+         </IconButton>
+      </div>
+      <div className="mt-[10px]">
+         <div className="text-sm font-bold">
+            {props.question}
+         </div>
+
+         {answer}
+      </div>
+   </div>
+}
+
+
+function Tag(props) {
+   return <span 
+      className={`uppercase text-gray-600 bg-gray-100 text-xs px-3 py-1 font-bold rounded-lg inline-block ${props.className}`}
+   >
+      {props.children}
+   </span>
 }
 
 
@@ -191,17 +231,49 @@ export default class Case extends Component {
             />
          }
 
+         let violationImpact;
+
+         if (violation.impact) {
+            violationImpact = <InfoPiece
+               label="IMPACT"
+               info={violation.impact}
+            />
+         }
+
+         const violationNatures = [];
+
+         if (violation.nature) {
+            violationNatures.push(
+               <Tag className="bg-orange-600 text-white">
+                  {violation.nature.replace('_', ' ')}
+               </Tag>
+            );
+         }
+
+         if (violation.nature_gender) {
+            violationNatures.push(
+               <Tag className="bg-orange-600 text-white">
+                  {violation.nature_gender.replace('_', ' ')}
+               </Tag>
+            );
+         }
+
          const violationSectionBody = <>
+         
             <p className="text-sm my-3 text-gray-600 mb-3">
                {violation.details}
             </p>
 
+            <div className="my-3">
+               {violationNatures}
+            </div>
 
             {witnessDetails}
 
             <div className="my-3">
                {violationDates}
                {violationLocation}
+               {violationImpact}
 
                <InfoPiece
                   label="Still continuing"
@@ -227,8 +299,8 @@ export default class Case extends Component {
             let actionsJSX;
 
             if (actions) {
-               actionsJSX = <div className="grid grid-cols-[auto,1fr]">
-                  <span className="text-gray-600 font-bold pr-3">
+               actionsJSX = <div className="grid grid-cols-[auto,1fr] mt-3">
+                  <span className="text-gray-600 font-bold pr-3 text-xs">
                      ACTIONS:
                   </span>
                   <p className="text-xs">
@@ -240,24 +312,24 @@ export default class Case extends Component {
             let whyReportingToUsJSX;
 
             if (why_reporting_to_us_as_well) {
-               whyReportingToUsJSX = <>
-                  <div className="text-lg font-bold text-gray-600">
+               whyReportingToUsJSX = <div className="mt-3">
+                  <div className="text-xs font-bold text-gray-600">
                      WHY REPORTING TO US AS WELL
                   </div>
-                  <p className="text-sm">
+                  <p className="text-xs">
                      {why_reporting_to_us_as_well}
                   </p>
-               </>
+               </div>
             }
 
-            const body = <>
+            const body = <div className="mt-2">
                <p className="text-sm">
                   {details}
                </p>
 
                {actionsJSX}
                {whyReportingToUsJSX}
-            </>
+            </div>
 
             otherEntityReportedToSection = <Section
                title="OTHER PARTY REPORTED TO"
@@ -284,6 +356,61 @@ export default class Case extends Component {
             </Section>
          }
 
+         // questions sections
+         const questions = [];
+
+         const {
+            why_violation_is_important_to_our_mandate,
+            who_referred_you_to_us,
+            expectations_from_us,
+            more_assistance_required,
+         } = this.state.case_;
+
+         if (why_violation_is_important_to_our_mandate) {
+            questions.push(
+               <Question
+                  question="Why is the violation mentioned a barrier to gender equality?"
+                  answer={why_violation_is_important_to_our_mandate}
+               />
+            );
+         }
+
+         if (who_referred_you_to_us) {
+            questions.push(
+               <Question
+                  question="How did you get to know about ZGC?"
+                  answer={who_referred_you_to_us}
+               />
+            );
+         }
+
+         if (expectations_from_us) {
+            questions.push(
+               <Question
+                  question="What remedy are you expecting to get from the ZGC in this case?"
+                  answer={expectations_from_us}
+               />
+            );
+         }
+
+         if (more_assistance_required) {
+            questions.push(
+               <Question
+                  question="What other assistance/services do you need?"
+                  answer={more_assistance_required}
+               />
+            );
+         }
+
+         let questionsSection;
+
+         if (questions.length > 0) {
+            questionsSection = <Section
+               title="QUESTIONS"
+               body={questions}
+            />
+         }
+
          dialogContent = <div>
 
             <h1 className="text-3xl text-gray-700 font-extrabold">
@@ -298,13 +425,20 @@ export default class Case extends Component {
                   {this.state.case_._id}
                </span>
 
-               <span className="text-white bg-orange-600 text-xs px-3 py-1 font-bold rounded-lg inline-block ml-5">
+               <Tag className="text-white bg-orange-600 ml-5">
                   {this.state.case_.status.replaceAll('_', ' ')}
-               </span>
+               </Tag>
 
-               <span className="text-gray-600 bg-gray-100 text-xs px-3 py-1 font-bold rounded-lg inline-block ml-5">
+               <Tag className="ml-5">
                   {this.state.case_.source.replaceAll('_', ' ')}
-               </span>
+               </Tag>
+
+               <div className="ml-5 text-sm text-gray-600 font-bold">
+                  FILED @ <Tag>
+                  {this.state.case_.createdAt}
+               </Tag>
+               </div>
+               
             </div>
 
             <div className="grid grid-cols-2 gap-6 mt-5">
@@ -320,6 +454,7 @@ export default class Case extends Component {
             {otherEntityReportedToSection}
             {lawyerDetailsSection}
             {languageSection}
+            {questionsSection}
 
 
          </div>
