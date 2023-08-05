@@ -208,6 +208,7 @@ cases.get('/', async (req, res) => {
          .select("_id title applicant.name applicant.surname defendant.name defendant.surname victim.name victim.surname violation.details status ")
          .skip(offset)
          .limit(limit)
+         .sort({ createdAt: -1 })
          .populate("recorded_by", "_id name surname")
          .populate("case_officer", "_id name surname")
 
