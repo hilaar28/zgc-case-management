@@ -9,7 +9,7 @@ export default function ChakraSelect(props) {
 
    if (props.allowDefaultEmptySelection) {
       defaultSelection = <option value="" disabled selected>
-         {props.placeholder || "Select option"}
+         {props.placeholder || ""}
       </option>
    }
    

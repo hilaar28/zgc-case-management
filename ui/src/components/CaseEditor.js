@@ -22,6 +22,9 @@ import { Case as CaseSchema } from '../reducer/schema';
 
 function removeEmptyProperties(data) {
 
+   if (!data)
+      return;
+
    if (Array.isArray(data)) {
       data.forEach(item => {
          removeEmptyProperties(item);
@@ -36,7 +39,7 @@ function removeEmptyProperties(data) {
    Object.keys(data).forEach(key => {
       const value = data[key];
       
-      if (!value)
+      if (value === undefined || value === '' || value === null)
          delete data[key];
       else
          removeEmptyProperties(value);
@@ -124,11 +127,11 @@ class UnconnectedCaseEditor extends Component {
       const txtMobile = document.getElementById('txt-mobile');
       const txtFax = document.getElementById('txt-fax');
       const txtEmail = document.getElementById('txt-email');
-      const txtNextOfKinNumber = document.getElementById('txt-next-of-kin-number');
-      const txtFriendNumber = document.getElementById('txt-friend-number');
+      const txtNextOfKinNumber = document.getElementById('txt-next-of-kin-phone');
+      const txtFriendNumber = document.getElementById('txt-friend-phone');
       const txtInsititution = document.getElementById('txt-institution');
       const txtRelationshipToVictim = document.getElementById('txt-relationship-to-victim');
-      const txtWhyCompletingOnBehalf = document.getElementById('txt-why-completing-on-behalf');
+      const txtWhyCompletingOnBehalf = document.getElementById('txt-why-completing-form-on-behalf');
 
       /// name and surname
       const name = txtName.value;
@@ -235,7 +238,7 @@ class UnconnectedCaseEditor extends Component {
       const date = txtDate ? txtDate.value : undefined;
       
       /// continuing
-      const continuing = txtContinuing ? txtContinuing.value : undefined;
+      const continuing = txtContinuing ? txtContinuing.checked : undefined;
 
       /// nature
       const nature = txtNature ? txtNature.value : undefined;
@@ -253,7 +256,7 @@ class UnconnectedCaseEditor extends Component {
       const witness_details = txtWitnessDetails ? txtWitnessDetails.value : undefined; // witness details
       const impact = txtImpact ? txtImpact.value : undefined; // impact
 
-      return {
+      const data = {
          date: [ date ],
          continuing,
          nature,
@@ -263,12 +266,14 @@ class UnconnectedCaseEditor extends Component {
          witness_details,
          impact,
       }
+
+      return data;
    }
 
    retrieveMoreDetails = async () => {
 
       // extract inputs
-      const txtWhyIsViolationImportantToOurMandate = document.getElementById('txt-why-violation-isimportant-to-our-mandate');
+      const txtWhyIsViolationImportantToOurMandate = document.getElementById('txt-why-violation-is-important-to-our-mandate');
       const txtExpectationsFromUs = document.getElementById('txt-expectations-from-us');
       const txtLawyerDetails = document.getElementById('txt-lawyer-details');
       const txtLanguage = document.getElementById('txt-language');
@@ -309,7 +314,7 @@ class UnconnectedCaseEditor extends Component {
          }
       }
 
-      return {
+      const data = {
          why_violation_is_important_to_our_mandate,
          expectations_from_us,
          lawyer_details,
@@ -319,6 +324,9 @@ class UnconnectedCaseEditor extends Component {
          more_assistance_required,
          other_entity_reported_to,
       }
+
+      return data;
+
    }
 
    next = async () => {
@@ -372,7 +380,7 @@ class UnconnectedCaseEditor extends Component {
                   const data = await this.retrieveMoreDetails();
                   
                   Object.keys(data).forEach(key => {
-                     update[key] = data.key;
+                     update[key] = data[key];
                   });
 
                   break;
@@ -391,7 +399,7 @@ class UnconnectedCaseEditor extends Component {
       const currentStage = this.state.stage
       await this.updateState(update);
 
-      // sumbit case
+      // submit case
       if (currentStage === steps.length) {
          const {
             applicant,
@@ -407,6 +415,8 @@ class UnconnectedCaseEditor extends Component {
             expectations_from_us,
             lawyer_details,
             province,
+            who_referred_you_to_us,
+            other_entity_reported_to,
          } = this.state;
 
          const data =  {
@@ -423,9 +433,14 @@ class UnconnectedCaseEditor extends Component {
             language,
             expectations_from_us,
             lawyer_details,
+            who_referred_you_to_us,
+            other_entity_reported_to,
          }
 
+         console.log(JSON.stringify(data, 0, 3))
          removeEmptyProperties(data);
+
+         console.log(data);
 
          try {
             showLoading();
@@ -437,9 +452,9 @@ class UnconnectedCaseEditor extends Component {
             actions.addEntity(CaseSchema, data);
             this.resetEditor();
             successToast('Case successfully added');
+            
 
          } catch (err) {
-            console.log(data);
             swal(String(err));
          } finally {
             hideLoading();
@@ -643,10 +658,13 @@ class UnconnectedCaseEditor extends Component {
 
                <div className='text-right shadow-xl px-8 py-4 border-[1px] border-solid'>
                   <Button onClick={this.next} className='bg-orange-600 text-white'>
-                     NEXT
+                     {this.state.stage === steps.length ? 'SUBMIT' : 'NEXT'}
                   </Button>
 
-                  <Button onClick={actions.closeCaseEditor}>
+                  <Button 
+                     onClick={actions.closeCaseEditor}
+                     className='bg-transparent text-[#1976D2]'
+                  >
                      CLOSE
                   </Button>
                </div>

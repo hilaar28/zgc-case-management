@@ -36,6 +36,7 @@ export default class PersonalDetailsForm extends Component {
       const gender = <ChakraSelect
          id='txt-gender'
          label="Gender"
+         allowDefaultEmptySelection
       >
          {
             Object.keys(GENDER).map(key => {
@@ -67,6 +68,7 @@ export default class PersonalDetailsForm extends Component {
       const maritalStatus = <ChakraSelect
          id='txt-marital-status'
          label="Marital Status"
+         allowDefaultEmptySelection
       >
          {
             Object.values(MARITAL_STATUS).map(status => {
@@ -98,32 +100,38 @@ export default class PersonalDetailsForm extends Component {
       const telephone = <ChakraTextBox
          id='txt-telephone'
          label="Telephone Number"
+         type="number"
       />
 
       const mobile = <ChakraTextBox
          id='txt-mobile'
          label="Mobile Number"
+         type="number"
       />
 
       const fax = <ChakraTextBox
          id='txt-fax'
          label="Fax Number"
+         type="number"
       />
 
       const email =<ChakraTextBox
          id='txt-email'
          label="Email address"
+         type="email"
       />
 
       const nextOfKinPhone = <ChakraTextBox
          id='txt-next-of-kin-phone'
          label="Next of kin phone number"
+         type="number"
       />
 
       const friendPhone = <ChakraTextBox
          id='txt-friend-phone'
          label="Friend phone number"
          size='small'
+         type="number"
       />
 
 

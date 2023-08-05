@@ -12,6 +12,7 @@ export default function ViolationDetailsForm(props) {
    const date = <ChakraTextBox
       id="txt-date"
       label="When did the violation happen?"
+      type="date"
    />
 
    const continuing = <ChakraCheckbox
@@ -93,6 +94,7 @@ export default function ViolationDetailsForm(props) {
    } else {
       form = <div className="grid grid-cols-2 gap-6">
          {date}
+         {natureGender}
          {continuing}
          {location}
          {witnessDetails}
