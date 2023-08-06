@@ -8,7 +8,7 @@ import { normalize } from 'normalizr';
 import { Case as CaseSchema } from '../reducer/schema';
 import actions from '../actions';
 import CaseThumbnail from '../components/CaseThumbnail';
-import { Fab, IconButton, MenuItem, Pagination, Select } from '@mui/material';
+import { Button, Fab, IconButton, MenuItem, Pagination, Select } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { CASE_STATUS } from '../backend-constants';
 import capitalize from 'capitalize';
@@ -52,19 +52,37 @@ class UnconnectedCases extends Page {
 
    componentDidMount() {
       super.componentDidMount();
-      this.fetchCases();
+
+      if (!this.props.cases)
+         this.fetchCases();
    }
 
    _render() {
 
       let cases;
 
-      if (this.props.cases.length > 0) {
-         cases = this.props.cases.map(case_ => <CaseThumbnail {...case_} />);
+      if (this.props.cases) {
+
+         if (this.props.cases.length > 0) {
+            cases = this.props.cases.map(case_ => <CaseThumbnail {...case_} />);
+         } else {
+            cases = <p className='text-gray-600 text-2xl px-4'>
+               No cases yet.
+            </p>
+         }
+
       } else {
-         cases = <p className='text-gray-600 text-2xl px-4'>
-            No cases yet.
-         </p>
+         cases = <div className='h-full vh-align'>
+            <div className='w-[300px]'>
+               <p className='text-lg text-gray-600'>
+                  Failed to load cases.
+               </p>
+
+               <Button onClick={this.fetchCases}>
+                  RETRY
+               </Button>
+            </div>
+         </div>
       }
 
       return <div className='page-size grid grid-rows-[1fr,auto]'>
@@ -123,8 +141,11 @@ class UnconnectedCases extends Page {
 }
 
 const mapStateToProps =(state) => {
+
    let { cases } = state.entities;
-   cases = Object.values(cases)
+
+   if (cases)
+      cases = Object.values(cases)
 
    return { cases }
 }

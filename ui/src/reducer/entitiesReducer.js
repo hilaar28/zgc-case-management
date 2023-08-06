@@ -4,6 +4,9 @@ import { EntityUpdate, schemaList } from "./schema";
 
 function deepCopy(object) {
 
+   if (!object)
+      return object;
+
    if (Array.isArray(object))
       return object.map(item => deepCopy(item));
 
@@ -62,7 +65,7 @@ function updateReducer(entities, payload) {
 
 function createEntityReducer(Entity) {
 
-   return function entityReducer(entities={}, action) {
+   return function entityReducer(entities=null, action) {
 
       entities = deepCopy(entities);
 

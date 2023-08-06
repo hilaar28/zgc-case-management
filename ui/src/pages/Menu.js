@@ -83,7 +83,8 @@ class UnconnectedMenu extends Page {
 
       super.componentDidMount();
 
-      this.fetchUserData();
+      if (!this.props.user)
+         this.fetchUserData();
 
    }
 

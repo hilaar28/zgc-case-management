@@ -135,14 +135,16 @@ class UnconnectedUsers extends Page {
 
    componentDidMount() {
       super.componentDidMount();
-      this.fetchUsers();
+
+      if (!this.props.user)
+         this.fetchUsers();
    }
 
    _render() {
       
       let jsx;
 
-      if (this.props.users.length) {
+      if (this.props.users) {
 
          let userEditor;
 
@@ -155,7 +157,6 @@ class UnconnectedUsers extends Page {
          const ownUserId = this.props.user ? this.props.user._id : '';
 
          jsx = <>
-            <h1 className="text-3xl font-extrabold">USERS</h1>
 
             <Table>
 
@@ -253,9 +254,11 @@ class UnconnectedUsers extends Page {
 const mapStateToProps = state => {
 
    let { users } = state.entities;
-   users = Object.values(users);
-   const user = state.user;
 
+   if (users)
+      users = Object.values(users);
+
+   const user = state.user;
    return { users, user };
 
 }
