@@ -13,6 +13,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { requestConfirmation } from '../utils'
 import CloseIcon from '@mui/icons-material/Close';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import IosShareIcon from '@mui/icons-material/IosShare';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { CASE_STATUS } from "../backend-constants";
+import actions from "../actions";
+import { Case as CaseSchema } from "../reducer/schema";
+import { errorToast } from "../toast";
 
 
 function InfoPiece(props) {
@@ -240,13 +247,46 @@ export default class Case extends Component {
          const case_ = res.data;
 
          this.updateState({ case_ });
-         console.log(case_)
 
       } catch (err) {
          swal(String(err));
       } finally {
          hideLoading();
       }
+   }
+
+   reject = async () => {
+
+      const question = "Are you sure to reject this case?";
+      const confirm = await requestConfirmation({ question });
+
+      if (!confirm)
+         return;
+
+      try {
+
+         showLoading();
+
+         const update = { status: CASE_STATUS.REJECTED };
+         await request.post(`/api/cases/${this.props._id}/status`, update);
+         
+         const case_ = { ...this.state.case_, ...update };
+         this.updateState({ case_ });
+         actions.updateEntity(CaseSchema, this.props._id, update)
+
+      } catch (err) {
+         swal(String(err));
+      } finally {
+         hideLoading();
+      }
+   }
+
+   refer = async () => {
+      errorToast('Not yet implemented.')
+   }
+
+   assign = async () => {
+      errorToast('Not yet implemented.')
    }
 
    componentDidMount() {
@@ -256,20 +296,60 @@ export default class Case extends Component {
    render() {
 
       let dialogContent;
-      let addUpdateButton;
+      
+      const actionButtons = [];
 
       if (this.state.case_) {
 
-         // add update button
-         addUpdateButton = <Button 
-            variant="contained" 
-            size="small" 
-            startIcon={<AddIcon />} 
-            className="bg-orange-600 rounded-full px-6 mx-3 my-2"
-            onClick={() => this.openUpdateEditor('add')}
-         >
-            UPDATE
-         </Button>
+         // action buttons
+         /// add update button
+         if (this.state.case_ === CASE_STATUS.IN_PROGRESS) {
+            actionButtons.push(<Button 
+               variant="contained" 
+               size="small" 
+               startIcon={<AddIcon />} 
+               className="bg-orange-600 rounded-full px-6"
+               onClick={() => this.openUpdateEditor('add')}
+            >
+               UPDATE
+            </Button>);
+         }
+
+         /// reject, assign and refer buttons
+         if (this.state.case_.status === CASE_STATUS.NOT_ASSESSED) {
+            // reject
+            actionButtons.push(<Button 
+               variant="outlined" 
+               size="small" 
+               startIcon={<ThumbDownIcon />} 
+               className="text-orange-600 border-current rounded-full px-6"
+               onClick={this.reject}
+            >
+               REJECT
+            </Button>);
+
+            // assign
+            actionButtons.push(<Button 
+               variant="contained" 
+               size="small" 
+               startIcon={<PersonAddIcon />} 
+               className="bg-orange-600 border-current rounded-full px-6"
+               onClick={this.assign}
+            >
+               ASSIGN
+            </Button>);
+
+            // refer
+            actionButtons.push(<Button 
+               variant="outlined" 
+               size="small" 
+               startIcon={<IosShareIcon />} 
+               className="text-orange-600 border-current rounded-full px-6"
+               onClick={this.refer}
+            >
+               REFER
+            </Button>);
+         }
 
          // personal details
          const { victim, applicant, defendant } = this.state.case_;
@@ -640,7 +720,15 @@ export default class Case extends Component {
          </DialogContent>
 
          <DialogActions>
-            {addUpdateButton}
+            <div className="my-2">
+               {
+                  actionButtons.map(btn => {
+                     return <div className="inline-block mx-2">
+                        {btn}
+                     </div>
+                  })
+               }
+            </div>
          </DialogActions>
       </Dialog>
    }
