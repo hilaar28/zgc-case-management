@@ -136,7 +136,7 @@ class UnconnectedUsers extends Page {
    componentDidMount() {
       super.componentDidMount();
 
-      if (!this.props.user)
+      if (!this.props.users)
          this.fetchUsers();
    }
 
