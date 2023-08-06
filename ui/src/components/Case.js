@@ -6,6 +6,8 @@ import request from "../request";
 import { useState } from "react";
 import CollapsIcon from '@mui/icons-material/KeyboardArrowDown';
 import ExpandIcon from '@mui/icons-material/KeyboardArrowRight';
+import AddIcon from '@mui/icons-material/Add';
+import CaseUpdateEditor from "./CaseUpdateEditor";
 
 
 function InfoPiece(props) {
@@ -130,6 +132,43 @@ export default class Case extends Component {
 
    state = {
       case_: null,
+      updateEditorMode: null,
+      updateBeingUpdated: null,
+   }
+
+   openUpdateEditor = (updateEditorMode) => {
+      return this.updateState({ updateEditorMode })
+   }
+
+   closeUpdateEditor = (data) => {
+
+      const updates = {
+         updateEditorMode: null,
+         updateBeingUpdated: null,
+      }
+
+      if (data) {
+         
+         let caseUpdates;
+         if (this.state.updateEditorMode === 'add') {
+            caseUpdates = [ ...this.state.case_.updates, data];
+         } else {
+            const updateId = this.state.updateBeingUpdated._id;
+
+            caseUpdates = this.state.case_.updates.map(update => {
+               if (update._id === updateId) {
+                  return { ...update, ...data }
+               }
+
+               return update;
+            });
+         }
+
+
+         updates.case_ = { ...this.state.case_, updates: caseUpdates }
+      }
+
+      return this.updateState(updates)
    }
 
    fetchData = async () => {
@@ -411,6 +450,19 @@ export default class Case extends Component {
             />
          }
 
+         // update editor modal
+         let updateEditorModal;
+
+         if (this.state.updateEditorMode) {
+            updateEditorModal = <CaseUpdateEditor
+               mode={this.state.updateEditorMode}
+               caseId={this.props._id}
+               update={this.state.updateBeingUpdated}
+               close={this.closeUpdateEditor}
+            />
+         }
+
+         // dialog content
          dialogContent = <div>
 
             <h1 className="text-3xl text-gray-700 font-extrabold">
@@ -457,6 +509,9 @@ export default class Case extends Component {
             {questionsSection}
 
 
+            {updateEditorModal}
+
+
          </div>
       } else {
          dialogContent = <div className="h-full vh-align">
@@ -483,6 +538,16 @@ export default class Case extends Component {
          </DialogContent>
 
          <DialogActions>
+            <Button 
+               variant="contained" 
+               size="small" 
+               startIcon={<AddIcon />} 
+               // className="bg-orange-600"
+               onClick={() => this.openUpdateEditor('add')}
+               disabled={!this.state.case_}
+            >
+               UPDATE
+            </Button>
             <Button onClick={this.props.close}>
                CLOSE
             </Button>
