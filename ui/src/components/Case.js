@@ -10,6 +10,8 @@ import AddIcon from '@mui/icons-material/Add';
 import CaseUpdateEditor from "./CaseUpdateEditor";
 import TimeAgo from 'react-timeago';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { requestConfirmation } from '../utils'
 
 
 function InfoPiece(props) {
@@ -147,6 +149,9 @@ function CaseUpdate(props) {
             <IconButton className="text-sm" onClick={props.edit}>
                <EditIcon fontSize="inherit" />
             </IconButton>
+            <IconButton className="text-sm" onClick={props.delete} color="error">
+               <DeleteIcon fontSize="inherit" />
+            </IconButton>
          </div>
       </div>
 
@@ -175,8 +180,9 @@ export default class Case extends Component {
       }
 
       if (data) {
-         
+
          let caseUpdates;
+
          if (this.state.updateEditorMode === 'add') {
             caseUpdates = [ ...this.state.case_.updates, data];
          } else {
@@ -196,6 +202,32 @@ export default class Case extends Component {
       }
 
       return this.updateState(updates)
+   }
+
+   deleteCaseUpdate = async (_id) => {
+
+      const question = 'Are you sure?';
+      const confirm = await requestConfirmation({ question });
+
+      if (!confirm)
+         return;
+
+      try {
+
+         showLoading();
+
+         await request.delete(`/api/cases/${this.props._id}/updates/${_id}`);
+         
+         const updates = this.state.case_.updates.filter(update => update._id !== _id);
+         const case_ = { ...this.state.case_, updates };
+
+         this.updateState({ case_ });
+
+      } catch (err) {
+         swal(String(err));
+      } finally {
+         hideLoading();
+      } 
    }
 
    fetchData = async () => {
@@ -485,6 +517,7 @@ export default class Case extends Component {
                return <CaseUpdate 
                   {...update}
                   edit={() => this.openUpdateEditor('edit', update)}
+                  delete={() => this.deleteCaseUpdate(update._id)}
                />
             });
          } else {
