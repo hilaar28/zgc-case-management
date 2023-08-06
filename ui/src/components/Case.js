@@ -20,6 +20,7 @@ import { CASE_STATUS } from "../backend-constants";
 import actions from "../actions";
 import { Case as CaseSchema } from "../reducer/schema";
 import { errorToast } from "../toast";
+import ReferCase from "./ReferCase";
 
 
 function InfoPiece(props) {
@@ -173,6 +174,21 @@ export default class Case extends Component {
       case_: null,
       updateEditorMode: null,
       updateBeingUpdated: null,
+      caseReferralModalOpen: false,
+   }
+
+   openCaseReferralModal = () => {
+      return this.updateState({ caseReferralModalOpen: true })
+   }
+
+   closeCaseReferralModal = (data) => {
+      const updates = { caseReferralModalOpen: false };
+
+      if (data) {
+         updates.case_ = { ...this.state.case_, ...data };
+      }
+
+      return this.updateState(updates)
    }
 
    openUpdateEditor = (updateEditorMode, updateBeingUpdated=null) => {
@@ -282,7 +298,7 @@ export default class Case extends Component {
    }
 
    refer = async () => {
-      errorToast('Not yet implemented.')
+      this.openCaseReferralModal();
    }
 
    assign = async () => {
@@ -370,6 +386,17 @@ export default class Case extends Component {
             victimDetails = <PersonalDetails
                title="VICTIM"
                details={victim}
+            />
+         }
+
+         // referred to section
+         const { referred_to } = this.state.case_;
+         let referredToSection;
+
+         if (referred_to) {
+            referredToSection = <Section
+               title="REFERRED TO"
+               body={referred_to}
             />
          }
 
@@ -635,6 +662,16 @@ export default class Case extends Component {
             />
          }
 
+         // case referral modal
+         let caseReferralModal;
+
+         if (this.state.caseReferralModalOpen) {
+            caseReferralModal = <ReferCase
+               caseId={this.props._id}
+               close={this.closeCaseReferralModal}
+            />
+         }
+
          // dialog content
          dialogContent = <div>
 
@@ -675,13 +712,16 @@ export default class Case extends Component {
 
             <Divider className="my-5" />
 
+            {referredToSection}
             {violationSection}
             {otherEntityReportedToSection}
             {lawyerDetailsSection}
             {languageSection}
             {questionsSection}
             {caseUpdatesSection}
+
             {updateEditorModal}
+            {caseReferralModal}
 
 
          </div>
