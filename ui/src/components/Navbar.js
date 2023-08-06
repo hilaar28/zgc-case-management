@@ -190,6 +190,7 @@ const routeToPageTitleMap = {
    '/menu': 'MENU',
    '/users': 'MANAGE USERS',
    '/cases': 'MANAGE CASES',
+   '/reports': 'REPORTS',
 };
 
 

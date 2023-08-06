@@ -34,6 +34,7 @@ import Users from './pages/Users';
 import CaseEditor from './components/CaseEditor';
 import NotFound from './pages/NotFound';
 import Cases from './pages/Cases';
+import Reports from './pages/Reports';
 
 
 Component.prototype.updateState = function (updates={}) {
@@ -76,6 +77,7 @@ function App() {
 			<Route path="/menu" component={Menu} />
 			<Route path="/users" component={Users} />
 			<Route path="/cases" component={Cases} />
+			<Route path="/reports" component={Reports} />
 
 			<Route path="/test" component={Test} />
 
