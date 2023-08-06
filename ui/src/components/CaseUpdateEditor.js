@@ -59,6 +59,16 @@ export default class CaseUpdateEditor extends Component {
       }
    }
 
+   componentDidMount() {
+
+      if (this.props.mode === 'edit') {
+         setTimeout(() => {
+            const { description } = this.props.update;
+            document.getElementById('txt-update').value = description;
+         }, 100)
+      }
+   }
+
    render() {
 
       const shrink = this.props.mode === 'edit' ? true : undefined;

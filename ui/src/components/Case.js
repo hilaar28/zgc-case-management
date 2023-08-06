@@ -8,6 +8,8 @@ import CollapsIcon from '@mui/icons-material/KeyboardArrowDown';
 import ExpandIcon from '@mui/icons-material/KeyboardArrowRight';
 import AddIcon from '@mui/icons-material/Add';
 import CaseUpdateEditor from "./CaseUpdateEditor";
+import TimeAgo from 'react-timeago';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 function InfoPiece(props) {
@@ -118,13 +120,38 @@ function Question(props) {
    </div>
 }
 
-
 function Tag(props) {
    return <span 
       className={`uppercase text-gray-600 bg-gray-100 text-xs px-3 py-1 font-bold rounded-lg inline-block ${props.className}`}
    >
       {props.children}
    </span>
+}
+
+function CaseUpdate(props) {
+
+   return <div className="my-4 mx-3">
+      <p className="text-xs mb-2">
+         {props.description}
+      </p>
+
+      <div className="grid grid-cols-[auto,1fr]">
+
+         <div>
+            <Tag>
+               <TimeAgo date={props.createdAt} />
+            </Tag>
+         </div>
+            
+         <div className="text-right pr-3">
+            <IconButton className="text-sm" onClick={props.edit}>
+               <EditIcon fontSize="inherit" />
+            </IconButton>
+         </div>
+      </div>
+
+      <Divider className="mt-2" />
+   </div>
 }
 
 
@@ -136,8 +163,8 @@ export default class Case extends Component {
       updateBeingUpdated: null,
    }
 
-   openUpdateEditor = (updateEditorMode) => {
-      return this.updateState({ updateEditorMode })
+   openUpdateEditor = (updateEditorMode, updateBeingUpdated=null) => {
+      return this.updateState({ updateEditorMode, updateBeingUpdated })
    }
 
    closeUpdateEditor = (data) => {
@@ -450,6 +477,27 @@ export default class Case extends Component {
             />
          }
 
+         // updates
+         let caseUpdatesSectionBody;
+
+         if (this.state.case_.updates.length > 0) {
+            caseUpdatesSectionBody = this.state.case_.updates.map(update => {
+               return <CaseUpdate 
+                  {...update}
+                  edit={() => this.openUpdateEditor('edit', update)}
+               />
+            });
+         } else {
+            caseUpdatesSectionBody = <p className="text-sm text-gray-600">
+               No updates yet
+            </p>
+         }
+
+         const caseUpdatesSection = <Section
+            title="UPDATES"
+            body={caseUpdatesSectionBody}
+         />
+
          // update editor modal
          let updateEditorModal;
 
@@ -507,8 +555,7 @@ export default class Case extends Component {
             {lawyerDetailsSection}
             {languageSection}
             {questionsSection}
-
-
+            {caseUpdatesSection}
             {updateEditorModal}
 
 
