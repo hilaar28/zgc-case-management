@@ -12,6 +12,7 @@ import TimeAgo from 'react-timeago';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { requestConfirmation } from '../utils'
+import CloseIcon from '@mui/icons-material/Close';
 
 
 function InfoPiece(props) {
@@ -132,7 +133,7 @@ function Tag(props) {
 
 function CaseUpdate(props) {
 
-   return <div className="my-4 mx-3">
+   return <div className="my-4 mx-3 bg-gray-50 shadow p-3">
       <p className="text-xs mb-2">
          {props.description}
       </p>
@@ -155,7 +156,6 @@ function CaseUpdate(props) {
          </div>
       </div>
 
-      <Divider className="mt-2" />
    </div>
 }
 
@@ -256,8 +256,20 @@ export default class Case extends Component {
    render() {
 
       let dialogContent;
+      let addUpdateButton;
 
       if (this.state.case_) {
+
+         // add update button
+         addUpdateButton = <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<AddIcon />} 
+            className="bg-orange-600 rounded-full px-6 mx-3 my-2"
+            onClick={() => this.openUpdateEditor('add')}
+         >
+            UPDATE
+         </Button>
 
          // personal details
          const { victim, applicant, defendant } = this.state.case_;
@@ -610,7 +622,17 @@ export default class Case extends Component {
       return <Dialog open fullScreen>
 
          <DialogTitle>
-            <b>Case #</b><span className="text-gray-600">{this.props._id}</span>
+            <div className="grid grid-cols-[1fr,auto]">
+               <div>
+                  <b>Case #</b><span className="text-gray-600">{this.props._id}</span>
+               </div>
+
+               <div>
+                  <IconButton onClick={this.props.close}>
+                     <CloseIcon fontSize="large" />
+                  </IconButton>
+               </div>
+            </div>
          </DialogTitle>
 
          <DialogContent dividers>
@@ -618,19 +640,7 @@ export default class Case extends Component {
          </DialogContent>
 
          <DialogActions>
-            <Button 
-               variant="contained" 
-               size="small" 
-               startIcon={<AddIcon />} 
-               // className="bg-orange-600"
-               onClick={() => this.openUpdateEditor('add')}
-               disabled={!this.state.case_}
-            >
-               UPDATE
-            </Button>
-            <Button onClick={this.props.close}>
-               CLOSE
-            </Button>
+            {addUpdateButton}
          </DialogActions>
       </Dialog>
    }

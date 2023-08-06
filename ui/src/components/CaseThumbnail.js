@@ -1,9 +1,9 @@
 import { useState } from "react";
 import RightIcon from '@mui/icons-material/ChevronRight';
 import DownIcon from '@mui/icons-material/ExpandMore';
-import { Button, Chip } from "@mui/material";
+import OpenIcon from '@mui/icons-material/Launch';
+import { Chip } from "@mui/material";
 import { Divider, IconButton } from "@mui/material";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Case from "./Case";
 
 
@@ -61,11 +61,11 @@ export default function CaseThumbnail(props) {
 
       expandedJSX = <div className="grid grid-cols-[1fr,auto]">
          <div>
-            <p className="text-xs text-gray-600 my-2">
+            <p className="text-xs text-gray-600 my-2 mx-1">
                {props.violation.details}
             </p>
 
-            <div className="mt-3">
+            <div className="mt-3 mx-1">
 
                {victimInfoPiece}
 
@@ -90,15 +90,13 @@ export default function CaseThumbnail(props) {
          </div>
 
          <div className="flex items-end">
-            <Button 
-               variant="contained" 
-               className="bg-orange-600" 
-               endIcon={<ArrowForwardIcon />}
-               size="small"
+            <IconButton 
+               className="text-orange-600"
+               size="large"
                onClick={() => setShowingFullCase(true)}
             >
-               MORE
-            </Button>
+               <OpenIcon />
+            </IconButton>
 
             {fullCase}
             
@@ -109,7 +107,12 @@ export default function CaseThumbnail(props) {
    return <div className="py-4 px-3">
       <div className="grid grid-cols-[1fr,auto]">
          <div>
-            <div>
+
+            <div className="text-gray-700 text-xl font-bold pl-[3px]">
+               {props.title}
+            </div>
+
+            <div className="mt-2">
                <span className="text-gray-600 text-sm inline-block ml-1 mr-4">
                   {props._id}
                </span>
@@ -121,9 +124,6 @@ export default function CaseThumbnail(props) {
                />
             </div>
 
-            <div className="text-gray-700 text-xl font-bold pl-[3px]">
-               {props.title}
-            </div>
          </div>
 
          <div className="h-full v-align">
