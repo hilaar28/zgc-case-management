@@ -17,6 +17,7 @@ import MenuSelect from "../components/MenuSelect";
 import { USER_ROLES } from "../backend-constants";
 import Component from "@xavisoft/react-component";
 import Editable from "../components/Editable";
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 
 class RoleSelector extends Component {
@@ -143,10 +144,19 @@ class UnconnectedUsers extends Page {
    _render() {
       
       let jsx;
+      let addUserButton;
 
       if (this.props.users) {
 
          let userEditor;
+
+         addUserButton = <Fab 
+            className="bg-white" 
+            onClick={this.openUserEditor}
+            size="small"
+         >
+            <AddIcon className="text-orange-600" />
+         </Fab>
 
          if (this.state.addingUser) {
             userEditor = <UserEditor
@@ -222,13 +232,6 @@ class UnconnectedUsers extends Page {
 
             {userEditor}
 
-            <Fab 
-               className="bg-orange-600 text-white absolute bottom-[30px] right-[30px]" 
-               onClick={this.openUserEditor}
-               size="small"
-            >
-               <AddIcon />
-            </Fab>
          </>
 
       } else {
@@ -245,8 +248,23 @@ class UnconnectedUsers extends Page {
          </div>
       }
 
-      return <div className="page-size relative p-4">
-         {jsx}
+      return <div className="page-size grid grid-rows-[1fr,auto]"> 
+         <div>
+            {jsx}
+         </div>
+
+         <div className="bg-orange-600 p-2 text-right">
+
+            <IconButton 
+               className="text-white text-4xl mr-3" 
+               onClick={this.fetchUsers}
+               size="small"
+            >
+               <RefreshIcon fontSize="inherit" />
+            </IconButton>
+
+            {addUserButton}
+         </div>
       </div>
    }
 }
