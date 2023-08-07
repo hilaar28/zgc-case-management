@@ -334,6 +334,41 @@ cases.get('/trend', canViewReports,async (req, res) => {
    }
 });
 
+/// get case officers
+cases.get('/officers', async (req, res) => {
+
+   try {
+
+      // auth
+      const userRole = req.auth.user.role;
+      if (!thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, userRole))
+         return res.sendStatus(403);
+
+
+      // get officers
+      let officers = await User
+         .find()
+         .where({ role: USER_ROLES.CASE_OFFICER })
+         .select('_id name surname')
+
+      officers = officers.map(item => item.toObject());
+      
+      // get case count
+      for (let i in officers) {
+         const officer = officers[i];
+         officer.active_cases = await Case
+            .countDocuments()
+            .where({ case_officer: officer._id });
+      }
+      
+      // respond
+      res.send(officers);
+
+   } catch (err) {
+      status_500(err, res);
+   }
+});
+
 /// retrieve case 
 cases.get('/:id', async (req, res) => {
 

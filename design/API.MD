@@ -133,6 +133,8 @@
 **POST** `/api/accounts/password-reset/:ref_code/verification`
 
 ## Case management
+**Security Policy**: To view a case, you need to be with at the level of `INVESTIGATING_OFFICER`, assigned to the case, or to have had recorded the case.
+
 ### Record case
 **POST** `/api/cases`
 **expects**:
@@ -327,6 +329,22 @@
 }
 ```
 
+### Retrieve case officers
+**GET** `/api/cases/officers`
+
+**returns**:
+```js
+// body
+[
+   {
+      _id: Number,
+      name: String,
+      surname: String,
+      active_cases: Number,
+   },
+   ...
+]
+```
 
 ### Assign case to officer
 **POST** `/api/cases/:id/assignment`

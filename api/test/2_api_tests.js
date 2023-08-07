@@ -540,6 +540,34 @@ suite("API Tests", function () {
          
       });
 
+      test("Retrive case officers", async () => {
+
+         // send request
+         const res = await requester
+            .get(`/api/cases/officers`)
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send();
+
+         assert.equal(res.status, 200);
+
+         // check schema
+         const schema = Joi.array().items({
+            _id: Joi.string().required(),
+            name: Joi.string().required(),
+            surname: Joi.string().required(),
+            active_cases: Joi.number().integer().required(),
+         });
+
+         const error = Joi.getError(res.body, schema);
+         assert.isNull(error);
+
+         // check db
+         const count = await User.countDocuments().where({ role: USER_ROLES.CASE_OFFICER });
+         assert.equal(res.body.length, count);
+
+
+      });
+
       test("Assign a case", async () => {
 
          // send request
@@ -734,8 +762,10 @@ suite("API Tests", function () {
       test("Retrieve trend data", async () => {
 
          // send request
+         const last4Week = Date.now() - 4 * 7 * 24 * 3600 * 1000;
+
          const res = await requester 
-            .get('/api/cases/trend?period=WEEKLY')
+            .get(`/api/cases/trend?period=WEEKLY&from=${last4Week}`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send();
 
