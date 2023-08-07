@@ -30,6 +30,7 @@ export default function CaseThumbnail(props) {
 
    if (expanded) {
 
+      // info pieces
       const { victim, applicant, defendant, recorded_by, case_officer } = props;
 
       let victimInfoPiece;
@@ -50,6 +51,34 @@ export default function CaseThumbnail(props) {
          />
       }
 
+      let filedByInfoPiece;
+
+      if (applicant) {
+         filedByInfoPiece = <InfoPiece
+            label="Filed by"
+            info={`${applicant.name} ${applicant.surname}`}
+         />
+      }
+
+      let defendantInfoPiece;
+
+      if (defendant) {
+         defendantInfoPiece = <InfoPiece
+            label="Defendant"
+            info={`${defendant.name} ${defendant.surname}`}
+         />
+      }
+
+      let recordedByInfoPiece;
+
+      if (recorded_by) {
+         recordedByInfoPiece = <InfoPiece
+            label="Recorded by"
+            info={`${recorded_by.name} ${recorded_by.surname}`}
+         />
+      }
+
+
       let fullCase;
 
       if (showingFullCase) {
@@ -68,22 +97,9 @@ export default function CaseThumbnail(props) {
             <div className="mt-3 mx-1">
 
                {victimInfoPiece}
-
-               <InfoPiece
-                  label="Filed by"
-                  info={`${applicant.name} ${applicant.surname}`}
-               />
-
-               <InfoPiece
-                  label="Defendant"
-                  info={`${defendant.name} ${defendant.surname}`}
-               />
-
-               <InfoPiece
-                  label="Recorded by"
-                  info={`${recorded_by.name} ${recorded_by.surname}`}
-               />
-
+               {filedByInfoPiece}
+               {defendantInfoPiece}
+               {recordedByInfoPiece}
                {caseOfficerPiece}
 
             </div>
