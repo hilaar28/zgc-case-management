@@ -360,7 +360,7 @@ cases.get('/officers', async (req, res) => {
             .countDocuments()
             .where({ case_officer: officer._id });
       }
-      
+
       // respond
       res.send(officers);
 
@@ -522,6 +522,7 @@ cases.post('/:id/assignment', async (req, res) => {
       // update
       const $set = {
          case_officer: caseOfficerId,
+         status: CASE_STATUS.IN_PROGRESS,
       }
 
       await Case.updateOne({ _id: caseId }, { $set });

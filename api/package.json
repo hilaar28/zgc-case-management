@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --ui tdd --timeout 3000 --exit",
+    "test": "PORT=8082 NODE_ENV=test mocha --ui tdd --timeout 2000 --exit",
     "start": "node .",
     "dev": "nodemon ."
   },

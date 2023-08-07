@@ -588,6 +588,8 @@ suite("API Tests", function () {
          // check db
          case_ = await Case.findById(case_._id);
          assert.equal(case_.case_officer, String(payload.case_officer));
+         assert.equal(case_.status, CASE_STATUS.IN_PROGRESS);
+
 
       });
    });
