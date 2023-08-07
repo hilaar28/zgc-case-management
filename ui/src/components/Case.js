@@ -21,6 +21,7 @@ import actions from "../actions";
 import { Case as CaseSchema } from "../reducer/schema";
 import ReferCase from "./ReferCase";
 import AssignCase from "./AssignCase";
+import DoneIcon from '@mui/icons-material/Done';
 
 
 function InfoPiece(props) {
@@ -270,6 +271,27 @@ export default class Case extends Component {
       } 
    }
 
+   markAsResolved = async () => {
+      try {
+
+         showLoading();
+
+         const update = { status: CASE_STATUS.RESOLVED };
+         await request.post(`/api/cases/${this.props._id}/status`, update);
+         
+         const case_ = { ...this.state.case_, ...update };
+         actions.updateEntity(CaseSchema, this.props._id, update);
+
+         this.updateState({ case_ });
+
+      } catch (err) {
+         swal(String(err));
+      } finally {
+         hideLoading();
+      }
+       
+   }
+
    fetchData = async () => {
 
       try {
@@ -346,6 +368,20 @@ export default class Case extends Component {
             >
                UPDATE
             </Button>);
+
+            if (this.state.case_.updates.length > 0) {
+
+               actionButtons.push(<Button 
+                  variant="contained" 
+                  size="small" 
+                  startIcon={<DoneIcon />} 
+                  className="bg-orange-600 rounded-full px-6"
+                  onClick={this.markAsResolved}
+               >
+                  RESOLVED
+               </Button>);
+
+            }
          }
 
          /// reject, assign and refer buttons
