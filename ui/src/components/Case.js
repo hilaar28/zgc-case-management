@@ -19,8 +19,8 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { CASE_STATUS } from "../backend-constants";
 import actions from "../actions";
 import { Case as CaseSchema } from "../reducer/schema";
-import { errorToast } from "../toast";
 import ReferCase from "./ReferCase";
+import AssignCase from "./AssignCase";
 
 
 function InfoPiece(props) {
@@ -175,6 +175,23 @@ export default class Case extends Component {
       updateEditorMode: null,
       updateBeingUpdated: null,
       caseReferralModalOpen: false,
+      assignCaseModalOpen: false,
+   }
+
+   openAssignCaseModal = () => {
+      return this.updateState({ assignCaseModalOpen: true })
+   }
+
+   closeAssignCaseModal  = (case_officer) => {
+      const updates = { assignCaseModalOpen: false };
+
+      if (case_officer) {
+         const caseUpdate = { case_officer, status: CASE_STATUS.IN_PROGRESS }
+         updates.case_ = { ...this.state.case_, ...caseUpdate };
+         actions.updateEntity(CaseSchema, this.props._id, caseUpdate );
+      }
+
+      return this.updateState(updates)
    }
 
    openCaseReferralModal = () => {
@@ -302,7 +319,7 @@ export default class Case extends Component {
    }
 
    assign = async () => {
-      errorToast('Not yet implemented.')
+      this.openAssignCaseModal();
    }
 
    componentDidMount() {
@@ -319,7 +336,7 @@ export default class Case extends Component {
 
          // action buttons
          /// add update button
-         if (this.state.case_ === CASE_STATUS.IN_PROGRESS) {
+         if (this.state.case_.status === CASE_STATUS.IN_PROGRESS) {
             actionButtons.push(<Button 
                variant="contained" 
                size="small" 
@@ -650,7 +667,8 @@ export default class Case extends Component {
             body={caseUpdatesSectionBody}
          />
 
-         // update editor modal
+         // modals
+         /// update editor modal
          let updateEditorModal;
 
          if (this.state.updateEditorMode) {
@@ -662,13 +680,23 @@ export default class Case extends Component {
             />
          }
 
-         // case referral modal
+         /// case referral modal
          let caseReferralModal;
 
          if (this.state.caseReferralModalOpen) {
             caseReferralModal = <ReferCase
                caseId={this.props._id}
                close={this.closeCaseReferralModal}
+            />
+         }
+
+         /// assign case modal
+         let assignCaseModal;
+
+         if (this.state.assignCaseModalOpen) {
+            assignCaseModal = <AssignCase
+               caseId={this.props._id}
+               close={this.closeAssignCaseModal}
             />
          }
 
@@ -722,6 +750,7 @@ export default class Case extends Component {
 
             {updateEditorModal}
             {caseReferralModal}
+            {assignCaseModal}
 
 
          </div>
