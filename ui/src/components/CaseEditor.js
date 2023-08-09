@@ -399,6 +399,9 @@ class UnconnectedCaseEditor extends Component {
       const currentStage = this.state.stage
       await this.updateState(update);
 
+      // scroll form to top
+      document.getElementById('div-form-container').scrollTo(0, 0);
+
       // submit case
       if (currentStage === steps.length) {
          const {
@@ -652,7 +655,7 @@ class UnconnectedCaseEditor extends Component {
                   </div>
                </div>
 
-               <div className='overflow-y-auto p-8'>
+               <div className='overflow-y-auto p-8' id='div-form-container'>
                   {form}
                </div>
 
