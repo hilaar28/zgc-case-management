@@ -136,7 +136,7 @@ export default class PersonalDetailsForm extends Component {
 
 
       const insitution = <ChakraTextBox
-         id='txt-institution'
+         id='txt-institution-name'
          label="Institution"
       />
 

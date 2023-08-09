@@ -18,6 +18,8 @@ import swal from 'sweetalert'
 import { hideLoading, showLoading } from '../loading'
 import request from '../request';
 import { Case as CaseSchema } from '../reducer/schema';
+import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { delay }  from '../utils';
 
 
 function removeEmptyProperties(data) {
@@ -97,6 +99,7 @@ const defaultState = {
    title: '',
    source: '',
    province: '',
+   haveReportedToThirdParty: false,
 }
 
 
@@ -129,7 +132,7 @@ class UnconnectedCaseEditor extends Component {
       const txtEmail = document.getElementById('txt-email');
       const txtNextOfKinNumber = document.getElementById('txt-next-of-kin-phone');
       const txtFriendNumber = document.getElementById('txt-friend-phone');
-      const txtInsititution = document.getElementById('txt-institution');
+      const txtInsititution = document.getElementById('txt-institution-name');
       const txtRelationshipToVictim = document.getElementById('txt-relationship-to-victim');
       const txtWhyCompletingOnBehalf = document.getElementById('txt-why-completing-form-on-behalf');
 
@@ -192,7 +195,7 @@ class UnconnectedCaseEditor extends Component {
       const relationship_to_victim = txtRelationshipToVictim ? txtRelationshipToVictim.value : undefined;
       const why_completing_form_on_behalf = txtWhyCompletingOnBehalf ? txtWhyCompletingOnBehalf.value : undefined;
 
-      /// put data in state
+      /// return data
       const data = {
          name,
          surname,
@@ -462,7 +465,77 @@ class UnconnectedCaseEditor extends Component {
          } finally {
             hideLoading();
          }
+      } else {
+         await delay(100);
+         this.hydrateForm();
       }
+
+   }
+
+
+   hydrateForm = () => {
+
+      let source;
+
+      switch (this.state.stage) {
+         case 1:
+            source = this.state.applicant;            
+            break;
+         case 2:
+            source = this.state.victim;            
+            break;
+         case 3:
+            source = this.state.defendant;            
+            break;
+         case 4:
+            source = this.state.violation;
+            break;
+         default:
+            source = this.state;
+            break;
+      }
+      
+      // get all input elements
+      const divForm = document.getElementById('div-form-container');
+      const inputs = Array.from(divForm.querySelectorAll('input, textarea, select'));
+
+      // hydrate
+      for (let i in inputs) {
+         try {
+            const input = inputs[i];
+
+            const elementTargetAttribute = input.type === 'checkbox' ? 'checked' : 'value';
+            let sourceTargetAttribute = input.getAttribute('data-source-target-attribute');
+
+            if (!sourceTargetAttribute) {
+               const id = input.id;
+               const indexOfFirstHyphen = id.indexOf('-');
+               sourceTargetAttribute = id.substring(indexOfFirstHyphen + 1).replaceAll('-', '_');
+            }
+
+            let value = source;
+            const splitted = sourceTargetAttribute.split('.');
+
+            for (let i in splitted) {
+               const key = splitted[i];
+               value = value[key];
+            }
+
+            if (value)
+               input[elementTargetAttribute] = value;
+
+         } catch (err) {
+            console.log(err);
+         }
+      }
+   }
+
+   previous = async () => {
+      
+      const stage = Math.max(this.state.stage - 1, 1);
+      await this.updateState({ stage });
+      await delay(100);
+      this.hydrateForm();
 
    }
 
@@ -576,10 +649,10 @@ class UnconnectedCaseEditor extends Component {
                      VICTIM DETAILS
                   </div>
 
-                  <div>
+                  <div className='mt-4'>
                      <ChakraCheckbox
                         label="The applicant is the victim"
-                        value={this.state.applicantIsVictim}
+                        checked={this.state.applicantIsVictim}
                         onChange={applicantIsVictim => this.updateState({ applicantIsVictim })}
                      />
                   </div>
@@ -629,6 +702,8 @@ class UnconnectedCaseEditor extends Component {
 
                <MoreCaseInfoForm
                   electoral={formIsElectoral}
+                  onHaveReportedToThirdPartyChanged={haveReportedToThirdParty => this.updateState({ haveReportedToThirdParty })}
+                  haveReportedToThirdParty={this.state.haveReportedToThirdParty}
                />
             </>
             break;
@@ -660,13 +735,29 @@ class UnconnectedCaseEditor extends Component {
                </div>
 
                <div className='text-right shadow-xl px-8 py-4 border-[1px] border-solid'>
-                  <Button onClick={this.next} className='bg-orange-600 text-white'>
+                  <Button 
+                     onClick={this.previous} 
+                     className={`mr-2 ${this.state.stage === 1 ? 'pointer-events-none opacity-30': '' }`}
+                     size={"sm"}
+                     colorScheme='gray'
+                     leftIcon={<ArrowBackIcon />}
+                  >
+                     BACK
+                  </Button>
+
+                  <Button 
+                     onClick={this.next} 
+                     size={"sm"}
+                     colorScheme='orange'
+                     rightIcon={<ArrowForwardIcon />}
+                  >
                      {this.state.stage === steps.length ? 'SUBMIT' : 'NEXT'}
                   </Button>
 
                   <Button 
                      onClick={actions.closeCaseEditor}
                      className='bg-transparent text-[#1976D2]'
+                     size={"sm"}
                   >
                      CLOSE
                   </Button>

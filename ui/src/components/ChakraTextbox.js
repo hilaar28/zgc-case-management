@@ -4,7 +4,15 @@ const { FormControl, FormLabel, Input, Textarea } = require("@chakra-ui/react");
 export default function ChakraTextBox(props) {
 
    const InputComponent = props.multiline ? Textarea : Input;
-   const onChange = props.onChange || (() => {})
+   const onChange = props.onChange || (() => {});
+
+   const dataProps = {};
+
+   Object.keys(props).forEach(prop => {
+      if (prop.indexOf('data-') === 0) {
+         dataProps[prop] = props[prop];
+      }
+   });
 
    return <FormControl>
       <FormLabel className="text-gray-600 text-sm">{props.label}</FormLabel>
@@ -14,6 +22,7 @@ export default function ChakraTextBox(props) {
          value={props.value}
          multiple={props.multiple}
          onChange={e => onChange(e.target.value)}
+         {...dataProps}
       />
    </FormControl>
 }

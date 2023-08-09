@@ -1,18 +1,24 @@
-import { Checkbox } from "@chakra-ui/react";
-
 
 export default function ChakraCheckbox(props) {
 
+   const onChange = props.onChange || (() => {});
 
-   const onChange = props.onChange || (() => {})
+   const dataProps = {};
+
+   Object.keys(props).forEach(prop => {
+      if (prop.indexOf('data-') === 0) {
+         dataProps[prop] = props[prop];
+      }
+   });
    
    return <div className="v-align">
-      <Checkbox 
-         type={props.type} 
+      <input  
          id={props.id} 
-         value={props.value} 
+         type="checkbox" 
          onChange={e => onChange(e.target.checked)}
          checked={props.checked}
+         defaultChecked={props.defaultChecked}
+         {...dataProps}
       />
       
       <span className="inline-block text-gray-600 text-sm ml-2">{props.label}</span>

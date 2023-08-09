@@ -12,6 +12,14 @@ export default function ChakraSelect(props) {
          {props.placeholder || ""}
       </option>
    }
+
+   const dataProps = {};
+
+   Object.keys(props).forEach(prop => {
+      if (prop.indexOf('data-') === 0) {
+         dataProps[prop] = props[prop];
+      }
+   });
    
    return <FormControl>
       <FormLabel className="text-gray-600 text-sm">{props.label}</FormLabel>
@@ -19,7 +27,8 @@ export default function ChakraSelect(props) {
          type={props.type} 
          id={props.id} 
          value={props.value} 
-         onChange={e => onChange(e.target.value)} 
+         onChange={e => onChange(e.target.value)}
+         {...dataProps}
       >
          {defaultSelection}
          {props.children}

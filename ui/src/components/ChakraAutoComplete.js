@@ -12,6 +12,14 @@ export default function ChakraAutoComplete(props) {
    if (props.value)
       autoCompleteInputProps.value = props.value;
 
+   const dataProps = {};
+
+   Object.keys(props).forEach(prop => {
+      if (prop.indexOf('data-') === 0) {
+         dataProps[prop] = props[prop];
+      }
+   });
+
    const onChange = props.onChange || (() => {});
 
 
@@ -25,6 +33,7 @@ export default function ChakraAutoComplete(props) {
       >
          <AutoCompleteInput 
             {...autoCompleteInputProps}
+            {...dataProps}
             onChange={e => onChange(e.target.value)}
          />
          <AutoCompleteList>

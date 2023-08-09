@@ -1,4 +1,4 @@
-import { useState } from "react";
+
 import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraTextBox from "./ChakraTextbox";
 import { Divider } from "@chakra-ui/react";
@@ -53,26 +53,29 @@ export default function MoreCaseInfoForm(props) {
       id="txt-other-entity-reported-to-details"
       label="Institution name, contact person, and contact details"
       multiline
+      data-source-target-attribute="other_entity_reported_to.details"
    />
 
    const otherEntityReportedToActions = <ChakraTextBox
       id="txt-other-entity-reported-to-actions"
       label="What did they do to help?"
       multiline
+      data-source-target-attribute="other_entity_reported_to.actions"
    /> 
 
    const otherEntityReportedToWhyReportingToUsAsWell = <ChakraTextBox
       id="txt-other-entity-reported-to-why-reporting-to-us-as-well"
       label="Why are you reporting to us as well"
       multiline
+      data-source-target-attribute="other_entity_reported_to.why_reporting_to_us_as_well"
    />
 
 
-   const [ haveReportedToThirdParty, setIHaveReportedToThirdParty ] = useState(false);
+   const haveReportedToThirdParty = props.haveReportedToThirdParty;
 
    const iHaveReportedToOtherEntity = <ChakraCheckbox
       checked={haveReportedToThirdParty}
-      onChange={setIHaveReportedToThirdParty}
+      onChange={props.onHaveReportedToThirdPartyChanged}
       label="I have reported this case to another party"
    />
 
