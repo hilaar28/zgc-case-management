@@ -22,7 +22,7 @@ const personalDetailsSchema = {
    telephone: Joi.string(),
    mobile: Joi.string(),
    fax: Joi.string(),
-   email: Joi.string(),
+   email: Joi.string().email(),
    next_of_kin_phone: Joi.string(),
    friend_phone: Joi.string(),
 }
