@@ -6,6 +6,7 @@ import request from "../request";
 import { Pie } from 'react-chartjs-2';
 import {Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import DatePicker from "../components/DatePicker";
 
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -65,7 +66,9 @@ function PieChart(props) {
 export default class Reports extends Page {
 
    state = {
-      summary: null
+      summary: null,
+      summaryStatisticsFrom: undefined,
+      summaryStatisticsTo: undefined,
    }
 
    fetchSummaryStatistics = async () => {
@@ -74,7 +77,21 @@ export default class Reports extends Page {
 
          showLoading();
 
-         const res = await request.get('/api/cases/summary');
+         let query = {};
+
+         if (this.state.summaryStatisticsFrom)
+            query.from = new Date(this.state.summaryStatisticsFrom).getTime();
+
+         if (this.state.summaryStatisticsTo)
+            query.to = new Date(this.state.summaryStatisticsTo).getTime() + 24 * 3600 * 1000 - 1;
+
+         query = Object
+            .keys(query)
+            .map(key => {
+               return `${key}=${query[key]}`
+            }).join('&');
+
+         const res = await request.get(`/api/cases/summary?${query}`);
          const summary = res.data;
          this.updateState({ summary });
 
@@ -99,6 +116,29 @@ export default class Reports extends Page {
          jsx = <div className="h-full grid grid-rows-[1fr,auto]">
             <div className="h-full container overflow-auto">
                <div className="h-full">
+
+                  <div className="border-solid border-[1px] border-[#CCC] rounded-xl mt-6 text-center py-2 text-gray-500 text-xs font-bold">
+                     FROM: <DatePicker
+                        value={this.state.summaryStatisticsFrom}
+                        onChange={
+                           async (summaryStatisticsFrom) => {
+                              await this.updateState({ summaryStatisticsFrom });
+                              this.fetchSummaryStatistics();
+                           }
+                        }
+                     />
+
+                     <span className="pl-6">TO:</span> <DatePicker
+                        value={this.state.summaryStatisticsTo}
+                        onChange={
+                           async (summaryStatisticsTo) => {
+                              await this.updateState({ summaryStatisticsTo });
+                              this.fetchSummaryStatistics();
+                           }
+                        }
+                     />
+                  </div>
+
                   <div className="grid grid-cols-2 gap-6 pt-6">
                      <Statistic title="CASES BY GENDER">
                         <div className="h-align">
