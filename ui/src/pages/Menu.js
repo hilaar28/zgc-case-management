@@ -8,7 +8,8 @@ import actions from "../actions";
 import { USER_ROLES } from "../backend-constants";
 import { connect } from "react-redux";
 import { Button } from "@mui/material";
-import { showLoading, hideLoading } from '../loading'
+import { showLoading, hideLoading } from '../loading';
+import swal from 'sweetalert';
 
 
 function thisRoleOrHigher(minRole, role) {
@@ -44,7 +45,7 @@ function Option(props) {
    const disabledClasses = props.disabled ? 'pointer-events-none opacity-50' : ''
 
    return <div 
-      className={`vh-align border-solid border-current border-[1px] aspect-square text-orange-900 cursor-pointer hover:scale-[1.03] ${disabledClasses} ${props.roundedCorner}`}
+      className={`vh-align border-solid border-current border-[1px] aspect-square text-orange-900 cursor-pointer hover:scale-[1.06] hover:bg-orange-600 hover:text-white ${disabledClasses} ${props.roundedCorner}`}
       onClick={onClick}
    >
 
@@ -73,6 +74,8 @@ class UnconnectedMenu extends Page {
          const user = res.data;
          actions.setUser(user);
 
+      } catch (err) {
+         swal(String(err));
       } finally {
          hideLoading();
       }
