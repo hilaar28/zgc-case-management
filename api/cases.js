@@ -226,16 +226,16 @@ cases.get('/summary', canViewReports,async (req, res) => {
    try {
 
       // retrieve stats
-      const from = req.query.from || 0
-      const to = req.query.to || Date.now();
+      const from = parseInt(req.query.from) || 0
+      const to = parseInt(req.query.to) || Date.now();
 
       /// gender
       const male = await Case
          .countDocuments({
-            createdAt: {
-               $gte: from,
-               $lte: to,
-            },
+            $and: [
+               { createdAt: { $gte: new Date(from) } },
+               { createdAt: { $lte: new Date(to) } }
+            ],
             $or: [
                { "victim.gender": GENDER.MALE, },
                {
@@ -247,7 +247,12 @@ cases.get('/summary', canViewReports,async (req, res) => {
             ],
          });
       
-      const count = await Case.countDocuments();
+      const count = await Case.countDocuments({
+         $and: [
+            { createdAt: { $gte: new Date(from) } },
+            { createdAt: { $lte: new Date(to) } }
+         ],
+      });
       const female = count - male;
 
       const gender = { male, female };
