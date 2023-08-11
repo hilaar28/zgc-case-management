@@ -9,7 +9,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DatePicker from "../components/DatePicker";
 import TimelineIcon from '@mui/icons-material/Timeline';
 import CaseTrend from "../components/CaseTrend";
-import { objectToQueryString } from "../utils";
+import { getMidnightTimestamp, objectToQueryString } from "../utils";
 
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -84,10 +84,10 @@ export default class Reports extends Page {
          let query = {};
 
          if (this.state.summaryStatisticsFrom)
-            query.from = new Date(this.state.summaryStatisticsFrom).getTime();
+            query.from = getMidnightTimestamp(this.state.summaryStatisticsFrom);
 
          if (this.state.summaryStatisticsTo)
-            query.to = new Date(this.state.summaryStatisticsTo).getTime() + 24 * 3600 * 1000 - 1;
+            query.to = getMidnightTimestamp(this.state.summaryStatisticsTo) + 24 * 3600 * 1000 - 1;
 
          query = objectToQueryString(query);
 

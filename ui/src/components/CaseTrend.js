@@ -2,7 +2,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import Component from "@xavisoft/react-component";
 import { hideLoading, showLoading } from "../loading";
-import { convertEpochToYYYYMMDD, objectToQueryString } from "../utils";
+import { convertEpochToYYYYMMDD, getMidnightTimestamp, objectToQueryString } from "../utils";
 import request from "../request";
 import swal from "sweetalert";
 import { Line } from 'react-chartjs-2';
@@ -52,10 +52,16 @@ export default class CaseTrend extends Component {
          };
 
          if (this.state.from)
-            query.from = new Date(this.state.from).getTime();
+            query.from = getMidnightTimestamp(this.state.from);
 
          if (this.state.to)
-            query.to = new Date(this.state.to).getTime() + 24 * 3600 * 1000 - 1;
+            query.to = getMidnightTimestamp(this.state.to) + 24 * 3600 * 1000 - 1;
+
+         console.log({
+            from : new Date(query.from),
+            to : new Date(query.to),
+         });
+
          query = objectToQueryString(query);
 
          const res = await request.get(`/api/cases/trend?${query}`);
