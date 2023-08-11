@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES } = require("./constants");
+const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES, TREND_PERIODS } = require("./constants");
 const status_500 = require("./status_500");
 const Joi = require("@xavisoft/joi");
 const Case = require("./db/Case");
@@ -279,11 +279,6 @@ cases.get('/summary', canViewReports,async (req, res) => {
 cases.get('/trend', canViewReports,async (req, res) => {
 
    try {
-
-      const TREND_PERIODS = {
-         WEEKLY: 'WEEKLY',
-         MONTHLY: 'MONTHLY',
-      }
 
       // retrieve stats
       const from = parseInt(req.query.from) || 0;

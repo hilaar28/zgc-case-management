@@ -84,6 +84,11 @@ const VIOLATION_IMPACT = {
    DESTITUTION: 'destitution',
 }
 
+const TREND_PERIODS = {
+   WEEKLY: 'WEEKLY',
+   MONTHLY: 'MONTHLY',
+}
+
 module.exports = {
    CASE_SOURCES,
    CASE_STATUS,
@@ -92,6 +97,7 @@ module.exports = {
    MARITAL_STATUS,
    PROVINCES,
    RELATIONSHIP_TO_INCIDENT,
+   TREND_PERIODS,
    USER_ROLES,
    VIOLATION_IMPACT,
    VIOLATION_NATURE,

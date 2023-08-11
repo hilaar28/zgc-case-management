@@ -65,10 +65,55 @@ function delay(millis) {
    });
 }
 
+
+function objectToQueryString(obj={}) {
+   return Object
+      .keys(obj)
+      .map(key => {
+         return `${key}=${obj[key]}`
+      }).join('&');
+}
+
+// function convertEpochToYYYYMMDD(epochTimestamp) {
+//   const date = new Date(epochTimestamp);
+//   const year = date.getFullYear();
+//   const month = String(date.getMonth() + 1).padStart(2, '0');
+//   const day = String(date.getDate()).padStart(2, '0');
+//   return `${year}/${month}/${day}`;
+// }
+
+// function convertEpochToYYYYMMDD(epochTimestamp) {
+//   const date = new Date(epochTimestamp);
+//   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+//   const formattedDate = date.toLocaleDateString(undefined, options).replace(/\//g, '-');
+//   return formattedDate;
+// }
+
+function convertEpochToYYYYMMDD(epochTimestamp) {
+   const date = new Date(epochTimestamp);
+   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+   const formattedDate = date.toLocaleDateString(undefined, options);
+   return formattedDate
+      .split('/')
+      .reverse()
+      .join('/');
+}
+
+
+function getMidnightTimestamp(date) {
+   const d = new Date(date);
+   d.setHours(0, 0, 0, 0);
+   return d.getTime();
+}
+
+
 export {
+   convertEpochToYYYYMMDD,
    decodeJWT,
    delay,
    deleteAuthTokens,
    getAttributeFromElementHierachy,
+   getMidnightTimestamp,
+   objectToQueryString,
    requestConfirmation,
 }

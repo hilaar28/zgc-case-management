@@ -7,6 +7,9 @@ import { Pie } from 'react-chartjs-2';
 import {Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import DatePicker from "../components/DatePicker";
+import TimelineIcon from '@mui/icons-material/Timeline';
+import CaseTrend from "../components/CaseTrend";
+import { objectToQueryString } from "../utils";
 
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -59,7 +62,7 @@ function PieChart(props) {
       datasets: [ dataset ],
    }
 
-  return <Pie data={data} options={{}} />;
+  return <Pie data={data} />;
 };
 
 
@@ -69,6 +72,7 @@ export default class Reports extends Page {
       summary: null,
       summaryStatisticsFrom: undefined,
       summaryStatisticsTo: undefined,
+      showingTrend: false,
    }
 
    fetchSummaryStatistics = async () => {
@@ -85,11 +89,7 @@ export default class Reports extends Page {
          if (this.state.summaryStatisticsTo)
             query.to = new Date(this.state.summaryStatisticsTo).getTime() + 24 * 3600 * 1000 - 1;
 
-         query = Object
-            .keys(query)
-            .map(key => {
-               return `${key}=${query[key]}`
-            }).join('&');
+         query = objectToQueryString(query);
 
          const res = await request.get(`/api/cases/summary?${query}`);
          const summary = res.data;
@@ -112,6 +112,14 @@ export default class Reports extends Page {
       let jsx;
 
       if (this.state.summary) {
+
+         let trendModal;
+
+         if (this.state.showingTrend) {
+            trendModal = <CaseTrend
+               close={() => this.updateState({ showingTrend: false })}
+            />
+         }
 
          jsx = <div className="h-full grid grid-rows-[1fr,auto]">
             <div className="h-full container overflow-auto">
@@ -175,6 +183,18 @@ export default class Reports extends Page {
             </div>
 
             <div className="bg-orange-600 text-white text-right pr-2">
+               <Button 
+                  variant="contained"
+                  size="small"
+                  className="bg-white text-orange-600 mr-3"
+                  startIcon={<TimelineIcon />} 
+                  onClick={() => this.updateState({ showingTrend: true })}
+               >
+                  TREND
+               </Button>
+               
+               {trendModal}
+
                <IconButton className="text-white text-3xl" onClick={this.fetchSummaryStatistics}>
                   <RefreshIcon fontSize="inherit" />
                </IconButton>
