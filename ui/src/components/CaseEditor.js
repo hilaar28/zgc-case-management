@@ -123,12 +123,9 @@ class UnconnectedCaseEditor extends Component {
       const txtMaritalStatus = document.getElementById('txt-marital-status');
       const txtLocation = document.getElementById('txt-location');
       const txtRelationshipToIncident = document.getElementById('txt-relationship-to-incident');
-      const txtResidentialAddress = document.getElementById('txt-residential-address');
-      const txtWorkAddress = document.getElementById('txt-work-address');
-      const txtPostalAddress = document.getElementById('txt-postal-address');
       const txtTelephone = document.getElementById('txt-telephone');
       const txtMobile = document.getElementById('txt-mobile');
-      const txtFax = document.getElementById('txt-fax');
+      const txtAddress = document.getElementById('txt-address');
       const txtEmail = document.getElementById('txt-email');
       const txtNextOfKinNumber = document.getElementById('txt-next-of-kin-phone');
       const txtFriendNumber = document.getElementById('txt-friend-phone');
@@ -177,16 +174,11 @@ class UnconnectedCaseEditor extends Component {
       const relationship_to_incident = txtRelationshipToIncident ? txtRelationshipToIncident.value : undefined;
 
 
-      /// addresses
-      const residential_address = txtResidentialAddress ? txtResidentialAddress.value : undefined;
-      const work_address = txtWorkAddress ? txtWorkAddress.value : undefined;
-      const postal_address = txtPostalAddress ? txtPostalAddress.value : undefined;
-
       /// contact details
       const mobile = txtMobile ? txtMobile.value : undefined;
       const telephone = txtTelephone ? txtTelephone.value : undefined;
-      const fax = txtFax ? txtFax.value : undefined;
       const email = txtEmail ? txtEmail.value : undefined;
+      const address = txtAddress ? txtAddress.value : undefined;
       const next_of_kin_phone = txtNextOfKinNumber ? txtNextOfKinNumber.value : undefined;
       const friend_phone = txtFriendNumber ? txtFriendNumber.value : undefined;
 
@@ -206,13 +198,10 @@ class UnconnectedCaseEditor extends Component {
          marital_status,
          location,
          relationship_to_incident,
-         residential_address,
-         work_address,
-         postal_address,
          telephone,
          mobile,
-         fax,
          email,
+         address,
          next_of_kin_phone,
          friend_phone,
          institution_name,

@@ -20,12 +20,9 @@ erDiagram
       string applicant_place_of_birth
       ENUM   applicant_gender
       string applicant_marital_status
-      string applicant_residential_address
-      string applicant_work_address
-      string applicant_postal_address
-      string applicant_telephone_number
+      string applicant_address
+      string applicant_address
       string applicant_mobile_number
-      string applicant_fax_number
       string applicant_email_address
       string applicant_next_of_kin_phone
       string applicant_friend_phone
@@ -38,12 +35,9 @@ erDiagram
       string victim_place_of_birth
       ENUM   victim_gender
       string victim_marital_status
-      string victim_residential_address
-      string victim_work_address
-      string victim_postal_address
+      string victim_address
       string victim_telephone_number
       string victim_mobile_number
-      string victim_fax_number
       string victim_email_address
       string victim_next_of_kin_phone
       string victim_friend_phone
@@ -60,12 +54,9 @@ erDiagram
       string defendant_place_of_birth
       ENUM   defendant_gender
       string defendant_marital_status
-      string defendant_residential_address
-      string defendant_work_address
-      string defendant_postal_address
+      string defendant_address
       string defendant_telephone_number
       string defendant_mobile_number
-      string defendant_fax_number
       string defendant_email_address
       string defendant_next_of_kin_phone
       string defendant_friend_phone

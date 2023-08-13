@@ -79,21 +79,9 @@ export default class PersonalDetailsForm extends Component {
          }
       </ChakraSelect>
 
-      const residentialAddress = <ChakraTextBox
-         id='txt-residential-address'
-         label="Residential Address"
-         multiline
-      />
-
-      const workAddress = <ChakraTextBox
-         id='txt-work-address'
-         label="Work Address"
-         multiline
-      />
-
-      const postalAddress = <ChakraTextBox
-         id='txt-postal-address'
-         label="Postal Address"
+      const address = <ChakraTextBox
+         id='txt-address'
+         label="Address"
          multiline
       />
 
@@ -106,12 +94,6 @@ export default class PersonalDetailsForm extends Component {
       const mobile = <ChakraTextBox
          id='txt-mobile'
          label="Mobile Number"
-         type="number"
-      />
-
-      const fax = <ChakraTextBox
-         id='txt-fax'
-         label="Fax Number"
          type="number"
       />
 
@@ -191,7 +173,7 @@ export default class PersonalDetailsForm extends Component {
             {locationJSX}
             {relationshipToIncidentJSX}
 
-            {residentialAddress}
+            {address}
 
          </div>
       } else {
@@ -242,19 +224,6 @@ export default class PersonalDetailsForm extends Component {
 
             <Divider />
 
-            <FieldGroupLabel>
-               ADDRESSES
-            </FieldGroupLabel>
-
-            <div className='grid grid-cols-2 gap-6'>
-               {residentialAddress}
-               {workAddress}
-            </div>
-
-            <div className='grid grid-cols-2 gap-6'>
-               {postalAddress}
-            </div>
-
             <Divider />
 
             <FieldGroupLabel>
@@ -267,7 +236,7 @@ export default class PersonalDetailsForm extends Component {
             </div>
 
             <div className='grid grid-cols-2 gap-6'>
-               {fax}
+               {address}
                {email}
             </div>
 

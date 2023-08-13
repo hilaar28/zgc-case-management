@@ -16,12 +16,9 @@ const personalDetailsSchema = {
    place_of_birth: Joi.string(),
    gender: Joi.valid(...Object.values(GENDER)), // enum
    marital_status: Joi.valid(...Object.values(MARITAL_STATUS)),
-   residential_address: Joi.string(),
-   work_address: Joi.string(),
-   postal_address: Joi.string(),
+   address: Joi.string(),
    telephone: Joi.string(),
    mobile: Joi.string(),
-   fax: Joi.string(),
    email: Joi.string().email(),
    next_of_kin_phone: Joi.string(),
    friend_phone: Joi.string(),
