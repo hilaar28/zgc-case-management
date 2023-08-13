@@ -107,7 +107,30 @@ function getMidnightTimestamp(date) {
 }
 
 
+function ageRangeToWords(range) {
+
+   if (range.charAt(0) === '<') {
+      return `Under ${range.substring(1)}`
+   } 
+
+   const [ lo, hi ] = range.split('_');
+
+   if (lo && hi)
+      return `${lo} to ${hi}`
+   
+   const splitted = range.split('+');
+
+   if (splitted.length === 2 && splitted[1] === '') {
+      return `Over ${splitted[0]}`
+   }
+
+   throw new Error('Invalid range');
+
+}
+
+
 export {
+   ageRangeToWords,
    convertEpochToYYYYMMDD,
    decodeJWT,
    delay,

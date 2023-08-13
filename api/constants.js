@@ -89,7 +89,19 @@ const TREND_PERIODS = {
    MONTHLY: 'MONTHLY',
 }
 
+
+const AGE_RANGES = [
+   '<18',
+   '18_24',
+   '25_34',
+   '35_44',
+   '45_54',
+   '55_64',
+   '65+',
+]
+
 module.exports = {
+   AGE_RANGES,
    CASE_SOURCES,
    CASE_STATUS,
    GENDER,

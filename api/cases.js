@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES, TREND_PERIODS } = require("./constants");
+const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES, TREND_PERIODS, AGE_RANGES } = require("./constants");
 const status_500 = require("./status_500");
 const Joi = require("@xavisoft/joi");
 const Case = require("./db/Case");
@@ -48,6 +48,7 @@ const caseJoiSchema = {
          month: Joi.number().integer(),
          day: Joi.number().integer(),
       }),
+      victim_age_range: Joi.valid(...AGE_RANGES),
       continuing: Joi.boolean(),
       details: Joi.string(),
       location: Joi.string(),

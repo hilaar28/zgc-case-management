@@ -228,6 +228,7 @@ class UnconnectedCaseEditor extends Component {
 
       // extract data
       const txtDate = document.getElementById('txt-date');
+      const txtVictimAgeRange = document.getElementById('txt-victim-age-range');
       const txtContinuing = document.getElementById('txt-continuing');
       const txtNature = document.getElementById('txt-nature');
       const txtNatureGender = document.getElementById('txt-nature-gender');
@@ -239,6 +240,12 @@ class UnconnectedCaseEditor extends Component {
 
       /// date
       const date = txtDate ? txtDate.value : undefined;
+
+      /// age range
+      const victim_age_range = txtVictimAgeRange ? txtVictimAgeRange.value : undefined;
+
+      if (!victim_age_range)
+         throw new Error('Victim age range is required');
       
       /// continuing
       const continuing = txtContinuing ? txtContinuing.checked : undefined;
@@ -258,7 +265,7 @@ class UnconnectedCaseEditor extends Component {
       const location = txtLocation ? txtLocation.value : undefined; // location
       const witness_details = txtWitnessDetails ? txtWitnessDetails.value : undefined; // witness details
       const impact = txtImpact ? txtImpact.value : undefined; // impact
-      
+
       const data = {
          date,
          continuing,
@@ -268,6 +275,7 @@ class UnconnectedCaseEditor extends Component {
          location,
          witness_details,
          impact,
+         victim_age_range,
       }
 
       return data;

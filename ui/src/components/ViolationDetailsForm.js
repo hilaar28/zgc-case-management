@@ -1,10 +1,11 @@
 import capitalize from "capitalize";
-import { GENDER_VIOLATION_NATURE, VIOLATION_IMPACT, VIOLATION_NATURE } from "../backend-constants";
+import { AGE_RANGES, GENDER_VIOLATION_NATURE, VIOLATION_IMPACT, VIOLATION_NATURE } from "../backend-constants";
 import ChakraAutoComplete from "./ChakraAutoComplete";
 import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraSelect from "./ChakraSelect";
 import ChakraTextBox from "./ChakraTextbox";
 import DateInput from "./DateInput";
+import { ageRangeToWords } from "../utils";
 
 
 export default function ViolationDetailsForm(props) {
@@ -14,6 +15,21 @@ export default function ViolationDetailsForm(props) {
       id="txt-date"
       label="When did the violation happen?"
    />
+
+   const victimAgeRange = <ChakraSelect
+      id="txt-victim-age-range"
+      label="Victim age at time of incident"
+      allowDefaultEmptySelection
+   >
+      {
+         AGE_RANGES
+            .map(value => {
+               return <option key={value} value={value}>
+                  {ageRangeToWords(value)}
+               </option>
+            })
+      }
+   </ChakraSelect>
 
    const continuing = <ChakraCheckbox
       id="txt-continuing"
@@ -86,6 +102,7 @@ export default function ViolationDetailsForm(props) {
 
    if (props.electoral) {
       form = <div className="grid grid-cols-2 gap-6">
+         {victimAgeRange}
          {details}
          {impact}
          {nature}
@@ -94,6 +111,7 @@ export default function ViolationDetailsForm(props) {
    } else {
       form = <div className="grid grid-cols-2 gap-6">
          {date}
+         {victimAgeRange}
          {natureGender}
          {continuing}
          {location}

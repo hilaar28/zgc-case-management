@@ -87,6 +87,7 @@ erDiagram
       STRING location_of_reporter
       TEXT impact_of_incident
       TEXT more_assistance_required
+      ENUM victim_age_range
 
       ENUM source
       int case_officer FK

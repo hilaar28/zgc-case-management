@@ -1,6 +1,6 @@
 const casual = require("casual");
 const { waitForServer, createRequester, createAccessToken, createUser, findLastInserted, createCase } = require("./utils");
-const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS, PROVINCES } = require("../constants");
+const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS, PROVINCES, AGE_RANGES } = require("../constants");
 const User = require("../db/User");
 const { ACCESS_TOKEN_HEADER_NAME } = require("@xavisoft/auth/constants");
 const chai = require("chai");
@@ -227,6 +227,7 @@ suite("API Tests", function () {
                friend_phone: casual.phone,
             },
             violation: {
+               victim_age_range: casual.random_element(AGE_RANGES),
                continuing: casual.boolean,
                details: casual.text,
                location: casual.text,

@@ -11,7 +11,7 @@ import CaseUpdateEditor from "./CaseUpdateEditor";
 import TimeAgo from 'react-timeago';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { requestConfirmation } from '../utils'
+import { ageRangeToWords, requestConfirmation } from '../utils'
 import CloseIcon from '@mui/icons-material/Close';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import IosShareIcon from '@mui/icons-material/IosShare';
@@ -533,6 +533,15 @@ export default class Case extends Component {
             );
          }
 
+         let victimAgeRange;
+
+         if (violation.victim_age_range) {
+            victimAgeRange = <InfoPiece
+               label="VICTIM AGE RANGE"
+               info={ageRangeToWords(violation.victim_age_range)}
+            />
+      }
+
          const violationSectionBody = <>
          
             <p className="text-sm my-3 text-gray-600 mb-3">
@@ -554,6 +563,8 @@ export default class Case extends Component {
                   label="Still continuing"
                   info={violation.continuing ? 'YES' : 'NO'}
                />
+
+               {victimAgeRange}
             </div>
 
          </>

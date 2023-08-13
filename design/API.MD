@@ -202,7 +202,12 @@
       institution_name: String,
    },
    violation: {
-      date: String | Array<String>,
+      date: {
+         year: Number,
+         month: Number,
+         day: Number,
+      },
+      victim_age_range: String,
       continuing: Boolean,
       nature: String,
       nature_gender: String,

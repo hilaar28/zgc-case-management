@@ -1,6 +1,6 @@
 
 const mongoose = require("mongoose");
-const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES } = require("../constants");
+const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES, AGE_RANGES } = require("../constants");
 
 
 const caseUpdateSchema = new mongoose.Schema({
@@ -73,6 +73,11 @@ const schema = new mongoose.Schema({
          year: Number,
          month: Number,
          day: Number,
+      },
+      victim_age_range: {
+         type: String,
+         enum: AGE_RANGES,
+         required: true,
       },
       continuing: Boolean,
       details: {

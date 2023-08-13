@@ -6,7 +6,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const axios = require('axios');
 const { default: mongoose } = require('mongoose');
-const { USER_ROLES, GENDER, MARITAL_STATUS, CASE_SOURCES, PROVINCES } = require('../../constants');
+const { USER_ROLES, GENDER, MARITAL_STATUS, CASE_SOURCES, PROVINCES, AGE_RANGES } = require('../../constants');
 const Case = require('../../db/Case');
 
 
@@ -119,6 +119,7 @@ function createCase(attributes={}) {
             month: casual.integer(1, 12),
             day: casual.integer(1, 28),
          },
+         victim_age_range: casual.random_element(AGE_RANGES),
          continuing: casual.boolean,
          details: casual.text,
          location: casual.text,
