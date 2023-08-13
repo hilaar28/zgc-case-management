@@ -5,7 +5,7 @@ import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraSelect from "./ChakraSelect";
 import ChakraTextBox from "./ChakraTextbox";
 import DateInput from "./DateInput";
-import { ageRangeToWords } from "../utils";
+import { ageRangeToWords, ageToAgeRange } from "../utils";
 
 
 export default function ViolationDetailsForm(props) {
@@ -14,6 +14,28 @@ export default function ViolationDetailsForm(props) {
    const date = <DateInput
       id="txt-date"
       label="When did the violation happen?"
+      onChange={
+         (date) => {
+
+            if (!props.victimDOB)
+               return;
+            if (!date)
+               return;
+
+            const txtVictimAgeRange = document.getElementById('txt-victim-age-range'); 
+            if (!txtVictimAgeRange)
+               return;
+
+            let { year, month=1, day=1 } = date;
+            month = month - 1;
+
+            const violationDate = new Date(year, month, day);
+            const dob = new Date(props.victimDOB);
+            const age = violationDate.getFullYear() - dob.getFullYear();
+            const ageRange = ageToAgeRange(age);
+            txtVictimAgeRange.value = ageRange;
+         }
+      }
    />
 
    const victimAgeRange = <ChakraSelect

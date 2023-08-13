@@ -244,8 +244,10 @@ class UnconnectedCaseEditor extends Component {
       /// age range
       const victim_age_range = txtVictimAgeRange ? txtVictimAgeRange.value : undefined;
 
-      if (!victim_age_range)
+      if (!victim_age_range) {
+         txtVictimAgeRange.focus();
          throw new Error('Victim age range is required');
+      }
       
       /// continuing
       const continuing = txtContinuing ? txtContinuing.checked : undefined;
@@ -697,6 +699,15 @@ class UnconnectedCaseEditor extends Component {
 
                <ViolationDetailsForm
                   electoral={formIsElectoral}
+                  victimDOB={
+                     (() => {
+
+                        const victim = this.state.victim || this.state.applicant;
+
+                        if (victim && victim.dob)
+                           return victim.dob;
+                     })()
+                  }
                />
             </>
             break;

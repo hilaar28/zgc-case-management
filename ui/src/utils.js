@@ -1,5 +1,6 @@
 import swal from "sweetalert";
 import { LOCAL_STORAGE_KEY } from "@xavisoft/auth/constants";
+import { AGE_RANGES } from "./backend-constants";
 
 function requestConfirmation({
    question,
@@ -109,28 +110,52 @@ function getMidnightTimestamp(date) {
 
 function ageRangeToWords(range) {
 
-   if (range.charAt(0) === '<') {
-      return `Under ${range.substring(1)}`
-   } 
+   const [ lo, hi ] = decodeAgeRange(range);
+
+   if (lo === 0)
+      return `Under ${hi}`;
+
+   if (hi === Infinity)
+      return `${lo} and above`;
+
+   return `${lo} to ${hi}`;
+
+
+}
+
+function decodeAgeRange(range) {
+   if (range.charAt(0) === '<') 
+      return [ 0, parseInt(range.substring(1))];
 
    const [ lo, hi ] = range.split('_');
 
    if (lo && hi)
-      return `${lo} to ${hi}`
+      return [ parseInt(lo), parseInt(hi) ];
    
    const splitted = range.split('+');
 
-   if (splitted.length === 2 && splitted[1] === '') {
-      return `Over ${splitted[0]}`
-   }
+   if (splitted.length === 2 && splitted[1] === '')
+      return [ parseInt(splitted[0]), Infinity ]
 
    throw new Error('Invalid range');
+}
 
+function ageToAgeRange(age) {
+
+   for (const i in AGE_RANGES) {
+      const range = AGE_RANGES[i];
+      const [ lo, hi ] = decodeAgeRange(range);
+
+      if (age >= lo && age <= hi) {
+         return range;
+      }
+   }
 }
 
 
 export {
    ageRangeToWords,
+   ageToAgeRange,
    convertEpochToYYYYMMDD,
    decodeJWT,
    delay,

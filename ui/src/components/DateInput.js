@@ -168,7 +168,7 @@ export default class DateInput extends Component {
                {
                   months.map(value => {
                      return <option key={value} value={value}>
-                        {value}
+                        {String(value).padStart(2, '0')}
                      </option>
                   })
                }
@@ -179,7 +179,7 @@ export default class DateInput extends Component {
                {
                   days.map(value => {
                      return <option key={value} value={value}>
-                        {value}
+                        {String(value).padStart(2, '0')}
                      </option>
                   })
                }
