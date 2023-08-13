@@ -593,7 +593,7 @@ cases.post('/:id/referral', async (req, res) => {
 
       // update
       const $set = {
-         status: CASE_STATUS.REFERRED,
+         status: CASE_STATUS.IN_PROGRESS,
          referred_to: req.body.refer_to,
       }
 

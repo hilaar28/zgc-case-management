@@ -25,7 +25,7 @@ export default class ReferCase extends Component {
 
          showLoading();
          await request.post(`/api/cases/${this.props.caseId}/referral`, { refer_to });
-         this.props.close({ referred_to: refer_to, status: CASE_STATUS.REFERRED });
+         this.props.close({ referred_to: refer_to, status: CASE_STATUS.IN_PROGRESS });
 
       } catch (err) {
          swal(String(err))

@@ -459,7 +459,7 @@ suite("API Tests", function () {
          // check db
          case_ = await Case.findById(case_._id);
 
-         assert.equal(case_.status, CASE_STATUS.REFERRED);
+         assert.equal(case_.status, CASE_STATUS.IN_PROGRESS);
          assert.equal(case_.referred_to, payload.refer_to);
 
       });
