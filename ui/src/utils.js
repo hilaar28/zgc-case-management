@@ -70,6 +70,9 @@ function delay(millis) {
 function objectToQueryString(obj={}) {
    return Object
       .keys(obj)
+      .filter(key => {
+         return !!obj[key]
+      })
       .map(key => {
          return `${key}=${obj[key]}`
       }).join('&');

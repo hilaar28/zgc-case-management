@@ -6,10 +6,11 @@ import request from "../request";
 import { Pie } from 'react-chartjs-2';
 import {Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import DatePicker from "../components/DatePicker";
 import TimelineIcon from '@mui/icons-material/Timeline';
 import CaseTrend from "../components/CaseTrend";
 import { getMidnightTimestamp, objectToQueryString } from "../utils";
+import EditIcon from "@mui/icons-material/Edit";
+import CaseFilter from "../components/CaseFilter";
 
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -31,7 +32,7 @@ const backgroundColor = [
 
 function Statistic(props) {
 
-   return <div className="bg-gray-50 shadow rounded-xl overflow-hidden pb-6">
+   return <div className="bg-gray-50 shadow rounded-xl overflow-hidden pb-6 h-full min-h-[300px]">
       <div className="bg-orange-600 text-white text-sm font-bold py-2 px-4 uppercase">
          {props.title}
       </div>
@@ -42,6 +43,22 @@ function Statistic(props) {
 
 
 function PieChart(props) {
+
+   const sum = Object
+      .values(props.data)
+      .reduce((sum, current) => sum + current, 0);
+
+   if (sum === 0) {
+      return <div className="h-full vh-align">
+         <div className="text-5xl font-bold text-gray-600">
+            0
+         </div>
+         <div className="ml-2 text-sm">
+            CASES
+         </div>
+      </div>
+   }
+
 
    const labels = [];
    const dataset = {
@@ -62,7 +79,11 @@ function PieChart(props) {
       datasets: [ dataset ],
    }
 
-  return <Pie data={data} />;
+   return <div className="h-align">
+      <div className="w-[70%]">
+         <Pie data={data} />
+      </div>
+   </div>
 };
 
 
@@ -70,9 +91,35 @@ export default class Reports extends Page {
 
    state = {
       summary: null,
-      summaryStatisticsFrom: undefined,
-      summaryStatisticsTo: undefined,
+      summaryStatisticsFilter: {},
+      filterModalOpen: false,
       showingTrend: false,
+   }
+
+   closeFilterModal = async (data) => {
+      const update = { filterModalOpen: false };
+
+      let reload;
+      if (data) {
+         update.summaryStatisticsFilter = data;
+         
+         const keys = Object.keys(data);
+
+         for (let i in keys) {
+            const key = keys[i];
+            
+            if (data[key] !== this.state.summaryStatisticsFilter[key]) {
+               reload = true;
+               break;
+            }
+         }
+      }
+
+      await this.updateState(update);
+
+      if (reload)
+         await this.fetchSummaryStatistics();
+
    }
 
    fetchSummaryStatistics = async () => {
@@ -81,18 +128,23 @@ export default class Reports extends Page {
 
          showLoading();
 
-         let query = {};
+         // build query
+         const { from, to, status, age_range, province, gender } = this.state.summaryStatisticsFilter;
+         let query = { status, age_range, province, gender };
+         
 
-         if (this.state.summaryStatisticsFrom)
-            query.from = getMidnightTimestamp(this.state.summaryStatisticsFrom);
+         if (from)
+            query.from = getMidnightTimestamp(from);
 
-         if (this.state.summaryStatisticsTo)
-            query.to = getMidnightTimestamp(this.state.summaryStatisticsTo) + 24 * 3600 * 1000 - 1;
+         if (to)
+            query.to = getMidnightTimestamp(to) + 24 * 3600 * 1000 - 1;
 
          query = objectToQueryString(query);
 
          const res = await request.get(`/api/cases/summary?${query}`);
          const summary = res.data;
+
+         console.log(summary);
          this.updateState({ summary });
 
       } catch (err) {
@@ -113,6 +165,7 @@ export default class Reports extends Page {
 
       if (this.state.summary) {
 
+         // modals
          let trendModal;
 
          if (this.state.showingTrend) {
@@ -121,63 +174,113 @@ export default class Reports extends Page {
             />
          }
 
+         let filterModal;
+
+         if (this.state.filterModalOpen) {
+            filterModal = <CaseFilter
+               close={this.closeFilterModal}
+               data={this.state.summaryStatisticsFilter}
+            />
+         }
+
+         // stats
+         /// by gender
+         let byGender;
+         const { gender } = this.state.summary;
+
+         if (gender) {
+            byGender = <Statistic title="CASES BY GENDER">
+               <PieChart 
+                  data={{ 
+                     Male: gender.male, 
+                     Female: gender.female 
+                  }}
+               />
+            </Statistic>
+         }
+
+         /// by status
+         let byStatus;
+         const { status } = this.state.summary;
+
+         if (status) {
+            byStatus = <Statistic title="CASES BY STATUS">
+               <PieChart 
+                  data={status}
+               />
+            </Statistic>
+         }
+
+         /// by province
+         let byProvince;
+         const { province } = this.state.summary;
+
+         if (province) {
+            byProvince = <Statistic title="CASES BY PROVINCE">
+               <PieChart 
+                  data={province}
+               />
+            </Statistic>
+         }
+
+         /// by age range
+         let byAgeRange;
+         const { age_range } = this.state.summary;
+
+         if (age_range) {
+            byAgeRange = <Statistic title="CASES BY AGE RANGE">
+               <PieChart 
+                  data={age_range}
+               />
+            </Statistic>
+         }
+
          jsx = <div className="h-full grid grid-rows-[1fr,auto]">
             <div className="h-full container overflow-auto">
                <div className="h-full">
 
-                  <div className="border-solid border-[1px] border-[#CCC] rounded-xl mt-6 text-center py-2 text-gray-500 text-xs font-bold">
-                     FROM: <DatePicker
-                        value={this.state.summaryStatisticsFrom}
-                        onChange={
-                           async (summaryStatisticsFrom) => {
-                              await this.updateState({ summaryStatisticsFrom });
-                              this.fetchSummaryStatistics();
-                           }
-                        }
-                     />
+                  <div className="border-solid border-[1px] border-[#CCC] rounded-xl mt-6 text-right p-2 text-gray-500 text-xs">
 
-                     <span className="pl-6">TO:</span> <DatePicker
-                        value={this.state.summaryStatisticsTo}
-                        onChange={
-                           async (summaryStatisticsTo) => {
-                              await this.updateState({ summaryStatisticsTo });
-                              this.fetchSummaryStatistics();
-                           }
-                        }
-                     />
+                     <span className="text-sm">
+                        FILTERS
+                     </span>
+
+                     {
+                        Object
+                           .keys(this.state.summaryStatisticsFilter)
+                           .map(key => {
+                              
+                              let value = this.state.summaryStatisticsFilter[key];
+
+                              if (!value)
+                                 return undefined;
+
+                              if (value instanceof Date)
+                                 value = value.toISOString().split('T')[0];
+
+                              return <>
+                                 <span className="font-bold text-gray-600 px-2">
+                                    {key.replace('_', ' ').toUpperCase()}:
+                                 </span>
+                                 <span className="text-gray-600">
+                                    {value}
+                                 </span>
+                              </>
+                           })
+                     }
+
+                     <IconButton onClick={() => this.updateState({ filterModalOpen: true })}>
+                        <EditIcon />
+                     </IconButton>
+
+                     {filterModal}
                   </div>
 
                   <div className="grid grid-cols-2 gap-6 pt-6">
-                     <Statistic title="CASES BY GENDER">
-                        <div className="h-align">
-                           <div className="w-[70%]">
-                              <PieChart 
-                                 data={{ 
-                                    Male: this.state.summary.gender.male, 
-                                    Female: this.state.summary.gender.female 
-                                 }}
-                              />
-                           </div>
-                        </div>
-                     </Statistic>
-                     <Statistic title="CASES BY STATUS">
-                        <div className="h-align">
-                           <div className="w-[70%]">
-                              <PieChart 
-                                 data={this.state.summary.status}
-                              />
-                           </div>
-                        </div>
-                     </Statistic>
-                     <Statistic title="CASES BY PROVINCE">
-                        <div className="h-align">
-                           <div className="w-[70%]">
-                              <PieChart 
-                                 data={this.state.summary.province}
-                              />
-                           </div>
-                        </div>
-                     </Statistic>
+                     {byGender}
+                     {byStatus}
+                     {byProvince}
+                     {byAgeRange}
                   </div>
                </div>
             </div>

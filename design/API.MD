@@ -442,7 +442,20 @@
 ```
 
 ### Get case summary statistics
-**GET** `/api/cases/summary?from=:from&to=:to`
+**GET** `/api/cases/summary`
+
+**expects**:
+```js
+// url query
+{
+   from: Number,
+   to: Number,
+   status: String,
+   age_range: String,
+   gender: String,
+   province: String,
+}
+```
 
 **returns**:
 ```js
@@ -459,7 +472,11 @@
    status: {
       REJECTED: Number,
       ...
-   }
+   },
+   age_range: {
+      "<18": Number,
+      ...
+   },
 }
 ```
 

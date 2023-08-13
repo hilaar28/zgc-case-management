@@ -118,16 +118,11 @@ function canViewReports(req, res, next) {
 }
 
 
-async function countCasesByField(from, to, attr) {
+async function countCasesByField($match, attr) {
 
    const results = await Case.aggregate([
       {
-         $match: {
-            $and: [
-               { createdAt: { $gte: new Date(from) } },
-               { createdAt: { $lte: new Date(to) } }
-            ]
-         },
+         $match,
       },
       {
          $group: {
@@ -233,47 +228,82 @@ cases.get('/summary', canViewReports,async (req, res) => {
       // retrieve stats
       const from = parseInt(req.query.from) || 0
       const to = parseInt(req.query.to) || Date.now();
+      const { gender, status, province, age_range } = req.query;
+
+      const query = {
+         createdAt: {
+            $gte: new Date(from),
+            $lte: new Date(to),
+         },
+      }
+
+      if (gender) {
+         query.$or = [
+            { "victim.gender": gender, },
+            {
+               victim: {
+                  $exists: false,
+               },
+               "applicant.gender": gender,
+            }
+         ];
+      }
+
+      if (status) {
+         query.status = status;
+      }
+
+      if (province)
+         query.province = province;
+
+      if (age_range) {
+         query["violation.victim_age_range"] = age_range;
+      }
+
+      const statistics = {}
 
       /// gender
-      const male = await Case
-         .countDocuments({
+      if (!gender) {
+         const male = await Case
+            .countDocuments({
+               ...query,
+               $or: [
+                  { "victim.gender": GENDER.MALE, },
+                  {
+                     victim: {
+                        $exists: false,
+                     },
+                     "applicant.gender": GENDER.MALE,
+                  }
+               ],
+            });
+         
+         const count = await Case.countDocuments({
             $and: [
                { createdAt: { $gte: new Date(from) } },
                { createdAt: { $lte: new Date(to) } }
             ],
-            $or: [
-               { "victim.gender": GENDER.MALE, },
-               {
-                  victim: {
-                     $exists: false,
-                  },
-                  "applicant.gender": GENDER.MALE,
-               }
-            ],
          });
-      
-      const count = await Case.countDocuments({
-         $and: [
-            { createdAt: { $gte: new Date(from) } },
-            { createdAt: { $lte: new Date(to) } }
-         ],
-      });
-      const female = count - male;
 
-      const gender = { male, female };
+         const female = count - male;
+         statistics.gender = { male, female };
+
+      }
       
       /// location
-      const province = await countCasesByField(from, to, "province");
+      if (!province)
+         statistics.province = await countCasesByField(query, "province");
 
       /// status
-      const status = await countCasesByField(from, to, "status");
+      if (!status)
+         statistics.status = await countCasesByField(query, "status");
+
+      /// age range
+      if (!age_range)
+         statistics.age_range = await countCasesByField(query, "violation.victim_age_range");
    
       // respond
-      res.send({
-         gender,
-         province,
-         status,
-      });
+      res.send(statistics);
 
    } catch (err) {
       status_500(err, res);

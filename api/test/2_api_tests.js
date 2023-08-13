@@ -740,6 +740,7 @@ suite("API Tests", function () {
             },
             province: generateSchemaObjectFromKeyList(Object.values(PROVINCES), Joi.number().integer()),
             status: generateSchemaObjectFromKeyList(Object.values(CASE_STATUS), Joi.number().integer()),
+            age_range: generateSchemaObjectFromKeyList(AGE_RANGES, Joi.number().integer()),
          };
 
          const error = Joi.getError(res.body, schema);
