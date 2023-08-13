@@ -424,12 +424,12 @@ export default class Case extends Component {
          const { victim, applicant, defendant } = this.state.case_;
 
          const applicantDetails = <PersonalDetails
-            title="APPLICANT"
+            title={"COMPLAINANT" + (victim ? " REPRESENTATIVE" : "")}
             details={applicant}
          />
 
          const defendantDetails = <PersonalDetails
-            title="DEFENDANT"
+            title="CORRESPONDENT"
             details={defendant}
          />
 
@@ -437,7 +437,7 @@ export default class Case extends Component {
 
          if (victim) {
             victimDetails = <PersonalDetails
-               title="VICTIM"
+               title="COMPLAINANT"
                details={victim}
             />
          }
@@ -537,7 +537,7 @@ export default class Case extends Component {
 
          if (violation.victim_age_range) {
             victimAgeRange = <InfoPiece
-               label="VICTIM AGE RANGE"
+               label="COMPLAINANT AGE"
                info={ageRangeToWords(violation.victim_age_range)}
             />
       }

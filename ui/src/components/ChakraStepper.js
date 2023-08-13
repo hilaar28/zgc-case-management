@@ -16,7 +16,7 @@ export default function ChakraStepper(props) {
           </StepIndicator>
 
           <Box flexShrink='0'>
-            <StepTitle>{step.title}</StepTitle>
+            <StepTitle >{step.title}</StepTitle>
             <StepDescription>{step.description}</StepDescription>
           </Box>
 

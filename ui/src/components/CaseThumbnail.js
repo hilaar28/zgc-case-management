@@ -37,7 +37,7 @@ export default function CaseThumbnail(props) {
 
       if (victim) {
          victimInfoPiece = <InfoPiece
-            label="Victim"
+            label="Complainant"
             info={`${victim.name} ${victim.surname}`}
          />
       }
@@ -64,7 +64,7 @@ export default function CaseThumbnail(props) {
 
       if (defendant) {
          defendantInfoPiece = <InfoPiece
-            label="Defendant"
+            label="Correspondent"
             info={`${defendant.name} ${defendant.surname}`}
          />
       }

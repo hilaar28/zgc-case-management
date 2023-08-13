@@ -147,7 +147,7 @@ export default class PersonalDetailsForm extends Component {
 
       const relationshipToVictim = <ChakraTextBox
          id='txt-relationship-to-victim'
-         label="Relationship to victim"
+         label="Relationship to complainant"
       />
 
       const relationshipToIncident = <ChakraAutoComplete
@@ -166,7 +166,7 @@ export default class PersonalDetailsForm extends Component {
 
       const whyCompletingFormOnBehalf = <ChakraTextBox
          id='txt-why-completing-form-on-behalf'
-         label="Why are you completing the form on behalf of the victim?"
+         label="Why are you completing the form on behalf of the complainant?"
          multiline
       />
 

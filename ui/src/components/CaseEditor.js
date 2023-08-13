@@ -75,8 +75,8 @@ async function getFilesData(files) {
 // constants
 const steps = [
    { title: 'Applicant', _description: 'Information about the person reporting the case' },
-   { title: 'Victim', _description: 'Information about the victim' },
-   { title: 'Defendant', _description: 'Information about the person/institution being accused' },
+   { title: 'Complainant', _description: 'Information about the victim' },
+   { title: 'Correspondent', _description: 'Information about the person/institution being accused' },
    { title: 'Violation', _description: 'Details about the violation' },
    { title: 'More', }
 ]
@@ -631,7 +631,7 @@ class UnconnectedCaseEditor extends Component {
                <Divider className='mt-5' />
 
                <div className='text-lg text-gray-600 font-extrabold mt-5'>
-                  APPLICANT DETAILS
+                  COMPLAINANT REPRESENTATIVE DETAILS
                </div>
 
                <PersonalDetailsForm 
@@ -656,7 +656,7 @@ class UnconnectedCaseEditor extends Component {
                form = <>
 
                   <div className='text-lg text-gray-600 font-extrabold mt-5'>
-                     VICTIM DETAILS
+                     COMPLAINANT DETAILS
                   </div>
 
                   <div className='mt-4'>
@@ -679,7 +679,7 @@ class UnconnectedCaseEditor extends Component {
             form = <>
 
                <div className='text-lg text-gray-600 font-extrabold mt-5'>
-                  DEFENDANT DETAILS
+                  CORRESPONDENT DETAILS
                </div>
 
                <PersonalDetailsForm 

@@ -40,7 +40,7 @@ export default function ViolationDetailsForm(props) {
 
    const victimAgeRange = <ChakraSelect
       id="txt-victim-age-range"
-      label="Victim age at time of incident"
+      label="Complainant age at time of incident"
       allowDefaultEmptySelection
    >
       {
