@@ -114,7 +114,11 @@ function createCase(attributes={}) {
          friend_phone: casual.phone,
       },
       violation: {
-         date: casual.date('YYYY-MM-DD'),
+         date: {
+            year: casual.integer(1000, 2023),
+            month: casual.integer(1, 12),
+            day: casual.integer(1, 28),
+         },
          continuing: casual.boolean,
          details: casual.text,
          location: casual.text,

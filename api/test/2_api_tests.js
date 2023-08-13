@@ -227,7 +227,6 @@ suite("API Tests", function () {
                friend_phone: casual.phone,
             },
             violation: {
-               date: [ casual.date('YYYY-MM-DD') ],
                continuing: casual.boolean,
                details: casual.text,
                location: casual.text,

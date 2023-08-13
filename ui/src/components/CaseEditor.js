@@ -258,9 +258,9 @@ class UnconnectedCaseEditor extends Component {
       const location = txtLocation ? txtLocation.value : undefined; // location
       const witness_details = txtWitnessDetails ? txtWitnessDetails.value : undefined; // witness details
       const impact = txtImpact ? txtImpact.value : undefined; // impact
-
+      
       const data = {
-         date: [ date ],
+         date,
          continuing,
          nature,
          nature_gender,
@@ -497,7 +497,7 @@ class UnconnectedCaseEditor extends Component {
       
       // get all input elements
       const divForm = document.getElementById('div-form-container');
-      const inputs = Array.from(divForm.querySelectorAll('input, textarea, select'));
+      const inputs = Array.from(divForm.querySelectorAll('input, textarea, select, [data-input]'));
 
       // hydrate
       for (let i in inputs) {

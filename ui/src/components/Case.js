@@ -476,17 +476,22 @@ export default class Case extends Component {
             
             let info;
 
-            if (Array.isArray(violation.date)) {
-               if (violation.date.length > 0) {
-                  info = violation.date.join(', ');
+            const { year, month, day } = violation.date;
+
+            if (year) {
+               info = String(year);
+
+               if (month) {
+                  info += `/${String(month).padStart(2, '0')}`;
+
+                  if (day)
+                     info += `/${String(day).padStart(2, '0')}`;
                }
-            } else {
-               info = violation.date;
             }
 
             if (info) {
                violationDates = <InfoPiece
-                  label="DATE(S)"
+                  label="DATE"
                   info={info}
                />
             }

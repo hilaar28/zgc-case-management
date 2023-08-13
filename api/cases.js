@@ -43,7 +43,11 @@ const caseJoiSchema = {
    }),
    victim: Joi.object().keys(personalDetailsSchema),
    violation: Joi.object({
-      date: Joi.array().items(Joi.date()),
+      date: Joi.object().keys({
+         year: Joi.number().integer(),
+         month: Joi.number().integer(),
+         day: Joi.number().integer(),
+      }),
       continuing: Joi.boolean(),
       details: Joi.string(),
       location: Joi.string(),

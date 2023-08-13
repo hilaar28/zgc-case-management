@@ -70,7 +70,9 @@ const schema = new mongoose.Schema({
    },
    violation: {
       date: {
-         type: [ Date ]
+         year: Number,
+         month: Number,
+         day: Number,
       },
       continuing: Boolean,
       details: {

@@ -4,15 +4,15 @@ import ChakraAutoComplete from "./ChakraAutoComplete";
 import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraSelect from "./ChakraSelect";
 import ChakraTextBox from "./ChakraTextbox";
+import DateInput from "./DateInput";
 
 
 export default function ViolationDetailsForm(props) {
 
    // define fields
-   const date = <ChakraTextBox
+   const date = <DateInput
       id="txt-date"
       label="When did the violation happen?"
-      type="date"
    />
 
    const continuing = <ChakraCheckbox
