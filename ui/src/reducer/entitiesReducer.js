@@ -82,10 +82,10 @@ function createEntityReducer(Entity) {
             const idBeingDeleted = action.payload
             delete entities[idBeingDeleted];
             entities = { ...entities }
-            return entities
+            return entities;
 
          case `set-${Entity.key}`:
-            return action.payload || {}
+            return action.payload;
       
          default:
             return entities;

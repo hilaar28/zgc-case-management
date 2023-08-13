@@ -2,6 +2,8 @@
 
 import axios from 'axios';
 import initAuth from '@xavisoft/auth/frontend';
+import { schemaList } from './reducer/schema';
+import actions from './actions';
 
 
 class AxiosError extends Error {
@@ -47,6 +49,11 @@ request.interceptors.response.use(null, err => {
 request.interceptors.response.use(null, err => {
 
    if (err.status === 401) {
+
+      schemaList.forEach(Entity => {
+         actions.setEntities(Entity, null);
+      });
+
       window.App.redirect('/login');
    }
 

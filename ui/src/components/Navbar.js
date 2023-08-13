@@ -16,6 +16,7 @@ import QuitIcon from '@mui/icons-material/Logout';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { deleteAuthTokens } from '../utils';
 import actions from "../actions";
+import { schemaList } from "../reducer/schema";
 
 
 const StyledMenu = styled((props) => (
@@ -176,6 +177,11 @@ function logout() {
    deleteAuthTokens();
    actions.setAuthenticated(false);
    actions.setUser(null);
+
+   schemaList.forEach(Entity => {
+      actions.setEntities(Entity, null);
+   });
+
    window.App.redirect('/login');
 }
 
