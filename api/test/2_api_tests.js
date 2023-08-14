@@ -311,6 +311,7 @@ suite("API Tests", function () {
                   name: Joi.string().required(),
                   surname: Joi.string().required(),
                }).allow(null),
+               createdAt: Joi.string().isoDate().required(),
             }),
             count: Joi.number().integer(),
          }
@@ -617,6 +618,7 @@ suite("API Tests", function () {
             email: Joi.string().email().required(),
             role: Joi.valid(...Object.values(USER_ROLES)).required(),
             createdAt: Joi.date().required(),
+            case_duration: Joi.number().integer().required(),
          };
 
          const error = Joi.getError(res.body, schema);

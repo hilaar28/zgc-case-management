@@ -5,6 +5,7 @@ import OpenIcon from '@mui/icons-material/Launch';
 import { Chip } from "@mui/material";
 import { Divider, IconButton } from "@mui/material";
 import Case from "./Case";
+import { connect } from "react-redux";
 
 
 function InfoPiece(props) {
@@ -20,7 +21,7 @@ function InfoPiece(props) {
 }
 
 
-export default function CaseThumbnail(props) {
+function UnconnectedCaseThumbnail(props) {
 
    const [ expanded, setExpanded ] = useState(false);
    const [ showingFullCase, setShowingFullCase ] = useState(false);
@@ -120,7 +121,14 @@ export default function CaseThumbnail(props) {
       </div>
    }
 
-   return <div className="py-4 px-3">
+   const DAY_MILLIS = 24 * 3600 * 1000;
+   const createdAtDate = new Date(props.createdAt);
+   const today = new Date();
+   const diffMillis = today - createdAtDate;
+   const diffDays = diffMillis / DAY_MILLIS;
+   const overdue = diffDays >= props.caseDuration;
+
+   return <div className={`pt-8 px-3 ${overdue ? 'bg-red-50' : ''}`}>
       <div className="grid grid-cols-[1fr,auto]">
          <div>
 
@@ -151,6 +159,15 @@ export default function CaseThumbnail(props) {
 
       {expandedJSX}
 
-      <Divider className="my-4" />
+      <Divider className="mt-4" />
    </div>
 }
+
+
+const mapStateToProps = state => {
+   const caseDuration = (state.user || {}).case_duration || 10;
+   return { caseDuration }
+}
+
+const CaseThumbnail = connect(mapStateToProps)(UnconnectedCaseThumbnail);
+export default CaseThumbnail;

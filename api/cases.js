@@ -182,6 +182,7 @@ cases.get('/', async (req, res) => {
       // retrieve
       const where = {};
 
+      /// authorization
       if (req.auth.user.role === USER_ROLES.AGENT) {
          where.recorded_by = req.auth.user._id;
       } else if (req.auth.user.role === USER_ROLES.CASE_OFFICER) {
@@ -190,6 +191,17 @@ cases.get('/', async (req, res) => {
 
       if (req.query.status) {
          where.status = req.query.status
+      }
+
+      if (req.query.overdue) {
+
+         const caseDurationDaysAgo = new Date();
+         const caseDurationDays = parseInt(process.env.CASE_DURATION);
+         caseDurationDaysAgo.setDate(caseDurationDaysAgo.getDate() - caseDurationDays);
+
+         where.status = { $ne: CASE_STATUS.RESOLVED };
+         where.createdAt = { $lte: caseDurationDaysAgo };
+
       }
 
       const offset = parseInt(req.query.offset) || 0;
@@ -202,7 +214,7 @@ cases.get('/', async (req, res) => {
       const cases = await Case
          .find()
          .where(where)
-         .select("_id title applicant.name applicant.surname defendant.name defendant.surname victim.name victim.surname violation.details status ")
+         .select("_id title applicant.name applicant.surname defendant.name defendant.surname victim.name victim.surname violation.details status createdAt")
          .skip(offset)
          .limit(limit)
          .sort({ createdAt: -1 })

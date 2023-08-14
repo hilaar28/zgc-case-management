@@ -22,6 +22,7 @@ const BASE_KEYS = [
    'PORT',
    'SUPER_USER_EMAIL',
    'SUPER_USER_PASSWORD',
+   'CASE_DURATION',
 ];
 
 

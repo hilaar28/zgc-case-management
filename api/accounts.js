@@ -34,9 +34,12 @@ accounts.get('/', async (req, res) => {
       // retrieve data
       const userId = req.auth.user._id;
       const user = await User.findById(userId).select('-password -updatedAt -__v');
+      const data = user.toObject();
+
+      data.case_duration = parseInt(process.env.CASE_DURATION);
 
       // respond
-      res.send(user);
+      res.send(data);
 
    } catch (err) {
       status_500(err, res);

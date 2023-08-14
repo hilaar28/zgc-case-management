@@ -239,9 +239,17 @@
 ```
 
 ### Retrieve cases
-**GET** `/api/cases/?offset=:offset&limit=:limit&status=:status`
+**GET** `/api/cases`
 
 ```js
+// url query
+{
+   offset: Number,
+   limit: Number,
+   status: String,
+   overdue: boolean,
+}
+
 // body
 {
    cases: [

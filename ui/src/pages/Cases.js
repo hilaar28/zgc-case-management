@@ -8,11 +8,12 @@ import { normalize } from 'normalizr';
 import { Case as CaseSchema } from '../reducer/schema';
 import actions from '../actions';
 import CaseThumbnail from '../components/CaseThumbnail';
-import { Button, Fab, IconButton, MenuItem, Pagination, Select } from '@mui/material';
+import { Button, Checkbox, Fab, IconButton, MenuItem, Pagination, Select } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { CASE_STATUS } from '../backend-constants';
 import capitalize from 'capitalize';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { objectToQueryString } from '../utils';
 
 const PAGE_SIZE = 50;
 const ALL_STATUS_FILTER = 'all';
@@ -25,9 +26,10 @@ class UnconnectedCases extends Page {
       page: 1,
       numberOfCases: 1,
       status: ALL_STATUS_FILTER,
+      showOverdueOnly: false,
    }
 
-   fetchCases = async (page=this.state.page, status=this.state.status) => {
+   fetchCases = async (page=this.state.page, status=this.state.status, showOverdueOnly=this.state.showOverdueOnly) => {
 
       try {
 
@@ -35,13 +37,23 @@ class UnconnectedCases extends Page {
 
          const offset = (page - 1) * PAGE_SIZE;
          const statusFilter = status === ALL_STATUS_FILTER ? '' : status;
-         const res = await request.get(`/api/cases?offset=${offset}&limit=${PAGE_SIZE}&status=${statusFilter}`);
+         const overdue = showOverdueOnly ? true: undefined;
 
-         const normalizedCases = normalize(res.data.cases, [ CaseSchema ]);
-         actions.setEntities(CaseSchema, normalizedCases.entities.cases);
+         const queryOptions = {
+            offset,
+            status: statusFilter,
+            overdue,
+            limit: PAGE_SIZE,
+         }
+
+         const queryString = objectToQueryString(queryOptions)
+         const res = await request.get(`/api/cases?${queryString}`);
+
+         const normalizedCases = normalize(res.data.cases, [ CaseSchema ]).entities[CaseSchema.key] || {};
+         actions.setEntities(CaseSchema, normalizedCases);
 
          const numberOfCases = res.data.count;
-         this.updateState({ numberOfCases, page, status });
+         this.updateState({ numberOfCases, page, status, showOverdueOnly });
 
       } catch (err) {
          swal(String(err));
@@ -120,6 +132,14 @@ class UnconnectedCases extends Page {
                         ))
                   }
                </Select>
+
+               <div className='inline-block mx-3'>
+                  <Checkbox
+                     onChange={e => this.fetchCases(1, ALL_STATUS_FILTER, e.target.checked)}
+                     checked={this.state.showOverdueOnly}
+                  />
+                  <span className='text-sm font-bold'>Only show overdue</span>
+               </div>
 
                <IconButton className='ml-5 text-3xl' onClick={this.fetchCases}>
                   <RefreshIcon fontSize='inherit' />

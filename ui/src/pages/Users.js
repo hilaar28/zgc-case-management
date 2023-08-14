@@ -124,7 +124,7 @@ class UnconnectedUsers extends Page {
          
          const res = await request.get('/api/users');
          const users = res.data;
-         const normalizedUsers = normalize(users, [ UserSchema ]).entities[UserSchema.key];
+         const normalizedUsers = normalize(users, [ UserSchema ]).entities[UserSchema.key] || {};
          actions.setEntities(UserSchema, normalizedUsers);
 
       } catch (err) {
