@@ -17,6 +17,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { deleteAuthTokens } from '../utils';
 import actions from "../actions";
 import { schemaList } from "../reducer/schema";
+import KeyIcon from '@mui/icons-material/Key';
+import UpdatePassword from "./UpdatePassword";
 
 
 const StyledMenu = styled((props) => (
@@ -106,6 +108,19 @@ function DropDown(props) {
          <Divider sx={{ my: 0.5 }} />
 
          {goToMenu}
+
+         <MenuItem 
+            onClick={
+               () => {
+                  props.openUpdatePasswordModal();
+                  handleClose()
+               }
+            } 
+            disableRipple
+         >
+            <KeyIcon />
+            Update password
+         </MenuItem>
 
          <MenuItem 
             onClick={
@@ -205,10 +220,19 @@ class NavbarUnconnected extends Component {
 
    state = {
       mobileNavOpen: false,
+      updatePasswordModalOpen: false,
+   }
+
+   openUpdatePasswordModal = () => {
+      return this.updateState({ updatePasswordModalOpen: true });
+   }
+
+   closeUpdatePasswordModal = () => {
+      return this.updateState({ updatePasswordModalOpen: false });
    }
 
    openMobileNav = () => {
-      return this.updateState({ mobileNavOpen: true })
+      return this.updateState({ mobileNavOpen: true });
    }
 
    closeMobileNav = () => {
@@ -256,33 +280,45 @@ class NavbarUnconnected extends Component {
          </>
       }
 
-      return <AppBar id="navbar" className="bg-transparent">
-         <div className="grid grid-cols-[1fr,auto] m-2">
-            <div className="v-align">
-               <img
-                  src={logo}
-                  alt=""
-                  className="w-[150px]"
-               />
+      let updatePasswordModal;
 
-               <div className="ml-2 text-3xl text-orange-700 font-extrabold">
-                  CASE MANAGEMENT 
-               </div>
+      if (this.state.updatePasswordModalOpen) {
+         updatePasswordModal = <UpdatePassword
+            close={this.closeUpdatePasswordModal}
+         />
+      }
 
-               {pageTitle}
-
-            </div>
-
-            <div className="h-full v-align ">
-               <div className="w-full text-right">
-                  <DropDown 
-                     user={this.props.user} 
-                     currentRoute={this.props.currentRoute}
+      return <>
+         <AppBar id="navbar" className="bg-transparent">
+            <div className="grid grid-cols-[1fr,auto] m-2">
+               <div className="v-align">
+                  <img
+                     src={logo}
+                     alt=""
+                     className="w-[150px]"
                   />
+
+                  <div className="ml-2 text-3xl text-orange-700 font-extrabold">
+                     CASE MANAGEMENT 
+                  </div>
+
+                  {pageTitle}
+
+               </div>
+
+               <div className="h-full v-align ">
+                  <div className="w-full text-right">
+                     <DropDown 
+                        user={this.props.user} 
+                        currentRoute={this.props.currentRoute}
+                        openUpdatePasswordModal={this.openUpdatePasswordModal}
+                     />
+                  </div>
                </div>
             </div>
-         </div>
-      </AppBar>
+         </AppBar>
+         {updatePasswordModal}
+      </>
    }
 }
 
