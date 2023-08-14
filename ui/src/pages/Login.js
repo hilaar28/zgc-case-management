@@ -10,8 +10,21 @@ import { decodeJWT } from "../utils";
 import { getAuthToken } from '@xavisoft/auth/frontend/utils';
 import { delay } from "../utils";
 import logo from '../media/img/logo.png';
+import ResetPassword from "../components/ResetPassword";
 
 export default class Login extends Page {
+
+   state = {
+      resetPasswordModalOpen: false
+   }
+
+   openResetPasswordModal = () => {
+      this.updateState({ resetPasswordModalOpen: true })
+   }
+
+   closeResetPasswordModal = () => {
+      this.updateState({ resetPasswordModalOpen: false })
+   }
 
    login = async () => {
 
@@ -57,48 +70,63 @@ export default class Login extends Page {
 
    _render() {
 
-      return <div className="page-size">
+      let resetPasswordModal;
 
-         <div className="h-full w-full vh-align">
-            <div
-               id="div-form" 
-               className="w-[90%] max-w-[400px] rounded-xl p-3 [&>*]:my-3 shadow-lg bg-gray-100"
-            >
+      if (this.state.resetPasswordModalOpen) {
+         resetPasswordModal = <ResetPassword
+            close={this.closeResetPasswordModal}
+         />
+      }
 
-               <div>
-                  <img src={logo} alt="" className="w-[90%]" />
+      return <>
+         {resetPasswordModal}
+         <div className="page-size">
+
+            <div className="h-full w-full vh-align">
+               <div
+                  id="div-form" 
+                  className="w-[90%] max-w-[400px] rounded-xl p-3 [&>*]:my-3 shadow-lg bg-gray-100"
+               >
+
+                  <div>
+                     <img src={logo} alt="" className="w-[90%]" />
+                  </div>
+               
+                  <span className="block text-xl text-gray-500 text-center font-bold">
+                     CASE MANAGEMENT SYSTEM
+                  </span>
+
+                  <TextField
+                     id="txt-email"
+                     label="Email"
+                     fullWidth
+                     variant="filled"
+                     size="small"
+                     type="email"
+                  />
+
+                  <TextField
+                     id="txt-password"
+                     label="Password"
+                     fullWidth
+                     variant="filled"
+                     size="small"
+                     type="password"
+                  />
+
+                  <Button variant="contained" size="large" className="bg-orange-500 rounded-2xl" onClick={this.login} fullWidth>
+                     LOGIN 
+                  </Button>
+
+                  <div className="text-center text-blue-600 underline cursor-pointer" onClick={this.openResetPasswordModal}>
+                     Reset password
+                  </div>
+
                </div>
-            
-               <span className="block text-xl text-gray-500 text-center font-bold">
-                  CASE MANAGEMENT SYSTEM
-               </span>
-
-               <TextField
-                  id="txt-email"
-                  label="Email"
-                  fullWidth
-                  variant="filled"
-                  size="small"
-                  type="email"
-               />
-
-               <TextField
-                  id="txt-password"
-                  label="Password"
-                  fullWidth
-                  variant="filled"
-                  size="small"
-                  type="password"
-               />
-
-               <Button variant="contained" size="large" className="bg-orange-500 rounded-2xl" onClick={this.login} fullWidth>
-                  LOGIN 
-               </Button>
-
             </div>
+            
          </div>
-         
-      </div>
+      </>
    }
 }
 

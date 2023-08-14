@@ -126,11 +126,9 @@ accounts.post('/password-reset', async (req, res) => {
          await temp.save({ session });
 
          // send new password to email
-         const link = `${process.env.SYSTEM_URL}/reset-password/${temp._id}`;
-         
          let text = `Hi ${capitalize.words(user.name)},\n\n`;
-         text += `We received a request to reset your password. The new password is "${password}". Click the link below to activate it:\n`;
-         text += link;
+         text += `We received a request to reset your password. The new password is "${password}". Copy and paste the code below to activate it:\n\n`;
+         text += temp._id;
 
          const to = email;
          const subject = 'Password reset';
