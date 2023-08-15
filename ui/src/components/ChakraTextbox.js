@@ -21,6 +21,8 @@ export default function ChakraTextBox(props) {
          id={props.id}
          value={props.value}
          multiple={props.multiple}
+         min={props.min}
+         max={props.max}
          onChange={e => onChange(e.target.value)}
          {...dataProps}
       />

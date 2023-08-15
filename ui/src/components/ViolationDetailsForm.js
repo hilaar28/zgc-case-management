@@ -14,6 +14,7 @@ export default function ViolationDetailsForm(props) {
    const date = <DateInput
       id="txt-date"
       label="When did the violation happen?"
+      max={new Date()}
       onChange={
          (date) => {
 

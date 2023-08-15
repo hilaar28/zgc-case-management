@@ -7,6 +7,7 @@ import ChakraSelect from './ChakraSelect';
 import capitalize from 'capitalize';
 import ChakraAutoComplete from './ChakraAutoComplete';
 
+
 function FieldGroupLabel(props) {
    return <div className='text-sm text-gray-500 font-extrabold mt-5'>
       {props.children}
@@ -61,6 +62,7 @@ export default class PersonalDetailsForm extends Component {
          size='small'
          variant='standard'
          type="date"
+         max={new Date().toLocaleDateString().split('/').reverse().join('-')}
          InputLabelProps={{ shrink: true }}
          fullWidth
       />
