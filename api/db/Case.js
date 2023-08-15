@@ -56,10 +56,12 @@ const schema = new mongoose.Schema({
       institution_name: String,
       why_completing_form_on_behalf: String,
    },
-   defendant: {
-      ...personalDetails,
-      institution_name: String,
-   },
+   defendants: [
+      {
+         ...personalDetails,
+         institution_name: String,
+      } 
+   ],
    victim: {
       type: personalDetails,
       required: false,

@@ -34,10 +34,10 @@ const caseJoiSchema = {
       why_completing_form_on_behalf: Joi.string(),
       location: Joi.string(),
    }),
-   defendant: Joi.object({
+   defendants: Joi.array().items(Joi.object({
       ...personalDetailsSchema,
       institution_name: Joi.string(),
-   }),
+   })),
    victim: Joi.object().keys(personalDetailsSchema),
    violation: Joi.object({
       date: Joi.object().keys({
@@ -214,7 +214,7 @@ cases.get('/', async (req, res) => {
       const cases = await Case
          .find()
          .where(where)
-         .select("_id title applicant.name applicant.surname defendant.name defendant.surname victim.name victim.surname violation.details status createdAt")
+         .select("_id title applicant.name applicant.surname defendants.name defendants.surname victim.name victim.surname violation.details status createdAt")
          .skip(offset)
          .limit(limit)
          .sort({ createdAt: -1 })

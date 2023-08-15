@@ -73,22 +73,24 @@ function createCase(attributes={}) {
          relationship_to_victim: casual.text,
          why_completing_form_on_behalf: casual.text,
       },
-      defendant: {
-         name: casual.first_name,
-         surname: casual.last_name,
-         national_id: casual.text,      
-         dob: casual.date('YYYY-MM-DD'), // datestring,
-         place_of_birth: casual.city,
-         gender: casual.random_element(Object.values(GENDER)), // enum
-         marital_status: casual.random_element(Object.values(MARITAL_STATUS)),
-         address: casual.address,
-         telephone: casual.phone,
-         mobile: casual.phone,
-         email: casual.phone,
-         next_of_kin_phone: casual.phone,
-         friend_phone: casual.phone,
-         institution_name: casual.text,
-      },
+      defendants: [
+         {
+            name: casual.first_name,
+            surname: casual.last_name,
+            national_id: casual.text,      
+            dob: casual.date('YYYY-MM-DD'), // datestring,
+            place_of_birth: casual.city,
+            gender: casual.random_element(Object.values(GENDER)), // enum
+            marital_status: casual.random_element(Object.values(MARITAL_STATUS)),
+            address: casual.address,
+            telephone: casual.phone,
+            mobile: casual.phone,
+            email: casual.phone,
+            next_of_kin_phone: casual.phone,
+            friend_phone: casual.phone,
+            institution_name: casual.text,
+         }
+      ],
       victim: {
          name: casual.text,
          surname: casual.text,

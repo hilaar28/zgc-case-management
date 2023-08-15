@@ -202,21 +202,23 @@ suite("API Tests", function () {
                next_of_kin_phone: casual.phone,
                friend_phone: casual.phone,
             },
-            defendant: {
-               name: casual.text,
-               surname: casual.text,
-               national_id: casual.text,  
-               dob: casual.date('YYYY-MM-DD'), // datestring,
-               place_of_birth: casual.city,
-               gender: casual.random_element(Object.values(GENDER)), // enum
-               marital_status: casual.random_element(Object.values(MARITAL_STATUS)),
-               address: casual.address,
-               telephone: casual.phone,
-               mobile: casual.phone,
-               email: casual.email,
-               next_of_kin_phone: casual.phone,
-               friend_phone: casual.phone,
-            },
+            defendants: [
+               {
+                  name: casual.text,
+                  surname: casual.text,
+                  national_id: casual.text,  
+                  dob: casual.date('YYYY-MM-DD'), // datestring,
+                  place_of_birth: casual.city,
+                  gender: casual.random_element(Object.values(GENDER)), // enum
+                  marital_status: casual.random_element(Object.values(MARITAL_STATUS)),
+                  address: casual.address,
+                  telephone: casual.phone,
+                  mobile: casual.phone,
+                  email: casual.email,
+                  next_of_kin_phone: casual.phone,
+                  friend_phone: casual.phone,
+               }
+            ],
             violation: {
                victim_age_range: casual.random_element(AGE_RANGES),
                continuing: casual.boolean,
@@ -289,10 +291,10 @@ suite("API Tests", function () {
                   name: Joi.string().required(),
                   surname: Joi.string().required(),
                }).required(),
-               defendant: Joi.object({
+               defendants: Joi.array().items(Joi.object({
                   name: Joi.string().required(),
                   surname: Joi.string().required(),
-               }).required(),
+               })).min(1).required(),
                victim: {
                   name: Joi.string().required(),
                   surname: Joi.string().required(),
@@ -345,7 +347,7 @@ suite("API Tests", function () {
             _id: Joi.string().required(),
             title: Joi.string().required(),
             applicant: Joi.object().required(),
-            defendant: Joi.object().required(),
+            defendants: Joi.array().items(Joi.object()).min(1).required(),
             victim: Joi.object(),
             violation: Joi.object().required(),
             status: Joi.string().required(),
