@@ -9,8 +9,8 @@ const USER_ROLES = {
 }
 
 const GENDER = {
-   MALE: 'M',
-   FEMALE: 'F',
+   MALE: 'Male',
+   FEMALE: 'Female',
 }
 
 const MARITAL_STATUS = {
@@ -53,22 +53,37 @@ const PROVINCES = {
 
 
 const VIOLATION_NATURE = {
-   RAPE: 'rape',
-   ASSAULT: 'assault',
-   MALICIOUS_DAMAGE_TO_PROPERTY: 'malicious_damage_to_property',
-   UNLAWFUL_ARREST: 'unlawful_arrest',
-   UNLAWFUL_DETENTION: 'unlawful_detention',
-   ABDUCTION: 'abduction',
-   HOMICIDE: 'homicide',   
-}
-
-const GENDER_VIOLATION_NATURE = {
-   PHYSICAL_ASSAULT: 'physical_assault',
-   SEXUAL_HARASSMENT: 'sexual_harassment',
-   VERBAL_ABUSE: 'verbal_abuse',
-   EMOTIONAL_ABUSE: 'emotional_abuse',
-   INTIMIDATION: 'intimidation',
-   DISCRIMINATION: 'discrimination',
+   THREAT: [],
+   ASSAULT: [
+      'Foot whipping',
+      'Submersion/Suffocation',
+      'Beating',
+   ],
+   SEXUAL_ASSAULT: [
+      'Rape',
+      'Aggravated indecent sexual assault',
+   ],
+   PROPERTY_VIOLATION: [
+      'Theft',
+      'Robbery',
+      'Stock theft',
+      'Malicious damage to property',
+      'Destruction of home',
+   ],
+   MOVEMENT_VIOLATION: [
+      'Abduction',
+      'Unlawful Arrest',
+      'Unlawful Detention',
+      'Forced Displacement',
+   ],
+   LABOUR_VIOLATION: [
+      'Forced (Physical) Labour',
+   ],
+   DENIAL_OF_ACCESS_TO_RIGHTS: [
+      'Denial of Access to Education',
+      'Denial of Access to Food (Water)',
+      'Denial of Access to Health Care',
+   ]
 }
 
 const RELATIONSHIP_TO_INCIDENT = {
@@ -81,6 +96,7 @@ const VIOLATION_IMPACT = {
    PHYSICAL_INJURY: 'physical_injury',
    DEATH: 'death',
    DESTITUTION: 'destitution',
+   DISABILITY: 'disability',
 }
 
 const TREND_PERIODS = {
@@ -104,7 +120,6 @@ module.exports = {
    CASE_SOURCES,
    CASE_STATUS,
    GENDER,
-   GENDER_VIOLATION_NATURE,
    MARITAL_STATUS,
    PROVINCES,
    RELATIONSHIP_TO_INCIDENT,

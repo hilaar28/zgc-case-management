@@ -6,7 +6,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const axios = require('axios');
 const { default: mongoose } = require('mongoose');
-const { USER_ROLES, GENDER, MARITAL_STATUS, CASE_SOURCES, PROVINCES, AGE_RANGES } = require('../../constants');
+const { USER_ROLES, GENDER, MARITAL_STATUS, CASE_SOURCES, PROVINCES, AGE_RANGES, VIOLATION_NATURE, VIOLATION_IMPACT } = require('../../constants');
 const Case = require('../../db/Case');
 
 
@@ -117,8 +117,13 @@ function createCase(attributes={}) {
          details: casual.text,
          location: casual.text,
          witness_details: casual.text,
-         nature: casual.word,
-         nature_gender: casual.word,
+         natures: [
+            {
+               nature: casual.random_element(Object.keys(VIOLATION_NATURE)),
+               sub_nature: casual.word,
+            }
+         ],
+         impact: casual.random_element(Object.values(VIOLATION_IMPACT)),
       },
       other_entity_reported_to: {
          details: casual.text,

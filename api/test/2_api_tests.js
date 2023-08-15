@@ -1,6 +1,6 @@
 const casual = require("casual");
 const { waitForServer, createRequester, createAccessToken, createUser, findLastInserted, createCase } = require("./utils");
-const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS, PROVINCES, AGE_RANGES } = require("../constants");
+const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS, PROVINCES, AGE_RANGES, VIOLATION_IMPACT, VIOLATION_NATURE } = require("../constants");
 const User = require("../db/User");
 const { ACCESS_TOKEN_HEADER_NAME } = require("@xavisoft/auth/constants");
 const chai = require("chai");
@@ -225,7 +225,13 @@ suite("API Tests", function () {
                details: casual.text,
                location: casual.text,
                witness_details: casual.text,
-               nature: casual.word,
+               natures: [
+                  {
+                     nature: casual.random_element(Object.keys(VIOLATION_NATURE)),
+                     sub_nature: casual.word,
+                  },
+               ],
+               impact: casual.random_element(Object.values(VIOLATION_IMPACT)),
             },
             other_entity_reported_to: {
                details: casual.text,

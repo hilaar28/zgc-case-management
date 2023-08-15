@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES, TREND_PERIODS, AGE_RANGES } = require("./constants");
+const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES, TREND_PERIODS, AGE_RANGES, VIOLATION_NATURE } = require("./constants");
 const status_500 = require("./status_500");
 const Joi = require("@xavisoft/joi");
 const Case = require("./db/Case");
@@ -50,7 +50,10 @@ const caseJoiSchema = {
       details: Joi.string(),
       location: Joi.string(),
       witness_details: Joi.string(),
-      nature: Joi.string(),
+      natures: Joi.array().items({
+         nature: Joi.string(),
+         sub_nature: Joi.string(),
+      }),
       nature_gender: Joi.string(),
       impact: Joi.string(),
    }),

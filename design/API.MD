@@ -175,6 +175,7 @@
       email: String,
       next_of_kin_phone: String,
       friend_phone: String,
+      impact: String,
    },
    defendant: {
       name: String,
@@ -200,8 +201,13 @@
       },
       victim_age_range: String,
       continuing: Boolean,
-      nature: String,
-      nature_gender: String,
+      natures: [
+         {
+            nature: String,
+            sub_nature: String,
+         },
+         ...
+      ],
       details: String,
       location: String,
       witness_details: String,

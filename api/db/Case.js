@@ -1,6 +1,6 @@
 
 const mongoose = require("mongoose");
-const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES, AGE_RANGES } = require("../constants");
+const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES, AGE_RANGES, VIOLATION_NATURE, VIOLATION_IMPACT } = require("../constants");
 
 
 const caseUpdateSchema = new mongoose.Schema({
@@ -85,9 +85,19 @@ const schema = new mongoose.Schema({
       },
       location: String,
       witness_details: String,
-      nature: String,
-      nature_gender: String,
-      impact: String,
+      natures: [ 
+         new mongoose.Schema({
+            nature: {
+               type: String,
+               required: true,
+            },
+            sub_nature: String,
+         }, { _id: false })
+      ],
+      impact: {
+         type: String,
+         required: true,
+      },
    },
    other_entity_reported_to: {
       type: {
