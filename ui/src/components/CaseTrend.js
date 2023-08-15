@@ -122,50 +122,61 @@ export default class CaseTrend extends Component {
          dialogContent = <div className="p-8">
 
             <div className="border-solid border-[1px] border-[#CCC] rounded-xl mt-6 text-center py-2 text-gray-500 text-xs font-bold">
-               FROM: <DatePicker
-                  value={this.state.from}
-                  onChange={
-                     async (from) => {
-                        await this.updateState({ from });
-                        console.log(from)
-                        this.fetchData();
-                     }
-                  }
-               />
 
-               <span className="pl-6">TO:</span>
-               <DatePicker
-                  value={this.state.to}
-                  onChange={
-                     async (to) => {
-                        await this.updateState({ to });
-                        this.fetchData();
-                     }
-                  }
-               />
+               <div className="inline-grid grid-cols-[auto,auto,auto] gap-4">
+                  <div>
+                     FROM: <DatePicker
+                        value={this.state.from}
+                        max={this.state.to || new Date()}
+                        onChange={
+                           async (from) => {
+                              await this.updateState({ from });
+                              console.log(from)
+                              this.fetchData();
+                           }
+                        }
+                     />
+                  </div>
 
-               <span className="pl-6">PERIOD:</span>
-               <select 
-                  value={this.state.period} 
-                  className="rounded px-2 py-1 bg-gray-50 border-solid border-[1px] border-[#ccc]"
-                  onChange={
-                     async (e) => {
-                        const period = e.target.value;
-                        await this.updateState({ period });
-                        this.fetchData();
-                     }
-                  }
-               >
-                  {
-                     Object
-                        .values(TREND_PERIODS)
-                        .map(value => {
-                           return <option value={value} key={value}>
-                              {value}
-                           </option>
-                        })
-                  }
-               </select>
+                  <div>
+                     TO: <DatePicker
+                        value={this.state.to}
+                        min={this.state.from}
+                        max={new Date()}
+                        onChange={
+                           async (to) => {
+                              await this.updateState({ to });
+                              this.fetchData();
+                           }
+                        }
+                     />
+                  </div>
+
+                  <div>
+                     <span className="pl-6">PERIOD:</span>
+                     <select 
+                        value={this.state.period} 
+                        className="rounded px-2 py-1 bg-gray-50 border-solid border-[1px] border-[#ccc]"
+                        onChange={
+                           async (e) => {
+                              const period = e.target.value;
+                              await this.updateState({ period });
+                              this.fetchData();
+                           }
+                        }
+                     >
+                        {
+                           Object
+                              .values(TREND_PERIODS)
+                              .map(value => {
+                                 return <option value={value} key={value}>
+                                    {value}
+                                 </option>
+                              })
+                        }
+                     </select>
+                  </div>
+               </div>
             </div>
 
             <Line

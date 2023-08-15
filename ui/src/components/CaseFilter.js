@@ -89,6 +89,7 @@ export default class CaseFilter extends Component {
                      <div>
                         FROM: <DatePicker
                            value={this.state.from}
+                           max={this.state.to || new Date()}
                            onChange={from => this.updateState({ from })}
                         />
                      </div>
@@ -96,6 +97,8 @@ export default class CaseFilter extends Component {
                      <div>
                         TO: <DatePicker
                            value={this.state.to}
+                           min={this.state.from}
+                           max={new Date()}
                            onChange={to => this.updateState({ to })}
                         />
                      </div>

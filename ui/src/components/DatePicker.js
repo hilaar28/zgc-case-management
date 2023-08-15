@@ -12,5 +12,7 @@ export default function DatePicker(props) {
       placeholderText={props.placeholder || 'yyyy/mm/dd'}
       dateFormat="yyyy/MM/dd"
       todayButton
+      minDate={props.min}
+      maxDate={props.max}
    />
 }
