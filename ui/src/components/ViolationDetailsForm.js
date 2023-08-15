@@ -136,6 +136,7 @@ export default function ViolationDetailsForm(props) {
          {date}
          {victimAgeRange}
          {natureGender}
+         {impact}
          {continuing}
          {location}
          {witnessDetails}

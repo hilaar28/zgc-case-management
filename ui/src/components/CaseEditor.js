@@ -251,6 +251,14 @@ class UnconnectedCaseEditor extends Component {
       const nature = txtNature ? txtNature.value : undefined;
       const nature_gender = txtNatureGender ? txtNatureGender.value : undefined;
 
+      // impact
+      const impact = txtImpact.value
+
+      if (!impact) {
+         txtImpact.focus();
+         throw new Error('Select the incident\'s impact');
+      }
+
       /// details
       const details = txtDetails.value;
 
@@ -261,7 +269,6 @@ class UnconnectedCaseEditor extends Component {
 
       const location = txtLocation ? txtLocation.value : undefined; // location
       const witness_details = txtWitnessDetails ? txtWitnessDetails.value : undefined; // witness details
-      const impact = txtImpact ? txtImpact.value : undefined; // impact
 
       const data = {
          date,
