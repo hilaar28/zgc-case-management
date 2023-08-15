@@ -92,7 +92,8 @@ const defaultState = {
    caseType: CASE_TYPES.GENERAL,
    applicant: null,
    victim: null,
-   defendant: null,
+   defendants: null,
+   defendantCount: 1,
    violation: null,
    other: null,
    applicantIsVictim: false,
@@ -107,31 +108,36 @@ class UnconnectedCaseEditor extends Component {
 
    state = defaultState
 
+   incrementDefendantCount = (inc=1) => {
+      const defendantCount = this.state.defendantCount + inc;
+      return this.updateState({ defendantCount });
+   }
+
    resetEditor = () => {
       return this.updateState(defaultState);
    }
 
-   retrievePersonalDetails = () => {
+   retrievePersonalDetails = (container=document) => {
 
       // presense check
-      const txtName = document.getElementById('txt-name');
-      const txtSurname = document.getElementById('txt-surname');
-      const txtNationalID = document.getElementById('txt-national-id');
-      const txtGender = document.getElementById('txt-gender');
-      const txtPlaceOfBirth = document.getElementById('txt-place-of-birth');
-      const txtDOB = document.getElementById('txt-dob');
-      const txtMaritalStatus = document.getElementById('txt-marital-status');
-      const txtLocation = document.getElementById('txt-location');
-      const txtRelationshipToIncident = document.getElementById('txt-relationship-to-incident');
-      const txtTelephone = document.getElementById('txt-telephone');
-      const txtMobile = document.getElementById('txt-mobile');
-      const txtAddress = document.getElementById('txt-address');
-      const txtEmail = document.getElementById('txt-email');
-      const txtNextOfKinNumber = document.getElementById('txt-next-of-kin-phone');
-      const txtFriendNumber = document.getElementById('txt-friend-phone');
-      const txtInsititution = document.getElementById('txt-institution-name');
-      const txtRelationshipToVictim = document.getElementById('txt-relationship-to-victim');
-      const txtWhyCompletingOnBehalf = document.getElementById('txt-why-completing-form-on-behalf');
+      const txtName = container.querySelector('#txt-name');
+      const txtSurname = container.querySelector('#txt-surname');
+      const txtNationalID = container.querySelector('#txt-national-id');
+      const txtGender = container.querySelector('#txt-gender');
+      const txtPlaceOfBirth = container.querySelector('#txt-place-of-birth');
+      const txtDOB = container.querySelector('#txt-dob');
+      const txtMaritalStatus = container.querySelector('#txt-marital-status');
+      const txtLocation = container.querySelector('#txt-location');
+      const txtRelationshipToIncident = container.querySelector('#txt-relationship-to-incident');
+      const txtTelephone = container.querySelector('#txt-telephone');
+      const txtMobile = container.querySelector('#txt-mobile');
+      const txtAddress = container.querySelector('#txt-address');
+      const txtEmail = container.querySelector('#txt-email');
+      const txtNextOfKinNumber = container.querySelector('#txt-next-of-kin-phone');
+      const txtFriendNumber = container.querySelector('#txt-friend-phone');
+      const txtInsititution = container.querySelector('#txt-institution-name');
+      const txtRelationshipToVictim = container.querySelector('#txt-relationship-to-victim');
+      const txtWhyCompletingOnBehalf = container.querySelector('#txt-why-completing-form-on-behalf');
 
       /// name and surname
       const name = txtName.value;
@@ -370,8 +376,19 @@ class UnconnectedCaseEditor extends Component {
                break;
 
             case 3:
-               update.defendant = this.retrievePersonalDetails();
-               break;
+               {
+                  const defendants = [];
+
+                  for (let i = 1; i <= this.state.defendantCount; i++) {
+                     const div = document.getElementById(`div-defendant-${i}`);
+                     const defendant = this.retrievePersonalDetails(div);
+                     defendants.push(defendant);
+                  }
+
+
+                  update.defendants = defendants;
+                  break;
+               }
 
             case 4:
                update.violation = this.retrieveViolationDetails();
@@ -409,7 +426,7 @@ class UnconnectedCaseEditor extends Component {
          const {
             applicant,
             victim,
-            defendant,
+            defendants,
             violation,
             title,
             source,
@@ -427,7 +444,7 @@ class UnconnectedCaseEditor extends Component {
          const data =  {
             applicant,
             victim,
-            defendant,
+            defendants,
             violation,
             title,
             province,
@@ -472,30 +489,9 @@ class UnconnectedCaseEditor extends Component {
    }
 
 
-   hydrateForm = () => {
-
-      let source;
-
-      switch (this.state.stage) {
-         case 1:
-            source = this.state.applicant;            
-            break;
-         case 2:
-            source = this.state.victim;            
-            break;
-         case 3:
-            source = this.state.defendant;            
-            break;
-         case 4:
-            source = this.state.violation;
-            break;
-         default:
-            source = this.state;
-            break;
-      }
-      
+   setInputValues = (source, containerId='div-form-container') => {
       // get all input elements
-      const divForm = document.getElementById('div-form-container');
+      const divForm = document.getElementById(containerId);
       const inputs = Array.from(divForm.querySelectorAll('input, textarea, select, [data-input]'));
 
       // hydrate
@@ -527,6 +523,39 @@ class UnconnectedCaseEditor extends Component {
             console.log(err);
          }
       }
+   }
+
+   hydrateForm = () => {
+
+
+      switch (this.state.stage) {
+         case 1:
+            this.setInputValues(this.state.applicant);            
+            return;
+
+         case 2:
+            this.setInputValues(this.state.victim);            
+            return;
+
+         case 3:
+            
+            if (Array.isArray(this.state.defendants)) {
+               this.state.defendants.forEach((defendant, i) => {
+                  this.setInputValues(defendant, `div-defendant-${i+1}`);
+               });
+            }
+                    
+            return;
+
+         case 4:
+            this.setInputValues(this.state.violation);
+            return;
+
+         default:
+            this.setInputValues(this.state);
+            return;
+      }
+      
    }
 
    previous = async () => {
@@ -665,17 +694,54 @@ class UnconnectedCaseEditor extends Component {
       
          case 3:
             
-            form = <>
+            {
 
-               <div className='text-lg text-gray-600 font-extrabold mt-5'>
-                  CORRESPONDENT DETAILS
+               const defendants = [];
+
+               const removeLastDefendant = <div className='text-right'>
+                  <Button
+                     onClick={() => this.incrementDefendantCount(-1)}
+                     className='bg-transparent text-[#1976D2]'
+                     size={"sm"}
+                  >
+                     REMOVE
+                  </Button>
                </div>
 
-               <PersonalDetailsForm 
-                  electoral={formIsElectoral} 
-               />
-               
-            </>
+               for (let i = 1; i <= this.state.defendantCount; i++) {
+                  defendants.push(
+                     <div id={`div-defendant-${i}`} key={i}>
+                        <div className='text-lg text-gray-600 font-extrabold mt-5'>
+                           CORRESPONDENT #{i} DETAILS
+                        </div>
+
+                        <PersonalDetailsForm 
+                           electoral={formIsElectoral} 
+                        />
+
+                        {(this.state.defendantCount > 1 && this.state.defendantCount === i) ? removeLastDefendant: undefined }
+
+                        <Divider className='my-4' />
+
+                     </div>
+                  );
+               }
+
+               form = <>
+
+                  {defendants}
+
+                  <div className='text-right'>
+                     <Button
+                        onClick={() => this.incrementDefendantCount()}
+                        className='bg-transparent text-[#1976D2]'
+                        size={"sm"}
+                     >
+                        ADD ANOTHER DEFENDANT
+                     </Button>
+                  </div>
+               </>;
+            }
 
             break;
 

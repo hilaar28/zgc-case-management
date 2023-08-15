@@ -32,8 +32,7 @@ function UnconnectedCaseThumbnail(props) {
    if (expanded) {
 
       // info pieces
-      const { victim, applicant, defendant, recorded_by, case_officer } = props;
-
+      const { victim, applicant, defendants, recorded_by, case_officer } = props;
       let victimInfoPiece;
 
       if (victim) {
@@ -63,10 +62,15 @@ function UnconnectedCaseThumbnail(props) {
 
       let defendantInfoPiece;
 
-      if (defendant) {
+      if (Array.isArray(defendants) && defendants.length > 0) {
+
+         const info = defendants
+            .map(defendant => `${defendant.name} ${defendant.surname}`)
+            .join(', ');
+
          defendantInfoPiece = <InfoPiece
             label="Correspondent"
-            info={`${defendant.name} ${defendant.surname}`}
+            info={info}
          />
       }
 

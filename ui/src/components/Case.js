@@ -421,17 +421,25 @@ export default class Case extends Component {
          }
 
          // personal details
-         const { victim, applicant, defendant } = this.state.case_;
+         const { victim, applicant, defendants } = this.state.case_;
 
          const applicantDetails = <PersonalDetails
             title={"COMPLAINANT" + (victim ? " REPRESENTATIVE" : "")}
             details={applicant}
          />
 
-         const defendantDetails = <PersonalDetails
-            title="CORRESPONDENT"
-            details={defendant}
-         />
+
+         let defendantDetails;
+
+         if (Array.isArray(defendants) && defendants.length > 0) {
+            defendantDetails = defendants
+               .map((defendant, i) => {
+                  return <PersonalDetails
+                     title={`CORRESPONDENT #${i+1}`}
+                     details={defendant}
+                  />
+               });
+         }
 
          let victimDetails;
 
