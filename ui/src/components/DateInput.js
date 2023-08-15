@@ -48,8 +48,8 @@ export default class DateInput extends Component {
       const txtMonth = document.getElementById(this.txtMonthId);
       const txtDay = document.getElementById(this.txtDayId);
 
-      const year = parseInt(txtYear.value) || 0;
-      const month = parseInt(txtMonth.value) || 0;
+      let year = parseInt(txtYear.value) || 0;
+      let month = parseInt(txtMonth.value) || 0;
       let day = parseInt(txtDay.value) || 0;
 
       if (!event || event.target.id !== this.txtDayId) {
@@ -67,6 +67,36 @@ export default class DateInput extends Component {
          await this.updateState({ maxDay });
          txtDay.value = day;
 
+      }
+
+      // date limits
+      let limitDate;
+      const selectedDate = new Date(year, month ? month - 1 : 0, day || 0);
+      const { min, max } = this.props;
+
+      /// min
+      if (min) {
+         if (selectedDate < min)
+            limitDate = min;
+      }
+
+      /// max
+      if (max) {
+         if (selectedDate > max)
+            limitDate = max;
+      }
+
+      if (limitDate) {
+         year = limitDate.getFullYear();
+         month = limitDate.getMonth() + 1;
+         day = limitDate.getDate();
+
+         const maxDay = this.getNumberOfDaysInAMonth(year, month);
+         await this.updateState({ maxDay });
+
+         txtYear.value = year;
+         txtMonth.value = month;
+         txtDay.value = day;
       }
 
       // fire onchange event
