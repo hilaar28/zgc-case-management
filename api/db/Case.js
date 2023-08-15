@@ -57,10 +57,10 @@ const schema = new mongoose.Schema({
       why_completing_form_on_behalf: String,
    },
    defendants: [
-      {
+      new mongoose.Schema({
          ...personalDetails,
          institution_name: String,
-      } 
+      }, { _id: false })
    ],
    victim: {
       type: personalDetails,
