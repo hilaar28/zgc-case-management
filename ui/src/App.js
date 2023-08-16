@@ -64,7 +64,7 @@ function App() {
 
 	let router;
 
-	if (window.cordova)
+	if (window.electron)
 		router = 'hash';
 
 	return <Provider store={store}>
