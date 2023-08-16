@@ -225,13 +225,24 @@ class UnconnectedCaseEditor extends Component {
       const txtDate = document.getElementById('txt-date');
       const txtVictimAgeRange = document.getElementById('txt-victim-age-range');
       const txtContinuing = document.getElementById('txt-continuing');
-      const txtNature = document.getElementById('txt-nature');
-      const txtNatureGender = document.getElementById('txt-nature-gender');
+      const txtNatures = document.getElementById('txt-natures');
       const txtDetails = document.getElementById('txt-details');
       const txtLocation = document.getElementById('txt-location');
       const txtWitnessDetails = document.getElementById('txt-witness-details');
       const txtImpact = document.getElementById('txt-impact');
 
+      /// natures
+      const natures = txtNatures.value
+         .filter(nature => {
+            if (!nature || !nature.nature)
+               return false;
+            return true;
+         });
+      
+      if (natures.length === 0) {
+         txtNatures.focus();
+         throw new Error('Provide at least one violation nature');
+      }
 
       /// date
       const date = txtDate ? txtDate.value : undefined;
@@ -246,10 +257,6 @@ class UnconnectedCaseEditor extends Component {
       
       /// continuing
       const continuing = txtContinuing ? txtContinuing.checked : undefined;
-
-      /// nature
-      const nature = txtNature ? txtNature.value : undefined;
-      const nature_gender = txtNatureGender ? txtNatureGender.value : undefined;
 
       // impact
       const impact = txtImpact.value
@@ -273,8 +280,7 @@ class UnconnectedCaseEditor extends Component {
       const data = {
          date,
          continuing,
-         nature,
-         nature_gender,
+         natures,
          details,
          location,
          witness_details,
@@ -505,6 +511,9 @@ class UnconnectedCaseEditor extends Component {
       for (let i in inputs) {
          try {
             const input = inputs[i];
+
+            if (!input.id)
+               continue;
 
             const elementTargetAttribute = input.type === 'checkbox' ? 'checked' : 'value';
             let sourceTargetAttribute = input.getAttribute('data-source-target-attribute');

@@ -523,24 +523,31 @@ export default class Case extends Component {
             />
          }
 
-         const violationNatures = [];
+         let violationNatures;
 
-         if (violation.nature) {
-            violationNatures.push(
-               <Tag className="bg-orange-600 text-white">
-                  {violation.nature.replace('_', ' ')}
-               </Tag>
-            );
+         if (Array.isArray(violation.natures) && violation.natures.length > 0) {
+            violationNatures = <div className="grid grid-cols-[auto,1fr] gap-2">
+               <span className="font-bold text-gray-600 text-sm">
+                  NATURE:
+               </span>
+               <span className="text-gray-600 text-sm">
+                  {
+                     violation.natures
+                        .map(nature => {
+                           let text = nature.nature;
+
+                           if (nature.sub_nature)
+                              text += `(${nature.sub_nature})`
+
+                           return text;
+                        })
+                        .join(', ')
+                  }
+               </span>
+            </div>
          }
 
-         if (violation.nature_gender) {
-            violationNatures.push(
-               <Tag className="bg-orange-600 text-white">
-                  {violation.nature_gender.replace('_', ' ')}
-               </Tag>
-            );
-         }
-
+         
          let victimAgeRange;
 
          if (violation.victim_age_range) {

@@ -21,8 +21,7 @@ export default function ChakraAutoComplete(props) {
    });
 
    const onChange = props.onChange || (() => {});
-
-
+   
    return <FormControl>
 
       <FormLabel className="text-gray-600 text-sm">{props.label}</FormLabel>
@@ -30,11 +29,14 @@ export default function ChakraAutoComplete(props) {
       <AutoComplete 
          freeSolo={props.freeSolo}
          openOnFocus
+         onSelectOption={e => onChange(e.item.value)}
       >
          <AutoCompleteInput 
             {...autoCompleteInputProps}
             {...dataProps}
             onChange={e => onChange(e.target.value)}
+            className={props.disabled ? 'opacity-50 pointer-events-none' : ''}
+            placeholder={props.placeholder}
          />
          <AutoCompleteList>
             {props.items.map(({ caption, value }) => (

@@ -1,11 +1,12 @@
 import capitalize from "capitalize";
-import { AGE_RANGES, GENDER_VIOLATION_NATURE, VIOLATION_IMPACT, VIOLATION_NATURE } from "../backend-constants";
+import { AGE_RANGES, VIOLATION_IMPACT } from "../backend-constants";
 import ChakraAutoComplete from "./ChakraAutoComplete";
 import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraSelect from "./ChakraSelect";
 import ChakraTextBox from "./ChakraTextbox";
 import DateInput from "./DateInput";
 import { ageRangeToWords, ageToAgeRange } from "../utils";
+import ViolationNatureInput from "./ViolationNatureInput";
 
 
 export default function ViolationDetailsForm(props) {
@@ -59,35 +60,12 @@ export default function ViolationDetailsForm(props) {
       label="The violation is still continuing"
    />
 
-   const nature = <ChakraSelect
-      id="txt-nature"
-      label="What's the nature of the violation?"
-      allowDefaultEmptySelection
-   >
-      {
-         Object.values(VIOLATION_NATURE)
-            .map(value => {
-               return <option key={value} value={value}>
-                  {capitalize.words(value).replaceAll('_', ' ')}
-               </option>
-            })
-      }
-   </ChakraSelect>
-
-   const natureGender = <ChakraSelect
-      id="txt-nature-gender"
-      label="What's the nature of the gender violation?"
-      allowDefaultEmptySelection
-   >
-      {
-         Object.values(GENDER_VIOLATION_NATURE)
-            .map(value => {
-               return <option key={value} value={value}>
-                  {capitalize.words(value).replaceAll('_', ' ')}
-               </option>
-            })
-      }
-   </ChakraSelect>
+   const natures = <div className="my-6">
+      <ViolationNatureInput
+         id="txt-natures"
+         label="What's the nature of the violation?"
+      />
+   </div>
 
    const details = <ChakraTextBox
       id="txt-details"
@@ -124,24 +102,27 @@ export default function ViolationDetailsForm(props) {
    let form
 
    if (props.electoral) {
-      form = <div className="grid grid-cols-2 gap-6">
-         {victimAgeRange}
-         {details}
-         {impact}
-         {nature}
-         {natureGender}
-      </div>
+      form = <>
+         {natures}
+         <div className="grid grid-cols-2 gap-6">
+            {victimAgeRange}
+            {details}
+            {impact}
+         </div>
+      </>
    } else {
-      form = <div className="grid grid-cols-2 gap-6">
-         {date}
-         {victimAgeRange}
-         {natureGender}
-         {impact}
-         {continuing}
-         {location}
-         {witnessDetails}
-         {details}
-      </div>
+      form = <>
+         {natures}
+         <div className="grid grid-cols-2 gap-6">
+            {date}
+            {victimAgeRange}
+            {impact}
+            {continuing}
+            {location}
+            {witnessDetails}
+            {details}
+         </div>
+      </>
    }
 
    return form
