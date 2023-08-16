@@ -12,7 +12,7 @@ import { errorToast, successToast } from '../toast';
 import ChakraCheckbox from './ChakraCheckbox';
 import ViolationDetailsForm from './ViolationDetailsForm';
 import ChakraTextBox from './ChakraTextbox';
-import { CASE_SOURCES, PROVINCES } from '../backend-constants';
+import { CASE_SOURCES, CASE_STATUS, PROVINCES } from '../backend-constants';
 import MoreCaseInfoForm from './MoreCaseInfoForm';
 import swal from 'sweetalert'
 import { hideLoading, showLoading } from '../loading'
@@ -100,6 +100,9 @@ const defaultState = {
    title: '',
    source: '',
    province: '',
+   district: '',
+   ward: '',
+   village: '',
    haveReportedToThirdParty: false,
 }
 
@@ -377,6 +380,16 @@ class UnconnectedCaseEditor extends Component {
                   throw new Error('Select the province');
                }
 
+               if (!this.state.district) {
+                  document.getElementById('txt-district').focus();
+                  throw new Error('Select the district');
+               }
+
+               if (!this.state.ward) {
+                  document.getElementById('txt-ward').focus();
+                  throw new Error('Type in the ward');
+               }
+
                update.applicant = this.retrievePersonalDetails();
                break;
 
@@ -450,6 +463,9 @@ class UnconnectedCaseEditor extends Component {
             expectations_from_us,
             lawyer_details,
             province,
+            district,
+            ward,
+            village,
             who_referred_you_to_us,
             other_entity_reported_to,
          } = this.state;
@@ -461,6 +477,9 @@ class UnconnectedCaseEditor extends Component {
             violation,
             title,
             province,
+            district,
+            ward,
+            village,
             source,
             evidence,
             why_violation_is_important_to_our_mandate,
@@ -482,7 +501,8 @@ class UnconnectedCaseEditor extends Component {
 
             const res = await request.post('/api/cases', data);
             const { _id } = res.data;
-            data._id = _id
+            data._id = _id;
+            data.status = CASE_STATUS.NOT_ASSESSED;
 
             actions.addEntity(CaseSchema, data);
             this.resetEditor();
@@ -648,17 +668,48 @@ class UnconnectedCaseEditor extends Component {
                         id="txt-province"
                         label="Which province did the case occur?"
                         value={this.state.province}
-                        onChange={province => this.updateState({ province })}
+                        onChange={province => this.updateState({ province, district: '' })}
                         allowDefaultEmptySelection
                      >
                         {
-                           Object.values(PROVINCES).map(province => {
+                           Object.keys(PROVINCES).map(province => {
+                              return <option value={province}>
+                                 {capitalize.words(province.replace('_', ' '))}
+                              </option>
+                           })
+                        }
+                     </ChakraSelect>
+
+                     <ChakraSelect
+                        id="txt-district"
+                        label="District"
+                        value={this.state.district}
+                        onChange={district => this.updateState({ district })}
+                        allowDefaultEmptySelection
+                     >
+                        {
+                           (PROVINCES[this.state.province] || []).map(province => {
                               return <option value={province}>
                                  {province}
                               </option>
                            })
                         }
                      </ChakraSelect>
+
+                     <ChakraTextBox
+                        id="txt-ward"
+                        label="Ward"
+                        type="number"
+                        value={this.state.ward}
+                        onChange={ward => this.updateState({ ward })}
+                     />
+
+                     <ChakraTextBox
+                        id="txt-village"
+                        label="Village"
+                        value={this.state.village}
+                        onChange={village => this.updateState({ village })}
+                     />
                   </div>
                </div>
 

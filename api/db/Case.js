@@ -139,9 +139,13 @@ const schema = new mongoose.Schema({
    },
    province: {
       type: String,
-      enum: Object.values(PROVINCES),
+      enum: Object.keys(PROVINCES),
       required: true,
    },
+   district: String,
+   constituency: String,
+   ward: String,
+   village: String,
    evidence: [ String ],
    more_assistance_required: String,
 }, { timestamps: true });

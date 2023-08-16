@@ -461,6 +461,37 @@ export default class Case extends Component {
             />
          }
 
+         // geographic details
+         const { province, district, ward, village } = this.state.case_;
+         const geographicDetails = { province, district, ward, village };
+
+         const geographicSectionBody = <div className="grid grid-cols-[auto,1fr] gap-2 my-3">
+            {
+               Object
+                  .keys(geographicDetails)
+                  .map(key => {
+                     const value = geographicDetails[key];
+
+                     if (!value)
+                        return undefined;
+
+                     return <>
+                        <div className="text-xs text-gray-600 font-bold">
+                           {key.toUpperCase()}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                           {value}
+                        </div>
+                     </>
+                  })
+            }
+         </div>
+
+         const geographicSection = <Section
+            title="GEOGRAPHIC DETAILS"
+            body={geographicSectionBody}
+         />
+
          // violation section
          const { violation } = this.state.case_;
          const { witness_details } = violation;
@@ -546,7 +577,6 @@ export default class Case extends Component {
                </span>
             </div>
          }
-
          
          let victimAgeRange;
 
@@ -555,7 +585,7 @@ export default class Case extends Component {
                label="COMPLAINANT AGE"
                info={ageRangeToWords(violation.victim_age_range)}
             />
-      }
+         }
 
          const violationSectionBody = <>
          
@@ -808,6 +838,7 @@ export default class Case extends Component {
             <Divider className="my-5" />
 
             {referredToSection}
+            {geographicSection}
             {violationSection}
             {otherEntityReportedToSection}
             {lawyerDetailsSection}

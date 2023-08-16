@@ -138,7 +138,7 @@ function createCase(attributes={}) {
       source: casual.random_element(Object.values(CASE_SOURCES)),
       title: casual.text,
       recorded_by: new mongoose.mongo.ObjectId(),
-      province: casual.random_element(Object.values(PROVINCES)),
+      province: casual.random_element(Object.keys(PROVINCES)),
 
       ...attributes,
    });

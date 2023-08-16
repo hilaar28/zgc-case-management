@@ -69,7 +69,10 @@ const caseJoiSchema = {
    who_referred_you_to_us: Joi.string(),
    source: Joi.valid(...Object.values(CASE_SOURCES)),
    title: Joi.string(),
-   province: Joi.valid(...Object.values(PROVINCES)),
+   province: Joi.valid(...Object.keys(PROVINCES)),
+   district: Joi.string(),
+   ward: Joi.number().integer(),
+   village: Joi.string(),
    more_assistance_required: Joi.string(),
 }
 

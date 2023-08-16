@@ -245,7 +245,10 @@ suite("API Tests", function () {
             who_referred_you_to_us: casual.text,
             source: casual.random_element(Object.values(CASE_SOURCES)),
             title: casual.text,
-            province: casual.random_element(Object.values(PROVINCES))
+            province: casual.random_element(Object.keys(PROVINCES)),
+            district: casual.city,
+            ward: casual.integer(1, 250),
+            village: casual.city,
          }
 
          const res = await requester
@@ -374,7 +377,7 @@ suite("API Tests", function () {
             lawyer_details: Joi.string(),
             language: Joi.string(),
             who_referred_you_to_us: Joi.string(),
-            province: Joi.valid(...Object.values(PROVINCES)),
+            province: Joi.valid(...Object.keys(PROVINCES)),
             updates: Joi.array().items({
                _id: Joi.string().required(),
                description: Joi.string().required(),
@@ -739,7 +742,7 @@ suite("API Tests", function () {
                male: Joi.number().integer().required(),
                female: Joi.number().integer().required(),
             },
-            province: generateSchemaObjectFromKeyList(Object.values(PROVINCES), Joi.number().integer()),
+            province: generateSchemaObjectFromKeyList(Object.keys(PROVINCES), Joi.number().integer()),
             status: generateSchemaObjectFromKeyList(Object.values(CASE_STATUS), Joi.number().integer()),
             age_range: generateSchemaObjectFromKeyList(AGE_RANGES, Joi.number().integer()),
          };
