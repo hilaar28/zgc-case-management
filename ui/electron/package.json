@@ -1,16 +1,20 @@
 {
-  "name": "electron",
+  "name": "zgc-case-management",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . --platform=${PLATFORM=all} --arch=${ARCH:=all} --out=build --name=\"ZGC Case Management\" --asar --overwrite",
+    "package-win": "PLATFORM=win32 npm run package",
+    "package-mac": "PLATFORM=darwin npm run package"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^25.3.2"
+    "electron": "^25.3.2",
+    "electron-packager": "^17.1.1"
   }
 }
