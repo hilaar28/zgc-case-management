@@ -12,13 +12,13 @@ const fs = require('fs/promises');
 
       // create installer
       await electronInstaller.createWindowsInstaller({
-         appDirectory: `${__dirname}/build/${name}-win-x64`,
+         appDirectory: `${__dirname}/build/${name}-win-32-x64`,
          outputDirectory: `${__dirname}/dist/`,
       });
 
       console.log('Installer created!');
       
    } catch (e) {
-   console.log(`No dice: ${e.message}`);
+      console.log(`No dice: ${e.message}`);
    }
 })();
