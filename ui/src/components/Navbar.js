@@ -19,6 +19,7 @@ import actions from "../actions";
 import { schemaList } from "../reducer/schema";
 import KeyIcon from '@mui/icons-material/Key';
 import UpdatePassword from "./UpdatePassword";
+import { errorToast } from "../toast";
 
 
 const StyledMenu = styled((props) => (
@@ -201,7 +202,11 @@ function logout() {
 }
 
 function exitApp() {
-   alert("Not yet implemented");
+
+   if (typeof window.quit === 'function') 
+      window.quit();
+   else 
+      errorToast("Can't exit app in this environment");
 }
 
 
