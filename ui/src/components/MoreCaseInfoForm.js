@@ -36,12 +36,12 @@ export default function MoreCaseInfoForm(props) {
       label="Who referred you to us?"
    />
 
-   const evidence = <ChakraTextBox
-      id="txt-evidence"
-      label="Picture or video evidence"
-      type="file"
-      multiple
-   />
+   // const evidence = <ChakraTextBox
+   //    id="txt-evidence"
+   //    label="Picture or video evidence"
+   //    type="file"
+   //    multiple
+   // />
 
    const moreAssistanceRequired = <ChakraTextBox
       id="txt-more-assistance-required"
@@ -84,7 +84,7 @@ export default function MoreCaseInfoForm(props) {
 
    if (props.electoral) {
       form = <div className="grid grid-cols-2 gap-6">
-         {evidence}
+         {/* {evidence} */}
          {moreAssistanceRequired}
       </div>
    } else {
