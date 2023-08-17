@@ -58,7 +58,7 @@ class FooterUnconnected extends Component {
 
       let jsx
       
-      if ([ '/login', '/menu' ].includes(this.props.currentRoute)) {
+      if ([ '/' , '/login', '/menu' ].includes(this.props.currentRoute)) {
          jsx = <div 
             className="py-7 bg-gradient-to-br from-orange-300 to-white" 
          >
