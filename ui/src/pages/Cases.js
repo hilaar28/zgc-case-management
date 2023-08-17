@@ -90,7 +90,7 @@ class UnconnectedCases extends Page {
                   Failed to load cases.
                </p>
 
-               <Button onClick={this.fetchCases}>
+               <Button onClick={() => this.fetchCases()}>
                   RETRY
                </Button>
             </div>
@@ -141,7 +141,7 @@ class UnconnectedCases extends Page {
                   <span className='text-sm font-bold'>Only show overdue</span>
                </div>
 
-               <IconButton className='ml-5 text-3xl' onClick={this.fetchCases}>
+               <IconButton className='ml-5 text-3xl' onClick={() => this.fetchCases()}>
                   <RefreshIcon fontSize='inherit' />
                </IconButton>
             </div>

@@ -98,9 +98,11 @@ export default class AssignCase extends Component {
       }
 
       return <Dialog open>
-         <DialogTitle>Assign case</DialogTitle>
+         <DialogTitle className="text-gray-600 font-extrabold uppercase">
+            Assign case
+         </DialogTitle>
          
-         <DialogContent>
+         <DialogContent dividers>
             {dialogContent}
          </DialogContent>
 

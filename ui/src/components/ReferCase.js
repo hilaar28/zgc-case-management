@@ -37,7 +37,7 @@ export default class ReferCase extends Component {
    render() {
 
       return <Dialog open>
-         <DialogTitle>
+         <DialogTitle className="text-gray-600 font-extrabold uppercase">
             Refer case
          </DialogTitle>
 
