@@ -22,6 +22,7 @@ import { Case as CaseSchema } from "../reducer/schema";
 import ReferCase from "./ReferCase";
 import AssignCase from "./AssignCase";
 import DoneIcon from '@mui/icons-material/Done';
+import capitalize from "capitalize";
 
 
 function InfoPiece(props) {
@@ -550,7 +551,7 @@ export default class Case extends Component {
          if (violation.impact) {
             violationImpact = <InfoPiece
                label="IMPACT"
-               info={violation.impact}
+               info={capitalize.words(violation.impact.replaceAll('_', ' '))}
             />
          }
 
