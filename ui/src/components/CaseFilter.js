@@ -76,7 +76,7 @@ export default class CaseFilter extends Component {
 
    render() {
       return <Dialog open>
-         <DialogTitle>
+         <DialogTitle className="text-gray-600 font-extrabold">
             FILTER
          </DialogTitle>
 

@@ -700,6 +700,7 @@ class UnconnectedCaseEditor extends Component {
                         id="txt-ward"
                         label="Ward"
                         type="number"
+                        min={1}
                         value={this.state.ward}
                         onChange={ward => this.updateState({ ward })}
                      />
@@ -861,7 +862,7 @@ class UnconnectedCaseEditor extends Component {
             >
 
                <div className='shadow-sm px-8 py-4'>
-                  <h2 className='font-extrabold text-4xl'>ADD NEW CASE</h2>
+                  <h2 className='font-extrabold text-3xl my-8 text-gray-600'>ADD NEW CASE</h2>
 
                   <div className='my-4'>
                      <ChakraStepper

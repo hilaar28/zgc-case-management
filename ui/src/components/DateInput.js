@@ -10,7 +10,8 @@ for (let i = 1; i <= 12; i++)
 
 const selectContainerStyle = css({
    '&>select': {
-      padding: '2px 10px',
+      padding: '6px 10px',
+      fontSize: 16,
       border: '1px solid #ccc',
       borderRadius: 5
    },
@@ -178,9 +179,9 @@ export default class DateInput extends Component {
          days.push(i);
 
       return <div id={this.props.id || this.id} data-input>
-         <span className="text-gray-600 text-sm">{this.props.label}</span>
+         <span className="text-gray-600 text-sm font-[500]">{this.props.label}</span>
          <div
-            className={selectContainerStyle}
+            className={`${selectContainerStyle} mt-1`}
          >
             <select id={this.txtYearId} onChange={this.onChange}>
                <option></option>

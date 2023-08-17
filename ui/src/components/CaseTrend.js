@@ -99,8 +99,8 @@ export default class CaseTrend extends Component {
          const labels = [];
          const dataset = {
             data: [],
-            backgroundColor: 'red',
-            borderColor: 'red',
+            backgroundColor: '#FB8C00',
+            borderColor: '#FB8C00',
             label: 'Case count'
          }
 
@@ -179,9 +179,22 @@ export default class CaseTrend extends Component {
                </div>
             </div>
 
-            <Line
-               data={data}
-            />
+            <div className="h-align mt-[60px]">
+               <div className="w-[70%]">
+                  <Line
+                     data={data}
+                     options={{
+                        scales: {
+                           y: {
+                              ticks: {
+                                 precision: 0,
+                              }
+                           }
+                        }
+                     }}
+                  />
+               </div>
+            </div>
          </div>
       } else {
          dialogContent = <div className="h-full vh-align">
@@ -199,7 +212,7 @@ export default class CaseTrend extends Component {
 
       return <Dialog open fullScreen>
 
-         <DialogTitle>
+         <DialogTitle className="text-gray-600 font-extrabold">
             CASE TREND
          </DialogTitle>
 

@@ -20,7 +20,7 @@ function ViolationNature(props) {
 
    }
 
-   return <div className="grid grid-cols-[1fr,1fr,auto] gap-2 my-2">
+   return <div className="grid grid-cols-[1fr,1fr,auto] gap-6 my-2">
       <ChakraAutoComplete
          value={nature}
          placeholder="Type"

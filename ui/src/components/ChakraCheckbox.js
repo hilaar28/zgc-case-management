@@ -21,6 +21,6 @@ export default function ChakraCheckbox(props) {
          {...dataProps}
       />
       
-      <span className="inline-block text-gray-600 text-sm ml-2">{props.label}</span>
+      <span className="inline-block text-gray-600 text-sm ml-2 font-[500]">{props.label}</span>
    </div>
 }

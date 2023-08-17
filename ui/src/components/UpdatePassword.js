@@ -66,13 +66,15 @@ export default class UpdatePassword extends Component {
 
       return <Dialog open>
 
-         <DialogTitle>Update password</DialogTitle>
+         <DialogTitle className="text-gray-600 font-extrabold uppercase">
+            Update password
+         </DialogTitle>
 
          <DialogContent>
             <div className="max-w-[400px] [&>*]:my-2">
 
                <TextField
-                  variant="standard"
+                  variant="outlined"
                   size="small"
                   label="Current password"
                   id="txt-old-password"
@@ -81,7 +83,7 @@ export default class UpdatePassword extends Component {
                />
 
                <TextField
-                  variant="standard"
+                  variant="outlined"
                   size="small"
                   label="New password"
                   id="txt-new-password"
@@ -90,7 +92,7 @@ export default class UpdatePassword extends Component {
                />
 
                <TextField
-                  variant="standard"
+                  variant="outlined"
                   size="small"
                   label="Confirm"
                   id="txt-confirm"

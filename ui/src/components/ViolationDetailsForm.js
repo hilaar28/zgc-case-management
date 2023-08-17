@@ -80,7 +80,7 @@ export default function ViolationDetailsForm(props) {
 
    const witnessDetails = <ChakraTextBox
       id="txt-witness-details"
-      label="If someone witnessed the incidented, provide their details here"
+      label="Witness details"
       multiline
    />
 
