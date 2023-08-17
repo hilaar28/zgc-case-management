@@ -8,7 +8,7 @@ class Page extends Component {
 
       let route;
 
-      if (window.cordova) {
+      if (window.electron) {
          route = window.location.hash.substring(1);
       } else {
          route = window.location.pathname;
