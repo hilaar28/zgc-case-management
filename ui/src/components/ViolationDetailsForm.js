@@ -86,7 +86,7 @@ export default function ViolationDetailsForm(props) {
 
    const impact = <ChakraAutoComplete
       id="txt-impact"
-      label="How did the incident impact?"
+      label="Incident impact?"
       freeSolo
       items={
          Object
