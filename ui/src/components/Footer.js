@@ -13,13 +13,19 @@ function Copyright() {
 
 function Developers() {
    return <div className="text-center pt-1 text-xs text-gray-500">
+
       Developed by <a 
          href="https://qurious.consulting"
          className="no-underline text-orange-800 font-bold"
-      >Quorious Consulting</a> {/*in partnership with <a 
-         href="https://xavisoft.co.zw"
-         className="no-underline text-orange-800 font-bold"
->Xavisoft Digital</a>*/}
+      >Quorious Consulting</a>
+
+      <br />
+      <span className="text-[9px]">
+         in partnership with <a 
+            href="https://xavisoft.co.zw"
+            className="no-underline text-orange-800 font-bold text-[8px]"
+         >Xavisoft Digital</a>
+      </span>
    </div>
 }
 
