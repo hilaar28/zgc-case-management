@@ -78,14 +78,16 @@ export default class UserEditor extends Component {
    render() {
 
       return <Dialog open>
-         <DialogTitle>Add User</DialogTitle>
+         <DialogTitle className="text-gray-600 font-extrabold">
+            ADD USER
+         </DialogTitle>
 
          <DialogContent dividers>
-            <div className="max-w-[400px] [&>*]:my-3">
+            <div className="max-w-[400px] grid grid-cols-2 gap-6">
                <TextField
                   id="txt-name"
                   label="Name"
-                  variant="standard"
+                  variant="outlined"
                   size="small"
                   fullWidth
                />
@@ -93,15 +95,15 @@ export default class UserEditor extends Component {
                <TextField
                   id="txt-surname"
                   label="Surname"
-                  variant="standard"
+                  variant="outlined"
                   size="small"
                   fullWidth
                />
                
                <TextField
                   id="txt-email"
-                  label="Name"
-                  variant="standard"
+                  label="Email"
+                  variant="outlined"
                   size="small"
                   type="email"
                   fullWidth
@@ -110,7 +112,7 @@ export default class UserEditor extends Component {
                <TextField
                   id="txt-role"
                   label="Role"
-                  variant="standard"
+                  variant="outlined"
                   size="small"
                   fullWidth
                   select
