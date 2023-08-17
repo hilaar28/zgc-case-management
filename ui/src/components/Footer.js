@@ -10,21 +10,38 @@ function Copyright() {
    </div>
 }
 
+function Link(props) {
+
+   let href, onClick, target;
+
+   if (window.electron) {
+      href = '';
+      onClick = () => window.require('electron').shell.openExternal(props.href);
+   } else {
+      href = props.href;
+      target = '__blank';
+   }
+
+   return <a className={props.className} href={href} onClick={onClick} target={target}>
+      {props.children}
+   </a>
+}
+
 
 function Developers() {
    return <div className="text-center pt-1 text-xs text-gray-500">
 
-      Developed by <a 
+      Developed by <Link 
          href="https://qurious.consulting"
          className="no-underline text-orange-800 font-bold"
-      >Quorious Consulting</a>
+      >Quorious Consulting</Link>
 
       <br />
       <span className="text-[9px]">
-         in partnership with <a 
+         in partnership with <Link 
             href="https://xavisoft.co.zw"
             className="no-underline text-orange-800 font-bold text-[8px]"
-         >Xavisoft Digital</a>
+         >Xavisoft Digital</Link>
       </span>
    </div>
 }
