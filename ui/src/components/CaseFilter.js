@@ -5,6 +5,7 @@ import DatePicker from "./DatePicker";
 import { AGE_RANGES, CASE_STATUS, GENDER, PROVINCES } from "../backend-constants";
 import { ageRangeToWords, delay } from "../utils";
 import { v4 as uuid } from 'uuid';
+import capitalize from "capitalize";
 
 
 function Label(props) {
@@ -137,10 +138,10 @@ export default class CaseFilter extends Component {
                      <option value="">ALL</option>
                      {
                         Object
-                           .values(PROVINCES)
+                           .keys(PROVINCES)
                            .map(value => {
                               return <option value={value} key={value}>
-                                 {value}
+                                 {capitalize.words(value.replaceAll('_', ' '))}
                               </option>
                            })
                      }
@@ -161,7 +162,7 @@ export default class CaseFilter extends Component {
                            .map(key => {
                               const value = GENDER[key];
                               return <option value={value} key={value}>
-                                 {key}
+                                 {capitalize(key)}
                               </option>
                            })
                      }
