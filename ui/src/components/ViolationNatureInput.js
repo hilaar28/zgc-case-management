@@ -4,6 +4,10 @@ import { VIOLATION_NATURE } from "../backend-constants";
 import { IconButton } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import SelectOrType from "./SelectOrType";
+import ChakraTextBox from "./ChakraTextbox";
+import capitalize from "capitalize";
+
+const SORTED_VIOLATION_NATURE = [ ...VIOLATION_NATURE ].sort();
 
 
 function ViolationNature(props) {
@@ -23,26 +27,19 @@ function ViolationNature(props) {
    return <div className="grid grid-cols-[1fr,1fr,auto] gap-6 my-2">
       <SelectOrType
          value={nature}
-         placeholder="Type"
          onChange={nature => onChange(nature, sub_nature) }
          items={
-            Object
-               .keys(VIOLATION_NATURE)
+            SORTED_VIOLATION_NATURE
                .map(value => ({
-                  caption: value,
+                  caption: capitalize.words(value.replaceAll('_', ' ')),
                   value,
                }))
          }
       />
-      <SelectOrType
+      <ChakraTextBox
          value={sub_nature}
          placeholder="Sub-type"
          onChange={sub_nature => onChange(nature, sub_nature) }
-         disabled={!(nature && VIOLATION_NATURE[nature])}
-         items={
-            VIOLATION_NATURE[nature] ? 
-               VIOLATION_NATURE[nature].map(value => ({ value, caption: value })) : []
-         }
       />
 
       <div className="v-align h-full">

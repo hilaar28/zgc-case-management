@@ -1,6 +1,6 @@
 
 const mongoose = require("mongoose");
-const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES, AGE_RANGES, VIOLATION_NATURE, VIOLATION_IMPACT } = require("../constants");
+const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES, AGE_RANGES } = require("../constants");
 
 
 const caseUpdateSchema = new mongoose.Schema({

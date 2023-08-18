@@ -123,7 +123,7 @@ function createCase(attributes={}) {
          },
          natures: [
             {
-               nature: casual.random_element(Object.keys(VIOLATION_NATURE)),
+               nature: casual.random_element(VIOLATION_NATURE),
                sub_nature: casual.word,
             }
          ],

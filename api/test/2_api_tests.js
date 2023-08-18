@@ -231,7 +231,7 @@ suite("API Tests", function () {
                },
                natures: [
                   {
-                     nature: casual.random_element(Object.keys(VIOLATION_NATURE)),
+                     nature: casual.random_element(VIOLATION_NATURE),
                      sub_nature: casual.word,
                   },
                ],

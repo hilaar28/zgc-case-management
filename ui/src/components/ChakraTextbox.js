@@ -24,6 +24,7 @@ export default function ChakraTextBox(props) {
          min={props.min}
          max={props.max}
          onChange={e => onChange(e.target.value)}
+         placeholder={props.placeholder}
          {...dataProps}
       />
    </FormControl>

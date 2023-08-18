@@ -129,39 +129,21 @@ const PROVINCES = {
 };
 
 
-const VIOLATION_NATURE = {
-   THREAT: [],
-   ASSAULT: [
-      'Foot whipping',
-      'Submersion/Suffocation',
-      'Beating',
-   ],
-   SEXUAL_ASSAULT: [
-      'Rape',
-      'Aggravated indecent sexual assault',
-   ],
-   PROPERTY_VIOLATION: [
-      'Theft',
-      'Robbery',
-      'Stock theft',
-      'Malicious damage to property',
-      'Destruction of home',
-   ],
-   MOVEMENT_VIOLATION: [
-      'Abduction',
-      'Unlawful Arrest',
-      'Unlawful Detention',
-      'Forced Displacement',
-   ],
-   LABOUR_VIOLATION: [
-      'Forced (Physical) Labour',
-   ],
-   DENIAL_OF_ACCESS_TO_RIGHTS: [
-      'Denial of Access to Education',
-      'Denial of Access to Food (Water)',
-      'Denial of Access to Health Care',
-   ]
-}
+const VIOLATION_NATURE = [
+   'THREAT',
+   'PHYSICAL_ASSAULT',
+   'SEXUAL_ASSAULT',
+   'LABOUR_VIOLATION',
+   'DENIAL_OF_ACCESS_TO_RIGHTS',
+   'HOMICIDE',
+   'DISCRIMINATION',
+   'INTIMIDATION',
+   'MALICIOUS_DAMAGE_TO_PROPERTY',
+   'UNLAWFUL_DETENTION',
+   'UNLAWFUL_ARREST',
+   'ABDUCTION',
+   'RAPE',
+]
 
 const RELATIONSHIP_TO_INCIDENT = {
    VICTIM: 'victim',
