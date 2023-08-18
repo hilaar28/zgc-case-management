@@ -69,10 +69,17 @@ const schema = new mongoose.Schema({
       _id: false,
    },
    violation: {
-      date: {
-         year: Number,
-         month: Number,
-         day: Number,
+      dates: {
+         from: {
+            year: Number,
+            month: Number,
+            day: Number,
+         },
+         to: {
+            year: Number,
+            month: Number,
+            day: Number,
+         }
       },
       victim_age_range: {
          type: String,

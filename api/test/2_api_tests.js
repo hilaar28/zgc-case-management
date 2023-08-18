@@ -236,6 +236,18 @@ suite("API Tests", function () {
                   },
                ],
                impact: casual.random_element(Object.values(VIOLATION_IMPACT)),
+               dates: {
+                  to: {
+                     year: casual.integer(1000, 2023),
+                     month: casual.integer(1, 12),
+                     day: casual.integer(1, 28),
+                  },
+                  from: {
+                     year: casual.integer(1000, 2023),
+                     month: casual.integer(1, 12),
+                     day: casual.integer(1, 28),
+                  }
+               }
             },
             other_entity_reported_to: {
                details: casual.text,

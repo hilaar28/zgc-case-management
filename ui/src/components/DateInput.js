@@ -9,15 +9,20 @@ for (let i = 1; i <= 12; i++)
 
 
 const selectContainerStyle = css({
-   '&>select': {
-      padding: '6px 10px',
+   '&>div': {
+      padding: '0 10px',
       fontSize: 16,
       border: '1px solid #ccc',
-      borderRadius: 5
+      borderRadius: 5,
+      display: 'inline-block',
    },
-   '&>select:not(:first-child)': {
+   '&>div:not(:first-child)': {
       marginLeft: 10,
    },
+   '& select': {
+      outline: 'none',
+      padding: '6px 0',
+   }
 })
 
 export default class DateInput extends Component {
@@ -178,43 +183,49 @@ export default class DateInput extends Component {
       for (let i = 1; i <= this.state.maxDay; i++)
          days.push(i);
 
-      return <div id={this.props.id || this.id} data-input>
+      return <div id={this.props.id || this.id} data-input data-source-target-attribute={this.props['data-source-target-attribute']}>
          <span className="text-gray-600 text-sm font-[500]">{this.props.label}</span>
          <div
             className={`${selectContainerStyle} mt-1`}
          >
-            <select id={this.txtYearId} onChange={this.onChange}>
-               <option></option>
-               {
-                  years.map(value => {
-                     return <option key={value} value={value}>
-                        {value}
-                     </option>
-                  })
-               }
-            </select>
+            <div>
+               <select id={this.txtYearId} onChange={this.onChange}>
+                  <option></option>
+                  {
+                     years.map(value => {
+                        return <option key={value} value={value}>
+                           {value}
+                        </option>
+                     })
+                  }
+               </select>
+            </div>
 
-            <select id={this.txtMonthId} onChange={this.onChange}>
-               <option></option>
-               {
-                  months.map(value => {
-                     return <option key={value} value={value}>
-                        {String(value).padStart(2, '0')}
-                     </option>
-                  })
-               }
-            </select>
+            <div>
+               <select id={this.txtMonthId} onChange={this.onChange}>
+                  <option></option>
+                  {
+                     months.map(value => {
+                        return <option key={value} value={value}>
+                           {String(value).padStart(2, '0')}
+                        </option>
+                     })
+                  }
+               </select>
+            </div>
 
-            <select id={this.txtDayId} onChange={this.onChange}>
-               <option></option>
-               {
-                  days.map(value => {
-                     return <option key={value} value={value}>
-                        {String(value).padStart(2, '0')}
-                     </option>
-                  })
-               }
-            </select>
+            <div>
+               <select id={this.txtDayId} onChange={this.onChange}>
+                  <option></option>
+                  {
+                     days.map(value => {
+                        return <option key={value} value={value}>
+                           {String(value).padStart(2, '0')}
+                        </option>
+                     })
+                  }
+               </select>
+            </div>
 
          </div>
       </div>

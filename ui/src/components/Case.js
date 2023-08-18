@@ -27,6 +27,23 @@ import anonymousImg from '../media/img/anonymous.png';
 import ChakraCheckbox from "./ChakraCheckbox";
 
 
+function stringifyNumericDate(date) {
+   const { year, month, day } = date;
+   date = '';
+
+   if (year) {
+      date = String(year);
+
+      if (month) {
+         date += `/${String(month).padStart(2, '0')}`;
+
+         if (day)
+            date += `/${String(day).padStart(2, '0')}`;
+      }
+   }
+
+   return date
+}
 
 function InfoPiece(props) {
    return <div className="mr-5 inline-block">
@@ -580,26 +597,21 @@ export default class Case extends Component {
 
          let violationDates;
 
-         if (violation.date) {
+         if (violation.dates) {
             
+            const { from, to } = violation.dates;
+            const fromString = stringifyNumericDate(from);
+            const toString = stringifyNumericDate(to);
+
             let info;
 
-            const { year, month, day } = violation.date;
-
-            if (year) {
-               info = String(year);
-
-               if (month) {
-                  info += `/${String(month).padStart(2, '0')}`;
-
-                  if (day)
-                     info += `/${String(day).padStart(2, '0')}`;
-               }
+            if (fromString || toString) {
+               info = `${fromString} — ${toString}`
             }
 
             if (info) {
                violationDates = <InfoPiece
-                  label="DATE"
+                  label="DATES"
                   info={info}
                />
             }

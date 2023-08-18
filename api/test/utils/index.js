@@ -108,10 +108,17 @@ function createCase(attributes={}) {
          friend_phone: casual.phone,
       },
       violation: {
-         date: {
-            year: casual.integer(1000, 2023),
-            month: casual.integer(1, 12),
-            day: casual.integer(1, 28),
+         dates: {
+            from: {
+               year: casual.integer(1000, 2023),
+               month: casual.integer(1, 12),
+               day: casual.integer(1, 28),
+            },
+            to: {
+               year: casual.integer(1000, 2023),
+               month: casual.integer(1, 12),
+               day: casual.integer(1, 28),
+            }
          },
          victim_age_range: casual.random_element(AGE_RANGES),
          continuing: casual.boolean,

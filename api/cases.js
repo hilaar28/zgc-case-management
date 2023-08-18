@@ -41,10 +41,17 @@ const caseJoiSchema = {
    })),
    victim: Joi.object().keys(personalDetailsSchema),
    violation: Joi.object({
-      date: Joi.object().keys({
-         year: Joi.number().integer(),
-         month: Joi.number().integer(),
-         day: Joi.number().integer(),
+      dates: Joi.object().keys({
+         from: Joi.object().keys({
+            year: Joi.number().integer(),
+            month: Joi.number().integer(),
+            day: Joi.number().integer(),
+         }),
+         to: Joi.object().keys({
+            year: Joi.number().integer(),
+            month: Joi.number().integer(),
+            day: Joi.number().integer(),
+         }),
       }),
       victim_age_range: Joi.valid(...AGE_RANGES),
       continuing: Joi.boolean(),

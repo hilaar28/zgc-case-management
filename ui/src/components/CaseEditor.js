@@ -230,7 +230,8 @@ class UnconnectedCaseEditor extends Component {
    retrieveViolationDetails = () => {
 
       // extract data
-      const txtDate = document.getElementById('txt-date');
+      const txtDateFrom = document.getElementById('txt-date-from');
+      const txtDateTo = document.getElementById('txt-date-to');
       const txtVictimAgeRange = document.getElementById('txt-victim-age-range');
       const txtContinuing = document.getElementById('txt-continuing');
       const txtNatures = document.getElementById('txt-natures');
@@ -253,8 +254,18 @@ class UnconnectedCaseEditor extends Component {
          throw new Error('Provide at least one violation nature');
       }
 
-      /// date
-      const date = txtDate ? txtDate.value : undefined;
+      /// dates
+      const dateFrom = txtDateFrom ? txtDateFrom.value : undefined;
+      const dateTo = txtDateTo ? txtDateTo.value : undefined;
+
+      let dates;
+
+      if (dateFrom || dateTo) {
+         dates = {
+            from: dateFrom,
+            to: dateTo,
+         }
+      }
 
       /// age range
       const victim_age_range = txtVictimAgeRange ? txtVictimAgeRange.value : undefined;
@@ -299,7 +310,7 @@ class UnconnectedCaseEditor extends Component {
       }
 
       const data = {
-         date,
+         dates,
          continuing,
          natures,
          details,

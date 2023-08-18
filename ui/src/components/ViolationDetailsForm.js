@@ -13,33 +13,60 @@ import { Divider } from "@chakra-ui/react";
 export default function ViolationDetailsForm(props) {
 
    // define fields
-   const date = <DateInput
-      id="txt-date"
-      label="When did the violation happen?"
-      max={new Date()}
-      onChange={
-         (date) => {
+   const dateRange = <div>
+      
+      <div className="grid grid-cols-2 gap-6">
+         <DateInput
+            id="txt-date-from"
+            label="When did the violation started happening?"
+            max={new Date()}
+            onChange={
+               (date) => {
 
-            if (!props.victimDOB)
-               return;
-            if (!date)
-               return;
+                  if (!props.victimDOB)
+                     return;
+                  if (!date)
+                     return;
 
-            const txtVictimAgeRange = document.getElementById('txt-victim-age-range'); 
-            if (!txtVictimAgeRange)
-               return;
+                  const txtVictimAgeRange = document.getElementById('txt-victim-age-range'); 
+                  if (!txtVictimAgeRange)
+                     return;
 
-            let { year, month=1, day=1 } = date;
-            month = month - 1;
+                  let { year, month=1, day=1 } = date;
+                  month = month - 1;
 
-            const violationDate = new Date(year, month, day);
-            const dob = new Date(props.victimDOB);
-            const age = violationDate.getFullYear() - dob.getFullYear();
-            const ageRange = ageToAgeRange(age);
-            txtVictimAgeRange.value = ageRange;
-         }
-      }
-   />
+                  const violationDate = new Date(year, month, day);
+                  const dob = new Date(props.victimDOB);
+                  const age = violationDate.getFullYear() - dob.getFullYear();
+                  const ageRange = ageToAgeRange(age);
+                  txtVictimAgeRange.value = ageRange;
+               }
+            }
+            data-source-target-attribute="dates.from"
+         />
+
+         <div>
+            <DateInput
+               id="txt-date-to"
+               label="When did the last happened?"
+               max={new Date()}
+               data-source-target-attribute="dates.to"
+            />
+
+            <span className="text-xs text-gray-600 text-bold">
+               Leave empty if the violation happened once or it's still continuing
+            </span>
+         </div>
+
+         <ChakraCheckbox
+            id="txt-continuing"
+            label="The violation is still continuing"
+         />
+      </div>
+      
+   </div>
+
+
 
    const victimAgeRange = <ChakraSelect
       id="txt-victim-age-range"
@@ -56,10 +83,6 @@ export default function ViolationDetailsForm(props) {
       }
    </ChakraSelect>
 
-   const continuing = <ChakraCheckbox
-      id="txt-continuing"
-      label="The violation is still continuing"
-   />
 
    const natures = <div className="my-6">
 
@@ -141,14 +164,18 @@ export default function ViolationDetailsForm(props) {
          <Divider className="my-6" />
 
          <div className="text-sm font-bold text-gray-600 mt-6 mb-2">
+            DATES
+         </div>
+         {dateRange}
+         <Divider className="my-6" />
+
+         <div className="text-sm font-bold text-gray-600 mt-6 mb-2">
             OTHER DETAILS
          </div>
 
          <div className="grid grid-cols-2 gap-6">
-            {date}
             {victimAgeRange}
             {impact}
-            {continuing}
             {location}
             {details}
          </div>

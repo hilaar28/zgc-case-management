@@ -196,10 +196,17 @@
    },
    violation: {
       date: {
-         year: Number,
-         month: Number,
-         day: Number,
-      },
+         from: {
+            year: Number,
+            month: Number,
+            day: Number,
+         },
+         to: {
+            year: Number,
+            month: Number,
+            day: Number,
+         },
+      }
       victim_age_range: String,
       continuing: Boolean,
       natures: [
