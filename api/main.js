@@ -2,6 +2,7 @@
 console.clear();
 
 require('dotenv').config();
+require('./logger').init();
 require('./env');
 
 const express = require('express');
