@@ -6,6 +6,7 @@ import { AGE_RANGES, CASE_STATUS, GENDER, PROVINCES } from "../backend-constants
 import { ageRangeToWords, delay } from "../utils";
 import { v4 as uuid } from 'uuid';
 import capitalize from "capitalize";
+import logger from "../logger";
 
 
 function Label(props) {
@@ -68,7 +69,7 @@ export default class CaseFilter extends Component {
                const id = `txt-${key.replaceAll('_', '-')}`;
                document.getElementById(id).value = this.props.data[key];
             } catch (err) {
-               console.log(err)
+               logger.error(err)
             }
          });
 

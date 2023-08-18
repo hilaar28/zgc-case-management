@@ -52,7 +52,6 @@ export default class CaseUpdateEditor extends Component {
          }
 
       } catch (err) {
-         console.log(err)
          swal(String(err))
       } finally {
          hideLoading();

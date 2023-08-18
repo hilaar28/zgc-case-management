@@ -20,6 +20,7 @@ import request from '../request';
 import { Case as CaseSchema } from '../reducer/schema';
 import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { delay }  from '../utils';
+import logger from '../logger';
 
 
 function removeEmptyProperties(data) {
@@ -466,7 +467,7 @@ class UnconnectedCaseEditor extends Component {
          }
 
       } catch (err) {
-         console.log(err);
+         logger.error(err);
          return errorToast(err.message);
       }
 
@@ -520,10 +521,7 @@ class UnconnectedCaseEditor extends Component {
             other_entity_reported_to,
          }
 
-         console.log(JSON.stringify(data, 0, 3))
          removeEmptyProperties(data);
-
-         console.log(data);
 
          try {
             showLoading();
@@ -585,7 +583,7 @@ class UnconnectedCaseEditor extends Component {
                input[elementTargetAttribute] = value;
 
          } catch (err) {
-            console.log(err);
+            logger.error(err);
          }
       }
    }

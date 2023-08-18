@@ -144,7 +144,6 @@ export default class Reports extends Page {
          const res = await request.get(`/api/cases/summary?${query}`);
          const summary = res.data;
 
-         console.log(summary);
          this.updateState({ summary });
 
       } catch (err) {

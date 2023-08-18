@@ -57,11 +57,6 @@ export default class CaseTrend extends Component {
          if (this.state.to)
             query.to = getMidnightTimestamp(this.state.to) + 24 * 3600 * 1000 - 1;
 
-         console.log({
-            from : new Date(query.from),
-            to : new Date(query.to),
-         });
-
          query = objectToQueryString(query);
 
          const res = await request.get(`/api/cases/trend?${query}`);
@@ -131,7 +126,6 @@ export default class CaseTrend extends Component {
                         onChange={
                            async (from) => {
                               await this.updateState({ from });
-                              console.log(from)
                               this.fetchData();
                            }
                         }

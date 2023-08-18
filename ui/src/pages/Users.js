@@ -109,8 +109,6 @@ class UnconnectedUsers extends Page {
             }
          }
 
-         console.log(data)
-
          await request.patch(`/api/users/${_id}`, data);
          actions.updateEntity(UserSchema, _id, data.set);
 

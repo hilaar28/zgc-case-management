@@ -104,8 +104,8 @@ export default class ViolationNatureInput extends Component {
                return this.state.natures;
             }
          })
-      } catch (err) {
-         console.log(err);
+      } catch {
+         
       }
    }
 

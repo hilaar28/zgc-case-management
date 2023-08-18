@@ -25,6 +25,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import capitalize from "capitalize";
 import anonymousImg from '../media/img/anonymous.png';
 import ChakraCheckbox from "./ChakraCheckbox";
+import logger from "../logger";
 
 
 function stringifyNumericDate(date) {
@@ -99,7 +100,7 @@ function PersonalDetails(props) {
                details[key] = value.replace(/\S/g, "●");
             }
          } catch (err) {
-            console.log(err);
+            logger.error(err);
          }
       }
 

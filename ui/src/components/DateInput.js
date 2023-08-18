@@ -164,8 +164,7 @@ export default class DateInput extends Component {
                
             }
          });
-      } catch (err) {
-         console.log(err);
+      } catch {
       }
 
    }
