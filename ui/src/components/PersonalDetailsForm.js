@@ -4,6 +4,7 @@ import { GENDER, MARITAL_STATUS, RELATIONSHIP_TO_INCIDENT } from '../backend-con
 import ChakraTextBox from './ChakraTextbox';
 import { Divider } from '@chakra-ui/react'
 import ChakraSelect from './ChakraSelect';
+import ChakraCheckbox from './ChakraCheckbox';
 import capitalize from 'capitalize';
 import SelectOrType from './SelectOrType';
 
@@ -154,6 +155,18 @@ export default class PersonalDetailsForm extends Component {
          multiline
       />
 
+
+      let anonymous;
+
+      if (this.props.displayAnonymityField) {
+         anonymous = <div className='py-6'>
+            <ChakraCheckbox
+               id="txt-anonymous"
+               label="Keep my information anonymous"
+            />
+         </div>
+      }
+
       // create form
       let form;
 
@@ -162,22 +175,25 @@ export default class PersonalDetailsForm extends Component {
          const relationshipToIncidentJSX = this.props.displayRelationshipToIncidentField ? relationshipToIncident : undefined;
          const locationJSX = this.props.displayLocationField ? location : undefined;
 
-         form = <div className="grid grid-cols-2 gap-6">
-            {name}
-            {surname}
+         form = <>
+            {anonymous}
+            <div className="grid grid-cols-2 gap-6">
+               {name}
+               {surname}
 
-            {dob}
-            {gender}
+               {dob}
+               {gender}
 
-            {mobile}
-            {email}
-            
-            {locationJSX}
-            {relationshipToIncidentJSX}
+               {mobile}
+               {email}
+               
+               {locationJSX}
+               {relationshipToIncidentJSX}
 
-            {address}
+               {address}
 
-         </div>
+            </div>
+         </>
       } else {
 
          const insitutionJSX = this.props.displayInstitutionField ? insitution : undefined;
@@ -201,6 +217,9 @@ export default class PersonalDetailsForm extends Component {
          }
 
          form = <>
+
+            {anonymous}
+
             <FieldGroupLabel>
                BASIC INFO
             </FieldGroupLabel>

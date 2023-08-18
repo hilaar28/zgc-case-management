@@ -114,7 +114,7 @@ export default function MoreCaseInfoForm(props) {
          <Divider className="my-5" />
 
          <div className="text-sm font-bold text-gray-600">
-            THIRDY PARTY INSITUTION REPORTED TO
+            THIRD PARTY INSITUTION REPORTED TO
          </div>
          <div className="my-5">
             {iHaveReportedToOtherEntity}

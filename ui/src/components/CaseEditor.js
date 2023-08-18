@@ -123,6 +123,7 @@ class UnconnectedCaseEditor extends Component {
    retrievePersonalDetails = (container=document) => {
 
       // presense check
+      const txtAnonymous = document.getElementById('txt-anonymous');
       const txtName = container.querySelector('#txt-name');
       const txtSurname = container.querySelector('#txt-surname');
       const txtNationalID = container.querySelector('#txt-national-id');
@@ -141,6 +142,9 @@ class UnconnectedCaseEditor extends Component {
       const txtInsititution = container.querySelector('#txt-institution-name');
       const txtRelationshipToVictim = container.querySelector('#txt-relationship-to-victim');
       const txtWhyCompletingOnBehalf = container.querySelector('#txt-why-completing-form-on-behalf');
+
+      /// anonymity
+      const anonymous = txtAnonymous ? txtAnonymous.checked : undefined;
 
       /// name and surname
       const name = txtName.value;
@@ -198,6 +202,7 @@ class UnconnectedCaseEditor extends Component {
 
       /// return data
       const data = {
+         anonymous,
          name,
          surname,
          national_id,
@@ -232,6 +237,7 @@ class UnconnectedCaseEditor extends Component {
       const txtDetails = document.getElementById('txt-details');
       const txtLocation = document.getElementById('txt-location');
       const txtWitnessDetails = document.getElementById('txt-witness-details');
+      const txtWitnessAnonymity = document.getElementById('txt-witness-anonymity');
       const txtImpact = document.getElementById('txt-impact');
 
       /// natures
@@ -278,7 +284,19 @@ class UnconnectedCaseEditor extends Component {
       }
 
       const location = txtLocation ? txtLocation.value : undefined; // location
-      const witness_details = txtWitnessDetails ? txtWitnessDetails.value : undefined; // witness details
+      const witnessDetails = txtWitnessDetails ? txtWitnessDetails.value : undefined; 
+      
+      // witness details
+      const witnessAnonymity = txtWitnessAnonymity ? txtWitnessAnonymity.checked : undefined;
+
+      let witness;
+
+      if (witnessDetails) {
+         witness = {
+            details: witnessDetails,
+            anonymous: witnessAnonymity,
+         }
+      }
 
       const data = {
          date,
@@ -286,7 +304,7 @@ class UnconnectedCaseEditor extends Component {
          natures,
          details,
          location,
-         witness_details,
+         witness,
          impact,
          victim_age_range,
       }
@@ -727,6 +745,7 @@ class UnconnectedCaseEditor extends Component {
                   displayWhyCompletingFormOnBehalfField={!formIsElectoral}
                   displayRelationshipToIncidentField={formIsElectoral}
                   displayLocationField={formIsElectoral}
+                  displayAnonymityField
                />
                
             </>
@@ -745,7 +764,7 @@ class UnconnectedCaseEditor extends Component {
                      COMPLAINANT DETAILS
                   </div>
 
-                  <div className='mt-4'>
+                  <div className='my-6'>
                      <ChakraCheckbox
                         label="The applicant is the victim"
                         checked={this.state.applicantIsVictim}
@@ -838,7 +857,7 @@ class UnconnectedCaseEditor extends Component {
          case 5:
             
             form = <>
-               <div className='text-lg text-gray-600 font-extrabold mt-5'>
+               <div className='text-lg text-gray-600 font-extrabold my-5'>
                   MORE DETAILS
                </div>
 
