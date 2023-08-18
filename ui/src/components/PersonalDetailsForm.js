@@ -5,7 +5,7 @@ import ChakraTextBox from './ChakraTextbox';
 import { Divider } from '@chakra-ui/react'
 import ChakraSelect from './ChakraSelect';
 import capitalize from 'capitalize';
-import ChakraAutoComplete from './ChakraAutoComplete';
+import SelectOrType from './SelectOrType';
 
 
 function FieldGroupLabel(props) {
@@ -134,7 +134,7 @@ export default class PersonalDetailsForm extends Component {
          label="Relationship to complainant"
       />
 
-      const relationshipToIncident = <ChakraAutoComplete
+      const relationshipToIncident = <SelectOrType
          id='txt-relationship-to-incident'
          label="Relationship to incident"
          freeSolo

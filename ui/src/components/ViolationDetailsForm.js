@@ -1,12 +1,12 @@
 import capitalize from "capitalize";
 import { AGE_RANGES, VIOLATION_IMPACT } from "../backend-constants";
-import ChakraAutoComplete from "./ChakraAutoComplete";
 import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraSelect from "./ChakraSelect";
 import ChakraTextBox from "./ChakraTextbox";
 import DateInput from "./DateInput";
 import { ageRangeToWords, ageToAgeRange } from "../utils";
 import ViolationNatureInput from "./ViolationNatureInput";
+import SelectOrType from "./SelectOrType";
 
 
 export default function ViolationDetailsForm(props) {
@@ -84,10 +84,9 @@ export default function ViolationDetailsForm(props) {
       multiline
    />
 
-   const impact = <ChakraAutoComplete
+   const impact = <SelectOrType
       id="txt-impact"
       label="Incident impact?"
-      freeSolo
       items={
          Object
             .values(VIOLATION_IMPACT)

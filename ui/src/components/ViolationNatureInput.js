@@ -1,9 +1,9 @@
 import Component from "@xavisoft/react-component";
 import { v4 } from "uuid";
-import ChakraAutoComplete from "./ChakraAutoComplete";
 import { VIOLATION_NATURE } from "../backend-constants";
 import { IconButton } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import SelectOrType from "./SelectOrType";
 
 
 function ViolationNature(props) {
@@ -21,7 +21,7 @@ function ViolationNature(props) {
    }
 
    return <div className="grid grid-cols-[1fr,1fr,auto] gap-6 my-2">
-      <ChakraAutoComplete
+      <SelectOrType
          value={nature}
          placeholder="Type"
          onChange={nature => onChange(nature, sub_nature) }
@@ -34,7 +34,7 @@ function ViolationNature(props) {
                }))
          }
       />
-      <ChakraAutoComplete
+      <SelectOrType
          value={sub_nature}
          placeholder="Sub-type"
          onChange={sub_nature => onChange(nature, sub_nature) }
