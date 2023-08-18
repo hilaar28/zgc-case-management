@@ -23,6 +23,9 @@ import ReferCase from "./ReferCase";
 import AssignCase from "./AssignCase";
 import DoneIcon from '@mui/icons-material/Done';
 import capitalize from "capitalize";
+import anonymousImg from '../media/img/anonymous.png';
+import ChakraCheckbox from "./ChakraCheckbox";
+
 
 
 function InfoPiece(props) {
@@ -64,6 +67,41 @@ function PersonalDetails(props) {
 
    const details = { ...props.details };
 
+   const anonymous = details.anonymous;
+   delete details.anonymous;
+
+   const [ showAnyway, setShowAnyway ] = useState(!anonymous);
+   let anonymityControl;
+
+   if (anonymous) {
+
+      if (!showAnyway) {
+         try {
+            for (const key in details) {
+               const value = details[key];
+               details[key] = value.replace(/\S/g, "●");
+            }
+         } catch (err) {
+            console.log(err);
+         }
+      }
+
+      anonymityControl = <div className="grid grid-cols-[auto,1fr] gap-4 mt-6">
+         <img 
+            src={anonymousImg} 
+            alt="" 
+            className="h-[50px]"
+         />
+
+         <ChakraCheckbox
+            onChange={setShowAnyway}
+            checked={showAnyway}
+            label="Show anyway"
+         />
+      </div>
+
+   }
+
    const { name, surname, national_id } = details;
    delete details.name;
    delete details.surname;
@@ -100,6 +138,8 @@ function PersonalDetails(props) {
             }
          </div>
       </div>
+
+      {anonymityControl}
    </div>
 }
 
@@ -167,6 +207,48 @@ function CaseUpdate(props) {
       </div>
 
    </div>
+}
+
+function WitnessDetails(props) {
+
+   let { anonymous, details } = props;
+   const [ showAnyway, setShowAnyway ] = useState(!anonymous);
+
+   let anonymityControl;
+
+   if (anonymous) {
+      if (!showAnyway) {
+         details = details.replace(/\S/g, "●");
+      }
+
+      anonymityControl = <div className="grid grid-cols-[auto,1fr] gap-4 mt-3">
+         <img 
+            src={anonymousImg} 
+            alt="" 
+            className="h-[32px]"
+         />
+
+         <ChakraCheckbox
+            onChange={setShowAnyway}
+            checked={showAnyway}
+            label="Show anyway"
+         />
+      </div>
+   }
+
+   
+
+   const body = <div>
+      <p className="text-xs text-gray-600">
+         {details}
+      </p>
+      {anonymityControl}
+   </div>
+
+   return <Section
+      title={"WITNESS DETAILS"}
+      body={body}
+   />
 }
 
 
@@ -495,20 +577,6 @@ export default class Case extends Component {
 
          // violation section
          const { violation } = this.state.case_;
-         const { witness_details } = violation;
-
-         let witnessDetails;
-
-         if (witness_details) {
-            witnessDetails = <div className="grid grid-cols-[auto,1fr] gap-6">
-               <span className="text-gray-500 font-bold text-xs">
-                  WITNESS DETAILS:
-               </span>
-               <p className="text-xs text-gray-600">
-                  {witness_details}
-               </p>
-            </div>
-         }
 
          let violationDates;
 
@@ -598,8 +666,6 @@ export default class Case extends Component {
                {violationNatures}
             </div>
 
-            {witnessDetails}
-
             <div className="my-3">
                {violationDates}
                {violationLocation}
@@ -619,6 +685,15 @@ export default class Case extends Component {
             title="VIOLATION"
             body={violationSectionBody}
          />
+
+         // witness details
+         const { witness } = violation;
+
+         let witnessDetails;
+
+         if (witness) {
+            witnessDetails = <WitnessDetails {...witness } />
+         }
 
          // other-entity-reported-to section
          const { other_entity_reported_to } = this.state.case_
@@ -841,6 +916,7 @@ export default class Case extends Component {
             {referredToSection}
             {geographicSection}
             {violationSection}
+            {witnessDetails}
             {otherEntityReportedToSection}
             {lawyerDetailsSection}
             {languageSection}
