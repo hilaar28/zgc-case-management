@@ -436,7 +436,7 @@ export default class Case extends Component {
             defendantDetails = defendants
                .map((defendant, i) => {
                   return <PersonalDetails
-                     title={`CORRESPONDENT #${i+1}`}
+                     title={`RESPONDENT #${i+1}`}
                      details={defendant}
                   />
                });

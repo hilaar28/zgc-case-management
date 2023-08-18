@@ -69,7 +69,7 @@ function UnconnectedCaseThumbnail(props) {
             .join(', ');
 
          defendantInfoPiece = <InfoPiece
-            label="Correspondent"
+            label="Respondent"
             info={info}
          />
       }

@@ -76,7 +76,7 @@ async function getFilesData(files) {
 const steps = [
    { title: 'Applicant', _description: 'Information about the person reporting the case' },
    { title: 'Complainant', _description: 'Information about the victim' },
-   { title: 'Correspondent', _description: 'Information about the person/institution being accused' },
+   { title: 'Respondent', _description: 'Information about the person/institution being accused' },
    { title: 'Violation', _description: 'Details about the violation' },
    { title: 'More', }
 ]
@@ -780,7 +780,7 @@ class UnconnectedCaseEditor extends Component {
                   defendants.push(
                      <div id={`div-defendant-${i}`} key={i}>
                         <div className='text-lg text-gray-600 font-extrabold mt-5'>
-                           CORRESPONDENT #{i} DETAILS
+                           RESPONDENT #{i} DETAILS
                         </div>
 
                         <PersonalDetailsForm 
