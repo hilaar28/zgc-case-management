@@ -72,6 +72,7 @@ function createCase(attributes={}) {
          institution_name: casual.text,
          relationship_to_victim: casual.text,
          why_completing_form_on_behalf: casual.text,
+         anonymous: casual.boolean,
       },
       defendants: [
          {
@@ -116,7 +117,10 @@ function createCase(attributes={}) {
          continuing: casual.boolean,
          details: casual.text,
          location: casual.text,
-         witness_details: casual.text,
+         witness: {
+            details: String,
+            anonymous: casual.boolean,
+         },
          natures: [
             {
                nature: casual.random_element(Object.keys(VIOLATION_NATURE)),

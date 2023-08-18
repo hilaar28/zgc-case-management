@@ -33,6 +33,7 @@ const caseJoiSchema = {
       relationship_to_incident: Joi.string(),
       why_completing_form_on_behalf: Joi.string(),
       location: Joi.string(),
+      anonymous: Joi.boolean(),
    }),
    defendants: Joi.array().items(Joi.object({
       ...personalDetailsSchema,
@@ -49,7 +50,10 @@ const caseJoiSchema = {
       continuing: Joi.boolean(),
       details: Joi.string(),
       location: Joi.string(),
-      witness_details: Joi.string(),
+      witness: {
+         details: Joi.string(),
+         anonymous: Joi.boolean(),
+      },
       natures: Joi.array().items({
          nature: Joi.string(),
          sub_nature: Joi.string(),

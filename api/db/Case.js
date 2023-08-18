@@ -55,6 +55,7 @@ const schema = new mongoose.Schema({
       relationship_to_incident: String,
       institution_name: String,
       why_completing_form_on_behalf: String,
+      anonymous: Boolean,
    },
    defendants: [
       new mongoose.Schema({
@@ -84,7 +85,10 @@ const schema = new mongoose.Schema({
          required: true,
       },
       location: String,
-      witness_details: String,
+      witness: {
+         anonymous: Boolean,
+         details: String,
+      },
       natures: [ 
          new mongoose.Schema({
             nature: {

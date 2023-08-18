@@ -27,6 +27,7 @@ erDiagram
       string applicant_next_of_kin_phone
       string applicant_friend_phone
       string applicant_institution_name
+      boolean applicant_anonymous
 
       string victim_name
       string victim_surname
@@ -66,6 +67,7 @@ erDiagram
       boolean is_violation_still_continuing
       string violation_location
       TEXT violation_witness_details
+      boolean witness_anonymous
       TEXT other_entity_reported_to
       TEXT other_entity_reported_actions
       TEXT why_reporting_to_us_as_well

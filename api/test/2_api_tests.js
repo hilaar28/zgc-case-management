@@ -186,6 +186,7 @@ suite("API Tests", function () {
                institution_name: casual.text,
                relationship_to_victim: casual.text,
                why_completing_form_on_behalf: casual.text,
+               anonymous: casual.boolean,
             },
             victim: {
                name: casual.text,
@@ -224,7 +225,10 @@ suite("API Tests", function () {
                continuing: casual.boolean,
                details: casual.text,
                location: casual.text,
-               witness_details: casual.text,
+               witness: {
+                  details: casual.text,
+                  anonymous: casual.boolean,
+               },
                natures: [
                   {
                      nature: casual.random_element(Object.keys(VIOLATION_NATURE)),

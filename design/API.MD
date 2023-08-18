@@ -160,6 +160,7 @@
       relationship_to_victim: String,
       relationship_to_incident: String,
       why_completing_form_on_behalf: String,
+      anonymous: Boolean,
    },
    victim: {
       name: String,
@@ -210,7 +211,10 @@
       ],
       details: String,
       location: String,
-      witness_details: String,
+      witness: {
+         details: String,
+         anonymous: Boolean,
+      },
       impact: String,
    },
    other_entity_reported_to: {
