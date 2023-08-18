@@ -18,7 +18,7 @@ export default function ViolationDetailsForm(props) {
       <div className="grid grid-cols-2 gap-6">
          <DateInput
             id="txt-date-from"
-            label="When did the violation started happening?"
+            label="When did the violation start?"
             max={new Date()}
             onChange={
                (date) => {
@@ -48,7 +48,7 @@ export default function ViolationDetailsForm(props) {
          <div>
             <DateInput
                id="txt-date-to"
-               label="When did the last happened?"
+               label="When did it last happen?"
                max={new Date()}
                data-source-target-attribute="dates.to"
             />

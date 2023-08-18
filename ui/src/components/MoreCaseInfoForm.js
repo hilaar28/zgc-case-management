@@ -10,13 +10,13 @@ export default function MoreCaseInfoForm(props) {
    // define fields
    const whyViolationIsImportantToOurMandate = <ChakraTextBox
       id="txt-why-violation-is-important-to-our-mandate"
-      label="Why is this a gender violation?"
+      label="How does this violation affect gender equality?"
       multiline
    />
 
    const expectationsFromUs = <ChakraTextBox
       id="txt-expectations-from-us"
-      label="What remedy you are expecting to get from the ZGC?"
+      label="What remedy are you expecting to get from the ZGC?"
       multiline
    />
 

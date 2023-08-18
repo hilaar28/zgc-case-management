@@ -88,7 +88,7 @@ const CASE_TYPES = {
 
 
 const defaultState = {
-   stage: 1,
+   stage: 5,
    caseType: CASE_TYPES.GENERAL,
    applicant: null,
    victim: null,
