@@ -28,6 +28,7 @@ export default class MenuSelect extends Component {
          menu = <Menu 
             open 
             anchorEl={() => document.getElementById(this.id) }
+            onClose={this.closeMenu}
          >
             {
                this.props.options.map(option => {
