@@ -28,4 +28,13 @@ const sentryLogger = {
 
 const logger = process.env.NODE_ENV === 'development' ? console : sentryLogger;
 
+Object.defineProperty(console, 'init', {
+   get: () => {
+      return () => {}
+   },
+   set: () => {
+      
+   }
+})
+
 module.exports = logger;
