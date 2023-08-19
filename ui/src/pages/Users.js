@@ -28,6 +28,9 @@ class RoleSelector extends Component {
    }));
 
    onUserRoleChange = async (role) => {
+
+      if (role === this.props.role)
+         return;
       
       try {
          showLoading();
@@ -51,6 +54,7 @@ class RoleSelector extends Component {
          options={RoleSelector.roleOptions}
          current={this.props.role.replaceAll('_', ' ')}
          onSelect={this.onUserRoleChange}
+         disabled={this.props.disabled}
       />
    }
 }
@@ -209,7 +213,7 @@ class UnconnectedUsers extends Page {
                            </TableCell>
                            
                            <TableCell>
-                              <RoleSelector _id={_id} role={user.role} />
+                              <RoleSelector _id={_id} role={user.role} disabled={disabled} />
                            </TableCell>
 
                            <TableCell>

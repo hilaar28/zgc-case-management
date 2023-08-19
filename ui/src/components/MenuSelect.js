@@ -57,6 +57,7 @@ export default class MenuSelect extends Component {
             variant="outlined" 
             onClick={this.openMenu} 
             id={this.id}
+            disabled={this.props.disabled}
          >
             {this.props.current}
          </Button>
