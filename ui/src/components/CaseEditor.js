@@ -18,7 +18,7 @@ import swal from 'sweetalert'
 import { hideLoading, showLoading } from '../loading'
 import request from '../request';
 import { Case as CaseSchema } from '../reducer/schema';
-import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, ArrowForwardIcon, ArrowDownIcon } from '@chakra-ui/icons';
 import { delay }  from '../utils';
 import logger from '../logger';
 
@@ -89,7 +89,7 @@ const CASE_TYPES = {
 
 
 const defaultState = {
-   stage: 5,
+   stage: 1,
    caseType: CASE_TYPES.GENERAL,
    applicant: null,
    victim: null,
@@ -105,6 +105,7 @@ const defaultState = {
    ward: '',
    village: '',
    haveReportedToThirdParty: false,
+   showScrollIndicator: false,
 }
 
 
@@ -476,6 +477,7 @@ class UnconnectedCaseEditor extends Component {
 
       // scroll form to top
       document.getElementById('div-form-container').scrollTo(0, 0);
+      await this.shouldIShowScrollIndicator()
 
       // submit case
       if (currentStage === steps.length) {
@@ -630,9 +632,31 @@ class UnconnectedCaseEditor extends Component {
 
    }
 
+
+   shouldIShowScrollIndicator = () => {
+
+      const divFormContainer = document.getElementById('div-form-container');
+      const offset = divFormContainer.offsetHeight - divFormContainer.clientHeight;
+
+      let showScrollIndicator;
+      if (divFormContainer.scrollTop < (divFormContainer.scrollHeight - divFormContainer.offsetHeight - offset)) {
+         // The div is not scrolled to the bottom
+         showScrollIndicator = true;
+      } else {
+         // The div is scrolled to the bottom
+         showScrollIndicator = false;
+         
+      }
+
+      return this.updateState({ showScrollIndicator });
+
+   }
+
+
    componentDidUpdate(prevProps) {
       if (this.props.open && !prevProps.open) {
          this.resetEditor();
+         this.shouldIShowScrollIndicator();
       }
    }
 
@@ -883,6 +907,15 @@ class UnconnectedCaseEditor extends Component {
       }
 
 
+      let scrollIndicator;
+
+      if (this.state.showScrollIndicator) {
+         scrollIndicator = <div className='inline-block absolute bottom-[20px] left-[50%] transform -translate-x-[50%] bounce'>
+            <ArrowDownIcon boxSize={10} color={"orange.600"} />
+         </div>
+      }
+
+
       return <ChakraProvider>
          <div className='fixed top-0 left-0 h-screen w-screen bg-[rgba(0,0,0,0.95)] z-[1100] vh-align'>
             <div 
@@ -900,8 +933,11 @@ class UnconnectedCaseEditor extends Component {
                   </div>
                </div>
 
-               <div className='overflow-y-auto p-8' id='div-form-container'>
-                  {form}
+               <div className='relative overflow-hidden'>
+                  <div className='overflow-y-auto p-8 h-full' id='div-form-container' onScroll={this.shouldIShowScrollIndicator}>
+                     {form}
+                     {scrollIndicator}
+                  </div>
                </div>
 
                <div className='text-right shadow-xl px-8 py-4 border-[1px] border-solid'>
