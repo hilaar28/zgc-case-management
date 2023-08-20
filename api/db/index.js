@@ -7,11 +7,11 @@ const Temp = require("./Temp");
 async function init() {
 
    // connect to db server
-   const DB_URL = process.env.NODE_ENV === 'test' ? 'mongodb://localhost:27017/test': process.env.DB_URL;
+   const DB_URL = process.env.NODE_ENV === 'test' ? 'mongodb://localhost:27017': process.env.DB_URL;
    const user = process.env.DB_USER;
    const pass = process.env.DB_PWD;
 
-   await mongoose.connect(DB_URL, { user, pass });
+   await mongoose.connect(DB_URL, { user, pass, dbName: user });
 
    // initialize models
    await User.init();
