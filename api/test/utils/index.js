@@ -6,7 +6,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const axios = require('axios');
 const { default: mongoose } = require('mongoose');
-const { USER_ROLES, GENDER, MARITAL_STATUS, CASE_SOURCES, PROVINCES, AGE_RANGES, VIOLATION_NATURE, VIOLATION_IMPACT } = require('../../constants');
+const { USER_ROLES, GENDER, MARITAL_STATUS, CASE_SOURCES, PROVINCES, AGE_RANGES, VIOLATION_NATURE, VIOLATION_IMPACT, CASE_TYPE } = require('../../constants');
 const Case = require('../../db/Case');
 
 
@@ -55,6 +55,7 @@ function createUser(attributes={}) {
 
 function createCase(attributes={}) {
    return Case.create({
+      type: casual.random_element(Object.values(CASE_TYPE)),
       applicant: {
          name: casual.first_name,
          surname: casual.last_name,

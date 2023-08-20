@@ -1,6 +1,6 @@
 
 const mongoose = require("mongoose");
-const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES, AGE_RANGES } = require("../constants");
+const { MARITAL_STATUS, CASE_SOURCES, CASE_STATUS, GENDER, PROVINCES, AGE_RANGES, CASE_TYPE } = require("../constants");
 
 
 const caseUpdateSchema = new mongoose.Schema({
@@ -37,6 +37,12 @@ const personalDetails = {
 
 
 const schema = new mongoose.Schema({
+   type: {
+      type: String,
+      enum: Object.values(CASE_TYPE),
+      index: true,
+      required: true,
+   },
    title: {
       type: String,
       required: true,

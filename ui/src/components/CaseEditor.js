@@ -12,7 +12,7 @@ import { errorToast, successToast } from '../toast';
 import ChakraCheckbox from './ChakraCheckbox';
 import ViolationDetailsForm from './ViolationDetailsForm';
 import ChakraTextBox from './ChakraTextbox';
-import { CASE_SOURCES, CASE_STATUS, PROVINCES } from '../backend-constants';
+import { CASE_SOURCES, CASE_STATUS, CASE_TYPE, PROVINCES } from '../backend-constants';
 import MoreCaseInfoForm from './MoreCaseInfoForm';
 import swal from 'sweetalert'
 import { hideLoading, showLoading } from '../loading'
@@ -82,15 +82,10 @@ const steps = [
    { title: 'More', }
 ]
 
-const CASE_TYPES = {
-   GENERAL: 'general',
-   ELECTORAL: 'electoral',
-}
-
 
 const defaultState = {
    stage: 1,
-   caseType: CASE_TYPES.GENERAL,
+   caseType: CASE_TYPE.GENERAL,
    applicant: null,
    victim: null,
    defendants: null,
@@ -500,9 +495,11 @@ class UnconnectedCaseEditor extends Component {
             village,
             who_referred_you_to_us,
             other_entity_reported_to,
+            caseType,
          } = this.state;
 
          const data =  {
+            type: caseType,
             applicant,
             victim,
             defendants,
@@ -666,7 +663,7 @@ class UnconnectedCaseEditor extends Component {
          return;
 
       let form;
-      const formIsElectoral = this.state.caseType === CASE_TYPES.ELECTORAL;
+      const formIsElectoral = this.state.caseType === CASE_TYPE.ELECTORAL;
 
       switch (this.state.stage) {
          case 1:
@@ -683,7 +680,7 @@ class UnconnectedCaseEditor extends Component {
                      onChange={caseType => this.updateState({ caseType })}
                   >
                      {
-                        Object.values(CASE_TYPES).map(type => {
+                        Object.values(CASE_TYPE).map(type => {
                            return <option value={type}>
                               {capitalize.words(type)}
                            </option>

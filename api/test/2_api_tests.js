@@ -1,6 +1,6 @@
 const casual = require("casual");
 const { waitForServer, createRequester, createAccessToken, createUser, findLastInserted, createCase } = require("./utils");
-const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS, PROVINCES, AGE_RANGES, VIOLATION_IMPACT, VIOLATION_NATURE } = require("../constants");
+const { USER_ROLES, MARITAL_STATUS, GENDER, CASE_SOURCES, CASE_STATUS, PROVINCES, AGE_RANGES, VIOLATION_IMPACT, VIOLATION_NATURE, CASE_TYPE } = require("../constants");
 const User = require("../db/User");
 const { ACCESS_TOKEN_HEADER_NAME } = require("@xavisoft/auth/constants");
 const chai = require("chai");
@@ -169,6 +169,7 @@ suite("API Tests", function () {
 
          // send request
          const payload = {
+            type: casual.random_element(Object.values(CASE_TYPE)),
             applicant: {
                name: casual.first_name,
                surname: casual.last_name,
@@ -370,6 +371,7 @@ suite("API Tests", function () {
          // validate schema
          const schema = {
             _id: Joi.string().required(),
+            type: Joi.allow(...Object.values(CASE_TYPE)).required(),
             title: Joi.string().required(),
             applicant: Joi.object().required(),
             defendants: Joi.array().items(Joi.object()).min(1).required(),

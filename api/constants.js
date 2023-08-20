@@ -174,10 +174,16 @@ const AGE_RANGES = [
    '65+',
 ]
 
+const CASE_TYPE = {
+   ELECTORAL: 'electoral',
+   GENERAL: 'general',
+}
+
 module.exports = {
    AGE_RANGES,
    CASE_SOURCES,
    CASE_STATUS,
+   CASE_TYPE,
    GENDER,
    MARITAL_STATUS,
    PROVINCES,
