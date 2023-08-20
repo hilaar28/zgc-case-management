@@ -20,6 +20,7 @@
     "electron-winstaller": "^5.1.0"
   },
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
     "glob": "^10.3.3"
   }
 }
