@@ -338,7 +338,12 @@ class UnconnectedCaseEditor extends Component {
       const expectations_from_us = txtExpectationsFromUs ? txtExpectationsFromUs.value : undefined;
       const lawyer_details = txtLawyerDetails ? txtLawyerDetails.value : undefined;
       const language = txtLanguage ? txtLanguage.value : undefined;
-      const who_referred_you_to_us = txtWhoReferredYouToUs ? txtWhoReferredYouToUs.value : undefined;
+      const who_referred_you_to_us = txtWhoReferredYouToUs.value;
+
+      if (!who_referred_you_to_us) {
+         txtWhoReferredYouToUs.focus();
+         throw new Error('Provide how you got to know about us');
+      }
       
       let evidence;
 

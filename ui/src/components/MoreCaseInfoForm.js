@@ -2,6 +2,9 @@
 import ChakraCheckbox from "./ChakraCheckbox";
 import ChakraTextBox from "./ChakraTextbox";
 import { Divider } from "@chakra-ui/react";
+import SelectOrType from "./SelectOrType";
+import { WHERE_DID_YOU_HEAR_ABOUT_US } from "../backend-constants";
+import capitalize from "capitalize";
 
 
 export default function MoreCaseInfoForm(props) {
@@ -31,9 +34,16 @@ export default function MoreCaseInfoForm(props) {
       label="What language do you prefer to be assisted in?"
    />
 
-   const whoReferredYouToUs = <ChakraTextBox
+   const whoReferredYouToUs = <SelectOrType
       id="txt-who-referred-you-to-us"
-      label="Who referred you to us?"
+      label="How did you get to know about ZGC?"
+      items={
+         WHERE_DID_YOU_HEAR_ABOUT_US
+            .map(value => ({
+               value,
+               caption: capitalize(value.replaceAll('_',  ' ')),
+            }))
+      }
    />
 
    // const evidence = <ChakraTextBox
@@ -86,6 +96,7 @@ export default function MoreCaseInfoForm(props) {
       form = <div className="grid grid-cols-2 gap-6">
          {/* {evidence} */}
          {moreAssistanceRequired}
+         {whoReferredYouToUs}
       </div>
    } else {
 

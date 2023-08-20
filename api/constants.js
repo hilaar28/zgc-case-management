@@ -179,6 +179,18 @@ const CASE_TYPE = {
    GENERAL: 'general',
 }
 
+const WHERE_DID_YOU_HEAR_ABOUT_US = [
+   'SEARCH_ENGINE',
+   'SOCIAL_MEDIA',
+   'WORD_OF_MOUTH',
+   'WEBSITE_OR_BLOG',
+   'TELEVISION',
+   'RADIO',
+   'NEWSPAPER',
+   'EVENT',
+   'BILLBOARD',
+]
+
 module.exports = {
    AGE_RANGES,
    CASE_SOURCES,
@@ -192,4 +204,5 @@ module.exports = {
    USER_ROLES,
    VIOLATION_IMPACT,
    VIOLATION_NATURE,
+   WHERE_DID_YOU_HEAR_ABOUT_US,
 }
