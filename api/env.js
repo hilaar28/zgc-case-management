@@ -19,6 +19,8 @@ const BASE_KEYS = [
    'SYSTEM_URL',
    'SENTRY_DSN',
    'DB_URL',
+   'DB_USER',
+   'DB_PWD',
    'PORT',
    'SUPER_USER_EMAIL',
    'SUPER_USER_PASSWORD',
