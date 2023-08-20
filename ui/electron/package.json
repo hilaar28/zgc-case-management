@@ -1,7 +1,7 @@
 {
   "name": "zgc-case-management",
   "version": "1.0.0",
-  "description": "",
+  "description": "A case management system for the Zimbabwe Gender Commission",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,5 +18,8 @@
     "electron": "^25.3.2",
     "electron-packager": "^17.1.1",
     "electron-winstaller": "^5.1.0"
+  },
+  "dependencies": {
+    "glob": "^10.3.3"
   }
 }
