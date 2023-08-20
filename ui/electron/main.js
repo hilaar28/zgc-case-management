@@ -1,6 +1,10 @@
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 
+// squirrel events
+if(require('electron-squirrel-startup'))
+	app.quit();
+
 // SINGLE INSTANCE
 const gotLock = app.requestSingleInstanceLock();
 
