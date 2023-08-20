@@ -35,6 +35,7 @@ import CaseEditor from './components/CaseEditor';
 import NotFound from './pages/NotFound';
 import Cases from './pages/Cases';
 import Reports from './pages/Reports';
+import ErrorBoundary from './components/ErrorBoundary';
 
 
 Component.prototype.updateState = function (updates={}) {
@@ -67,27 +68,29 @@ function App() {
 	if (window.electron)
 		router = 'hash';
 
-	return <Provider store={store}>
-		<AppWrapper router={router}>
+	return <ErrorBoundary>
+		<Provider store={store}>
+			<AppWrapper router={router}>
 
-			<Navbar />
+				<Navbar />
 
-			<Route path="/" component={Login} />
-			<Route path="/login" component={Login} />
-			<Route path="/menu" component={Menu} />
-			<Route path="/users" component={Users} />
-			<Route path="/cases" component={Cases} />
-			<Route path="/reports" component={Reports} />
+				<Route path="/" component={Login} />
+				<Route path="/login" component={Login} />
+				<Route path="/menu" component={Menu} />
+				<Route path="/users" component={Users} />
+				<Route path="/cases" component={Cases} />
+				<Route path="/reports" component={Reports} />
 
-			<Route path="/test" component={Test} />
+				<Route path="/test" component={Test} />
 
-			<Route path="*" component={NotFound} />
+				<Route path="*" component={NotFound} />
 
-			<Footer />
-			<CaseEditor />
+				<Footer />
+				<CaseEditor />
 
-		</AppWrapper>
-	</Provider>
+			</AppWrapper>
+		</Provider>
+	</ErrorBoundary>
 }
 
 export default App;
