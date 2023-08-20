@@ -8,8 +8,12 @@ async function init() {
 
    // connect to db server
    const DB_URL = process.env.NODE_ENV === 'test' ? 'mongodb://localhost:27017': process.env.DB_URL;
-   const user = process.env.DB_USER;
-   const pass = process.env.DB_PWD;
+   let user, pass;
+
+   if (!process.env.SKIP_DB_AUTH) {
+      user = process.env.DB_USER;
+      pass = process.env.DB_PWD;
+   }
 
    await mongoose.connect(DB_URL, { user, pass, dbName: user });
 

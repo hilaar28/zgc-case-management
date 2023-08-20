@@ -20,10 +20,12 @@ const personalDetails = {
    gender: {
       type: String,
       enum: Object.values(GENDER),
+      index: true,
    },
    marital_status: {
       type: String,
       enum: Object.values(MARITAL_STATUS),
+      index: true,
    },
    address: String,
    telephone: String,
@@ -43,6 +45,7 @@ const schema = new mongoose.Schema({
       type: String,
       enum: Object.values(CASE_SOURCES),
       required: true,
+      index: true,
    },
    case_officer: {
       type: mongoose.Schema.ObjectId,
@@ -63,11 +66,7 @@ const schema = new mongoose.Schema({
          institution_name: String,
       }, { _id: false })
    ],
-   victim: {
-      type: personalDetails,
-      required: false,
-      _id: false,
-   },
+   victim: personalDetails,
    violation: {
       dates: {
          from: {
@@ -85,6 +84,7 @@ const schema = new mongoose.Schema({
          type: String,
          enum: AGE_RANGES,
          required: true,
+         index: true,
       },
       continuing: Boolean,
       details: {
@@ -101,6 +101,7 @@ const schema = new mongoose.Schema({
             nature: {
                type: String,
                required: true,
+               index: true,
             },
             sub_nature: String,
          }, { _id: false })
@@ -108,6 +109,7 @@ const schema = new mongoose.Schema({
       impact: {
          type: String,
          required: true,
+         index: true,
       },
    },
    other_entity_reported_to: {
@@ -131,7 +133,10 @@ const schema = new mongoose.Schema({
    expectations_from_us: String,
    lawyer_details: String,
    language: String,
-   who_referred_you_to_us: String,
+   who_referred_you_to_us: {
+      type: String,
+      index: true,
+   },
    updates: {
       type: [ caseUpdateSchema ],
       required: true,
@@ -141,6 +146,7 @@ const schema = new mongoose.Schema({
       enum: Object.values(CASE_STATUS),
       default: CASE_STATUS.NOT_ASSESSED,
       required: true,
+      index: true,
    },
    referred_to: String,
    recorded_by: {
@@ -152,6 +158,7 @@ const schema = new mongoose.Schema({
       type: String,
       enum: Object.keys(PROVINCES),
       required: true,
+      index: true,
    },
    district: String,
    constituency: String,
@@ -159,7 +166,12 @@ const schema = new mongoose.Schema({
    village: String,
    evidence: [ String ],
    more_assistance_required: String,
-}, { timestamps: true });
+}, { timestamps: true, });
+
+
+schema.index({
+   createdAt: 1,
+})
 
 
 const Case = mongoose.model('Case', schema);
