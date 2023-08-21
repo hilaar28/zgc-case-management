@@ -62,6 +62,7 @@ export default class UserEditor extends Component {
          // add to store
          const { _id } = res.data;
 
+
          data._id = _id;
          actions.addEntity(UserSchema, data);
 
@@ -121,7 +122,7 @@ export default class UserEditor extends Component {
                >
                   {
                      Object.values(NON_SU_ROLES).map(role => {
-                        return <MenuItem value={role} id={role}>
+                        return <MenuItem value={role} id={role} key={role}>
                            {role.replaceAll('_', ' ').toUpperCase()}
                         </MenuItem>
                      })

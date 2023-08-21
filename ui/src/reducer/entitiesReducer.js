@@ -26,8 +26,8 @@ function deepCopy(object) {
 
 function updateReducer(entities, payload) {
 
-   const { id, updates } = payload
-   const updatedEntity = entities[id]
+   const { _id, updates } = payload
+   const updatedEntity = entities[_id]
 
    let setters = {}, pushes = {}, filters = {};
 
@@ -52,7 +52,7 @@ function updateReducer(entities, payload) {
       updatedEntity[attr] = updatedEntity[attr].filter(filters[attr]);
    });
 
-   entities[id] = updatedEntity;
+   entities[_id] = updatedEntity;
 
    return entities;
 }
@@ -71,7 +71,7 @@ function createEntityReducer(Entity) {
 
       switch (action.type) {
          case `add-${Entity.key}`:
-            const { id:newEntityId } = action.payload
+            const { _id:newEntityId } = action.payload
             entities = { ...entities, [newEntityId]: action.payload }
             return entities
 

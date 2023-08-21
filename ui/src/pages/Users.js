@@ -41,7 +41,8 @@ class RoleSelector extends Component {
          actions.updateEntity(UserSchema, userId, { role });
 
       } catch (err) {
-         swal(String(err))
+         swal(String(err));
+         console.log(err);
       } finally {
          hideLoading();
       }

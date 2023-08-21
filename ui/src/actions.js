@@ -43,14 +43,14 @@ function closeCaseEditor() {
 /**
  * 
  * @param {import("normalizr").schema.Entity} Entity 
- * @param {String | Number} id 
+ * @param {String | Number} _id 
  * @param {Object} updates 
  */
-function updateEntity(Entity, id, updates={}) {
+function updateEntity(Entity, _id, updates={}) {
 
    const action = {
       type: `update-${Entity.key}`,
-      payload: { id, updates }
+      payload: { _id, updates }
    }
 
    store.dispatch(action);
@@ -77,13 +77,13 @@ function addEntity(Entity, entity) {
 /**
  * 
  * @param {import("normalizr").schema.Entity} Entity 
- * @param {string|integer} id 
+ * @param {string|integer} _id 
  */
-function deleteEntity(Entity, id) {
+function deleteEntity(Entity, _id) {
 
    const action = {
       type: `delete-${Entity.key}`,
-      payload: id
+      payload: _id
    }
 
    store.dispatch(action);
