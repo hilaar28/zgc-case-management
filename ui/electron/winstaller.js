@@ -30,7 +30,7 @@ const { glob } = require('glob');
             appDirectory: `${appDirBase}/${appDirName}`,
             outputDirectory: `${__dirname}/dist/${appDirName}`,
             description,
-            name: 'ZGC Case Management',
+            name: 'com.xavisoft.zgc-case-management',
             noMsi: true,
             setupExe: 'ZGC Case Management',
             title: 'ZGC Case Management',
