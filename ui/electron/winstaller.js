@@ -30,7 +30,7 @@ const { glob } = require('glob');
             appDirectory: `${appDirBase}/${appDirName}`,
             outputDirectory: `${__dirname}/dist/${appDirName}`,
             description,
-            exe: 'ZGC Case Management',
+            name: 'ZGC Case Management',
             noMsi: true,
          });
 
