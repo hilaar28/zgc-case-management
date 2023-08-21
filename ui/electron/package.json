@@ -15,7 +15,7 @@
   "author": "Qurious Consulting, Xavisoft Digital",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^25.3.2",
+    "electron": "^26.0.0",
     "electron-packager": "^17.1.1",
     "electron-winstaller": "^5.1.0"
   },

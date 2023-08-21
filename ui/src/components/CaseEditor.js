@@ -912,7 +912,7 @@ class UnconnectedCaseEditor extends Component {
       let scrollIndicator;
 
       if (this.state.showScrollIndicator) {
-         scrollIndicator = <div className='inline-block absolute bottom-[20px] left-[50%] transform -translate-x-[50%] bounce'>
+         scrollIndicator = <div className='inline-block absolute bottom-[20px] left-[50%] transform -translate-x-[50%] animate-bounce'>
             <ArrowDownIcon boxSize={10} color={"orange.600"} />
          </div>
       }
