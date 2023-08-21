@@ -14,6 +14,9 @@ class Page extends Component {
          route = window.location.pathname;
       }
 
+      if (!route)
+         route = '/';
+
       actions.setCurrentRoute(route);
       window.scrollTo(0, 0);
       
