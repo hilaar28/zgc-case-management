@@ -43,6 +43,16 @@ users.post('/', async (req, res) => {
       if (error)
          return res.status(400).send(error);
 
+      // check if email is taken
+      const { email } = req.body;
+
+      const count = await User
+         .countDocuments()
+         .where({ email });
+
+      if (count > 0)
+         return res.status(409).send(`Email "${email}" already exists`);
+
       // save user and send password via email
       const session = await mongoose.startSession();
       session.startTransaction();
