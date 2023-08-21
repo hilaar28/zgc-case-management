@@ -19,7 +19,8 @@ function createWindow () {
 			preload: `${__dirname}/preload.js`,
 			nodeIntegration: true,
 			contextIsolation: false,
-		}
+		},
+		frame: false,
 	});
 
 	win.maximize();
