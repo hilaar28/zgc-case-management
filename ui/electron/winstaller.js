@@ -32,7 +32,6 @@ const { glob } = require('glob');
             description,
             name: 'com.xavisoft.zgc-case-management',
             noMsi: true,
-            setupExe: 'ZGC Case Management',
             title: 'ZGC Case Management',
          });
 
