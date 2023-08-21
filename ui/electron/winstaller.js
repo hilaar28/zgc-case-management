@@ -32,6 +32,8 @@ const { glob } = require('glob');
             description,
             name: 'ZGC Case Management',
             noMsi: true,
+            setupExe: 'ZGC Case Management',
+            title: 'ZGC Case Management',
          });
 
          console.log('Done.');
