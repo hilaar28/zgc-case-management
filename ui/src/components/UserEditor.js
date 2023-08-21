@@ -1,12 +1,12 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField } from "@mui/material";
 import Component from "@xavisoft/react-component";
-import { USER_ROLES } from "../backend-constants";
 import { errorToast } from '../toast';
 import swal from "sweetalert";
 import { hideLoading, showLoading } from "../loading";
 import request from "../request";
 import actions from "../actions";
 import { User as UserSchema } from "../reducer/schema";
+import { NON_SU_ROLES } from "../constants";
 
 
 export default class UserEditor extends Component {
@@ -120,7 +120,7 @@ export default class UserEditor extends Component {
                   onChange={this.onRoleChange}
                >
                   {
-                     Object.values(USER_ROLES).map(role => {
+                     Object.values(NON_SU_ROLES).map(role => {
                         return <MenuItem value={role} id={role}>
                            {role.replaceAll('_', ' ').toUpperCase()}
                         </MenuItem>

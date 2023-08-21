@@ -14,15 +14,15 @@ import AddIcon from '@mui/icons-material/Add';
 import { requestConfirmation } from '../utils'
 import capitalize from 'capitalize';
 import MenuSelect from "../components/MenuSelect";
-import { USER_ROLES } from "../backend-constants";
 import Component from "@xavisoft/react-component";
 import Editable from "../components/Editable";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { NON_SU_ROLES } from "../constants";
 
 
 class RoleSelector extends Component {
 
-   static roleOptions = Object.values(USER_ROLES).map(role => ({
+   static roleOptions = Object.values(NON_SU_ROLES).map(role => ({
       value: role,
       caption: role.replaceAll('_', ' ').toUpperCase(),
    }));
@@ -189,8 +189,9 @@ class UnconnectedUsers extends Page {
                         const _id = user._id;
                         const disabled = _id === ownUserId;
                         const textColorClass = disabled ? 'text-gray-600 opacity-30' : 'text-red-400';
+                        const rowClassName = disabled ? 'pointer-events-none' : '';
 
-                        return <TableRow key={_id}>
+                        return <TableRow key={_id} className={rowClassName}>
                            <TableCell>
                               <Editable 
                                  content={user.name} 
