@@ -459,66 +459,70 @@ export default class Case extends Component {
 
          // action buttons
          /// add update button
-         if (this.state.case_.status === CASE_STATUS.IN_PROGRESS) {
-            actionButtons.push(<Button 
-               variant="contained" 
-               size="small" 
-               startIcon={<AddIcon />} 
-               className="bg-orange-600 rounded-full px-6"
-               onClick={() => this.openUpdateEditor('add')}
-            >
-               UPDATE
-            </Button>);
+         const { status } = this.state.case_;
+
+         const updateButton = <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<AddIcon />} 
+            className="bg-orange-600 rounded-full px-6"
+            onClick={() => this.openUpdateEditor('add')}
+         >
+            UPDATE
+         </Button>
+
+         const markAsResolvedButton = <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<DoneIcon />} 
+            className="bg-orange-600 rounded-full px-6"
+            onClick={this.markAsResolved}
+         >
+            RESOLVED
+         </Button>
+
+         const rejectButton = <Button 
+            variant="outlined" 
+            size="small" 
+            startIcon={<ThumbDownIcon />} 
+            className="text-orange-600 border-current rounded-full px-6"
+            onClick={this.reject}
+         >
+            REJECT
+         </Button>
+
+         const assignButton = <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<PersonAddIcon />} 
+            className="bg-orange-600 border-current rounded-full px-6"
+            onClick={this.assign}
+         >
+            ASSIGN
+         </Button>
+
+         const referButton = <Button 
+            variant="outlined" 
+            size="small" 
+            startIcon={<IosShareIcon />} 
+            className="text-orange-600 border-current rounded-full px-6"
+            onClick={this.refer}
+         >
+            REFER
+         </Button>
+
+         if (status === CASE_STATUS.IN_PROGRESS) {
+
+            if (!this.state.case_.case_officer)
+               actionButtons.push(assignButton);
+
+            actionButtons.push(updateButton);
 
             if (this.state.case_.updates.length > 0) {
-
-               actionButtons.push(<Button 
-                  variant="contained" 
-                  size="small" 
-                  startIcon={<DoneIcon />} 
-                  className="bg-orange-600 rounded-full px-6"
-                  onClick={this.markAsResolved}
-               >
-                  RESOLVED
-               </Button>);
-
+               actionButtons.push(markAsResolvedButton);
             }
-         }
-
-         /// reject, assign and refer buttons
-         if (this.state.case_.status === CASE_STATUS.NOT_ASSESSED) {
-            // reject
-            actionButtons.push(<Button 
-               variant="outlined" 
-               size="small" 
-               startIcon={<ThumbDownIcon />} 
-               className="text-orange-600 border-current rounded-full px-6"
-               onClick={this.reject}
-            >
-               REJECT
-            </Button>);
-
-            // assign
-            actionButtons.push(<Button 
-               variant="contained" 
-               size="small" 
-               startIcon={<PersonAddIcon />} 
-               className="bg-orange-600 border-current rounded-full px-6"
-               onClick={this.assign}
-            >
-               ASSIGN
-            </Button>);
-
-            // refer
-            actionButtons.push(<Button 
-               variant="outlined" 
-               size="small" 
-               startIcon={<IosShareIcon />} 
-               className="text-orange-600 border-current rounded-full px-6"
-               onClick={this.refer}
-            >
-               REFER
-            </Button>);
+         } else if (status === CASE_STATUS.NOT_ASSESSED) {
+            actionButtons.push(rejectButton, assignButton, referButton);
          }
 
          // personal details
