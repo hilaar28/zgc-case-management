@@ -475,7 +475,6 @@ class UnconnectedCaseEditor extends Component {
          }
 
       } catch (err) {
-         logger.error(err);
          return errorToast(err.message);
       }
 

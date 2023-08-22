@@ -42,7 +42,6 @@ class RoleSelector extends Component {
 
       } catch (err) {
          swal(String(err));
-         console.log(err);
       } finally {
          hideLoading();
       }
