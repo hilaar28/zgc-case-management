@@ -10,26 +10,7 @@ import { connect } from "react-redux";
 import { Button } from "@mui/material";
 import { showLoading, hideLoading } from '../loading';
 import swal from 'sweetalert';
-
-
-function thisRoleOrHigher(minRole, role) {
-   const roles = [
-      USER_ROLES.AGENT,
-      USER_ROLES.CASE_OFFICER,
-      USER_ROLES.INVESTIGATING_OFFICER,
-      USER_ROLES.SUPERVISOR,
-      USER_ROLES.SUPER_ADMIN,
-   ];
-
-   const minRolePos = roles.indexOf(minRole);
-   if (minRolePos === -1)
-      throw new Error('Unknown user role: ' + minRole);
-
-   const rolePos = roles.indexOf(role);
-
-   return rolePos >= minRolePos;
-   
-}
+import { thisRoleOrHigher } from "../shared-utils";
 
 
 function Option(props) {
