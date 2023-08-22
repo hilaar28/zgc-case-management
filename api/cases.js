@@ -6,6 +6,7 @@ const Case = require("./db/Case");
 const { flattenDocumentUpdate } = require("./utils");
 const { default: mongoose } = require("mongoose");
 const User = require("./db/User");
+const { thisRoleOrHigher } = require("./shared-utils");
 
 // constants
 const personalDetailsSchema = {
@@ -89,25 +90,6 @@ const caseJoiSchema = {
 }
 
 // helpers
-function thisRoleOrHigher(minRole, role) {
-   const roles = [
-      USER_ROLES.AGENT,
-      USER_ROLES.CASE_OFFICER,
-      USER_ROLES.INVESTIGATING_OFFICER,
-      USER_ROLES.SUPERVISOR,
-      USER_ROLES.SUPER_ADMIN,
-   ];
-
-   const minRolePos = roles.indexOf(minRole);
-   if (minRolePos === -1)
-      throw new Error('Unknown user role: ' + minRole);
-
-   const rolePos = roles.indexOf(role);
-
-   return rolePos >= minRolePos;
-   
-}
-
 async function areYouAssignedToThisCase(userId, caseId) {
    const count = await Case.countDocuments().where({ _id: caseId, case_officer: userId });
    return count == 1;
