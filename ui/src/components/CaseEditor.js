@@ -90,6 +90,7 @@ const defaultState = {
    victim: null,
    defendants: null,
    defendantCount: 1,
+   doesntKnowDefendants: false,
    violation: null,
    other: null,
    applicantIsVictim: false,
@@ -434,6 +435,12 @@ class UnconnectedCaseEditor extends Component {
 
             case 3:
                {
+
+                  if (this.state.doesntKnowDefendants) {
+                     update.defendants = [];
+                     break;
+                  }
+
                   const defendants = [];
 
                   for (let i = 1; i <= this.state.defendantCount; i++) {
@@ -818,50 +825,68 @@ class UnconnectedCaseEditor extends Component {
             
             {
 
-               const defendants = [];
+               let defendantsJSX;
 
-               const removeLastDefendant = <div className='text-right'>
-                  <Button
-                     onClick={() => this.incrementDefendantCount(-1)}
-                     className='bg-transparent text-[#1976D2]'
-                     size={"sm"}
-                  >
-                     REMOVE
-                  </Button>
-               </div>
+               if (!this.state.doesntKnowDefendants) {
 
-               for (let i = 1; i <= this.state.defendantCount; i++) {
-                  defendants.push(
-                     <div id={`div-defendant-${i}`} key={i}>
-                        <div className='text-lg text-gray-600 font-extrabold mt-5'>
-                           RESPONDENT #{i} DETAILS
+                  const defendants = [];
+
+                  const removeLastDefendant = <div className='text-right'>
+                     <Button
+                        onClick={() => this.incrementDefendantCount(-1)}
+                        className='bg-transparent text-[#1976D2]'
+                        size={"sm"}
+                     >
+                        REMOVE
+                     </Button>
+                  </div>
+
+                  for (let i = 1; i <= this.state.defendantCount; i++) {
+                     defendants.push(
+                        <div id={`div-defendant-${i}`} key={i}>
+                           <div className='text-lg text-gray-600 font-extrabold mt-5'>
+                              RESPONDENT #{i} DETAILS
+                           </div>
+
+                           <PersonalDetailsForm 
+                              electoral={formIsElectoral} 
+                           />
+
+                           {(this.state.defendantCount > 1 && this.state.defendantCount === i) ? removeLastDefendant: undefined }
+
+                           <Divider className='my-4' />
+
                         </div>
+                     );
+                  }
 
-                        <PersonalDetailsForm 
-                           electoral={formIsElectoral} 
-                        />
+                  defendantsJSX = <>
+                     {defendants}
 
-                        {(this.state.defendantCount > 1 && this.state.defendantCount === i) ? removeLastDefendant: undefined }
-
-                        <Divider className='my-4' />
-
+                     <div className='text-right'>
+                        <Button
+                           onClick={() => this.incrementDefendantCount()}
+                           className='bg-transparent text-[#1976D2]'
+                           size={"sm"}
+                        >
+                           ADD ANOTHER DEFENDANT
+                        </Button>
                      </div>
-                  );
+                  </>
+
                }
 
                form = <>
 
-                  {defendants}
-
-                  <div className='text-right'>
-                     <Button
-                        onClick={() => this.incrementDefendantCount()}
-                        className='bg-transparent text-[#1976D2]'
-                        size={"sm"}
-                     >
-                        ADD ANOTHER DEFENDANT
-                     </Button>
+                  <div className='my-6'>
+                     <ChakraCheckbox
+                        label="I do not know the respondent(s)"
+                        checked={this.state.doesntKnowDefendants}
+                        onChange={doesntKnowDefendants => this.updateState({ doesntKnowDefendants })}
+                     />
                   </div>
+
+                  {defendantsJSX}
                </>;
             }
 
