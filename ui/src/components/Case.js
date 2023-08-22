@@ -448,6 +448,12 @@ class UnconnectedCase extends Component {
    }
 
    componentDidMount() {
+
+      if (!this.props.user) {
+         window.App.redirect('/login');
+         return;
+      }
+
       this.fetchData();
    }
 
@@ -561,6 +567,24 @@ class UnconnectedCase extends Component {
             victimDetails = <PersonalDetails
                title="COMPLAINANT"
                details={victim}
+            />
+         }
+
+         // case officer and recorded by
+         let recordedBy, caseOfficer;
+         const { case_officer, recorded_by } = this.state.case_;
+
+         if (case_officer) {
+            caseOfficer = <InfoPiece
+               label="CASE OFFICER"
+               info={`${case_officer.name} ${case_officer.surname}`}
+            />
+         }
+
+         if (recorded_by) {
+            recordedBy = <InfoPiece
+               label="Recorded By"
+               info={`${recorded_by.name} ${recorded_by.surname}`}
             />
          }
 
@@ -934,7 +958,11 @@ class UnconnectedCase extends Component {
                {applicantDetails}
                {victimDetails}
                {defendantDetails}
+            </div>
 
+            <div className="mt-2">
+               {caseOfficer}
+               {recordedBy}
             </div>
 
             <Divider className="my-5" />
