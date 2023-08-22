@@ -17,10 +17,10 @@
   "devDependencies": {
     "electron": "^26.0.0",
     "electron-packager": "^17.1.1",
-    "electron-winstaller": "^5.1.0"
+    "electron-winstaller": "^5.1.0",
+    "glob": "^10.3.3"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
-    "glob": "^10.3.3"
+    "electron-squirrel-startup": "^1.0.0"
   }
 }
