@@ -18,7 +18,7 @@ import swal from 'sweetalert'
 import { hideLoading, showLoading } from '../loading'
 import request from '../request';
 import { Case as CaseSchema } from '../reducer/schema';
-import { ArrowBackIcon, ArrowForwardIcon, ArrowDownIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, ArrowForwardIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { delay }  from '../utils';
 import logger from '../logger';
 
@@ -912,8 +912,11 @@ class UnconnectedCaseEditor extends Component {
       let scrollIndicator;
 
       if (this.state.showScrollIndicator) {
-         scrollIndicator = <div className='inline-block absolute bottom-[20px] left-[50%] transform -translate-x-[50%] animate-bounce'>
-            <ArrowDownIcon boxSize={10} color={"orange.600"} />
+         scrollIndicator = <div className='inline-block absolute bottom-[10px] left-[50%] transform -translate-x-[50%]'>
+            <ChevronDownIcon 
+               boxSize={9} 
+               className='rounded-full bg-orange-600 text-white' 
+            />
          </div>
       }
 
