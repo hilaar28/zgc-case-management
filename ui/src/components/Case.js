@@ -16,7 +16,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import IosShareIcon from '@mui/icons-material/IosShare';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { CASE_STATUS } from "../backend-constants";
+import { CASE_STATUS, USER_ROLES } from "../backend-constants";
 import actions from "../actions";
 import { Case as CaseSchema } from "../reducer/schema";
 import ReferCase from "./ReferCase";
@@ -26,6 +26,8 @@ import capitalize from "capitalize";
 import anonymousImg from '../media/img/anonymous.png';
 import ChakraCheckbox from "./ChakraCheckbox";
 import logger from "../logger";
+import { connect } from "react-redux";
+import { thisRoleOrHigher } from "../shared-utils";
 
 
 function stringifyNumericDate(date) {
@@ -270,7 +272,7 @@ function WitnessDetails(props) {
 }
 
 
-export default class Case extends Component {
+class UnconnectedCase extends Component {
 
    state = {
       case_: null,
@@ -460,6 +462,42 @@ export default class Case extends Component {
          // action buttons
          /// add update button
          const { status } = this.state.case_;
+         const { user } = this.props;
+         const isInvestigatingOfficer = thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, user.role);
+
+         let referButton, rejectButton, assignButton;
+
+         if (isInvestigatingOfficer) {
+            rejectButton = <Button 
+               variant="outlined" 
+               size="small" 
+               startIcon={<ThumbDownIcon />} 
+               className="text-orange-600 border-current rounded-full px-6"
+               onClick={this.reject}
+            >
+               REJECT
+            </Button>
+
+            assignButton = <Button 
+               variant="contained" 
+               size="small" 
+               startIcon={<PersonAddIcon />} 
+               className="bg-orange-600 border-current rounded-full px-6"
+               onClick={this.assign}
+            >
+               ASSIGN
+            </Button>
+
+            referButton = <Button 
+               variant="outlined" 
+               size="small" 
+               startIcon={<IosShareIcon />} 
+               className="text-orange-600 border-current rounded-full px-6"
+               onClick={this.refer}
+            >
+               REFER
+            </Button>
+         }
 
          const updateButton = <Button 
             variant="contained" 
@@ -481,35 +519,6 @@ export default class Case extends Component {
             RESOLVED
          </Button>
 
-         const rejectButton = <Button 
-            variant="outlined" 
-            size="small" 
-            startIcon={<ThumbDownIcon />} 
-            className="text-orange-600 border-current rounded-full px-6"
-            onClick={this.reject}
-         >
-            REJECT
-         </Button>
-
-         const assignButton = <Button 
-            variant="contained" 
-            size="small" 
-            startIcon={<PersonAddIcon />} 
-            className="bg-orange-600 border-current rounded-full px-6"
-            onClick={this.assign}
-         >
-            ASSIGN
-         </Button>
-
-         const referButton = <Button 
-            variant="outlined" 
-            size="small" 
-            startIcon={<IosShareIcon />} 
-            className="text-orange-600 border-current rounded-full px-6"
-            onClick={this.refer}
-         >
-            REFER
-         </Button>
 
          if (status === CASE_STATUS.IN_PROGRESS) {
 
@@ -994,3 +1003,11 @@ export default class Case extends Component {
       </Dialog>
    }
 }
+
+const mapStateToProps = state => {
+   const { user} = state;
+   return { user }
+} 
+
+const Case = connect(mapStateToProps)(UnconnectedCase);
+export default Case;
