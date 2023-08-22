@@ -581,7 +581,7 @@ export default class Case extends Component {
                            {key.toUpperCase()}
                         </div>
                         <div className="text-xs text-gray-600">
-                           {value}
+                           {capitalize.words(value.replaceAll('_', ' '))}
                         </div>
                      </>
                   })

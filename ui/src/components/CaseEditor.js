@@ -663,6 +663,7 @@ class UnconnectedCaseEditor extends Component {
 
 
    componentDidUpdate(prevProps) {
+      // just got opened
       if (this.props.open && !prevProps.open) {
          this.resetEditor();
          this.shouldIShowScrollIndicator();
@@ -810,7 +811,12 @@ class UnconnectedCaseEditor extends Component {
                      <ChakraCheckbox
                         label="The applicant is the victim"
                         checked={this.state.applicantIsVictim}
-                        onChange={applicantIsVictim => this.updateState({ applicantIsVictim })}
+                        onChange={
+                           async applicantIsVictim => {
+                              await this.updateState({ applicantIsVictim });
+                              await this.shouldIShowScrollIndicator();
+                           }
+                        }
                      />
                   </div>
 
@@ -869,7 +875,7 @@ class UnconnectedCaseEditor extends Component {
                            className='bg-transparent text-[#1976D2]'
                            size={"sm"}
                         >
-                           ADD ANOTHER DEFENDANT
+                           ADD ANOTHER RESPONDENT
                         </Button>
                      </div>
                   </>
@@ -882,7 +888,12 @@ class UnconnectedCaseEditor extends Component {
                      <ChakraCheckbox
                         label="I do not know the respondent(s)"
                         checked={this.state.doesntKnowDefendants}
-                        onChange={doesntKnowDefendants => this.updateState({ doesntKnowDefendants })}
+                        onChange={
+                           async doesntKnowDefendants => {
+                              await this.updateState({ doesntKnowDefendants });
+                              await this.shouldIShowScrollIndicator();
+                           }
+                        }
                      />
                   </div>
 
@@ -939,7 +950,7 @@ class UnconnectedCaseEditor extends Component {
       if (this.state.showScrollIndicator) {
          scrollIndicator = <div className='inline-block absolute bottom-[10px] left-[50%] transform -translate-x-[50%]'>
             <ChevronDownIcon 
-               boxSize={9} 
+               boxSize={6} 
                className='rounded-full bg-orange-600 text-white' 
             />
          </div>
