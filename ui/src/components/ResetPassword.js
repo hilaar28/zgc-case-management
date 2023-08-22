@@ -10,6 +10,7 @@ import request from "../request";
 import swal from "sweetalert";
 import { delay } from "../utils";
 import EditIcon from '@mui/icons-material/Edit';
+import { v4 } from "uuid";
 
 const STAGES = {
    EMAIL: 'email',
@@ -17,6 +18,8 @@ const STAGES = {
 }
 
 export default class ResetPassword extends Component {
+
+   id = 'dlg-' + v4() 
 
    state = {
       stage: STAGES.EMAIL,
@@ -32,9 +35,11 @@ export default class ResetPassword extends Component {
          await request.post('/api/accounts/password-reset', data);
 
          this.updateState({ email, stage: STAGES.CODE });
+         return true;
 
       } catch (err) {
          swal(String(err));
+         return false
       } finally {
          hideLoading();
       }
@@ -43,7 +48,10 @@ export default class ResetPassword extends Component {
    retrieveAndSubmitEmail = async () => {
 
       // presence check
-      const txtEmail = document.getElementById('txt-email');
+      const txtEmail = document
+         .getElementById(this.id)
+         .querySelector('#txt-email');
+
       const email = txtEmail.value;
 
       if (!email) {
@@ -51,16 +59,27 @@ export default class ResetPassword extends Component {
          return txtEmail.focus();
       }
 
-      await this.submitEmail(email);
-      await delay(100);
-      document.getElementById('txt-code').value = '';
+      const success = await this.submitEmail(email);
+
+      if (success) {
+         await delay(100);
+         
+         const txtCode = document
+            .getElementById(this.id)
+            .querySelector('#txt-code');
+
+         txtCode.value = '';
+      }
 
    }
 
    retrieveAndSubmitCode = async () => {
 
       // presence check
-      const txtCode = document.getElementById('txt-code');
+      const txtCode = document
+         .getElementById(this.id)
+         .querySelector('#txt-code');
+
       const code = txtCode.value;
 
       if (!code) {
@@ -144,7 +163,7 @@ export default class ResetPassword extends Component {
             break;
       }
 
-      return <Dialog open>
+      return <Dialog open id={this.id}>
 
          <DialogTitle>Reset password</DialogTitle>
 
