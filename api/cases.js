@@ -431,10 +431,15 @@ cases.get('/:id', async (req, res) => {
       };
 
       /// authorization
+      const userId = req.auth.user._id;
+
       if (req.auth.user.role === USER_ROLES.AGENT) {
-         where.recorded_by = req.auth.user._id;
+         where.recorded_by = userId;
       } else if (req.auth.user.role === USER_ROLES.CASE_OFFICER) {
-         where.case_officer = req.auth.user._id;
+         where.$or = [
+            { recorded_by:  userId },
+            { case_officer: userId }
+         ];
       }
 
       const case_ = await Case
