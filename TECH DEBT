@@ -1,6 +1,5 @@
 
 - Try to use an inline middleware for endpoints that requires case_officer priviledges, instead of using a `doYouHaveCaseOfficerPriviledgesOnCase()` inside each endpoint handler.
-- Add indexes to speed all `countDocuments()`, especially for **report generation** and **pagination**
-- Add indexes for sorting documents also
 - One source of thruth on cases. So that case being viewed is synced with the same case on the case list.
 - Code to remove all expired temp objects
+- Don't update user onBlur when nothing changes
