@@ -11,6 +11,9 @@ cp ../api/constants.js $BE_CONSTANTS_PATH
 mv $SHARED_UTILS_PATH $TEMPORARY_SHARED_UTILS_PATH
 cp ../api/shared-utils.js $SHARED_UTILS_PATH
 
+## replace require paths on shared utils
+sed s/constants/backend-constants/ $SHARED_UTILS_PATH > tmpfile && mv tmpfile $SHARED_UTILS_PATH
+
 # compile react
 npm run build
 
