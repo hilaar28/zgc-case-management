@@ -1,6 +1,6 @@
 import Component from "@xavisoft/react-component";
 import { v4 } from "uuid";
-import { hideLoading, showLoading } from "../loading";
+import { hideLoading } from "../loading";
 import swal from "sweetalert";
 import { errorToast } from "../toast";
 
@@ -41,8 +41,6 @@ export default class Editable extends Component {
       }
          
       try {
-
-         showLoading();
 
          await this.props.onBlur(value);
          this.blur();

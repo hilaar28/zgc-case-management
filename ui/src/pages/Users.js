@@ -103,9 +103,12 @@ class UnconnectedUsers extends Page {
       }
    }
 
-   attributeUpdatorGenerator = (attribute, _id ) => {
+   attributeUpdatorGenerator = (attribute, _id, currentValue) => {
 
       return async function(value) {
+
+         if (value === currentValue)
+            return;
 
          const data = {
             set: {
@@ -113,6 +116,8 @@ class UnconnectedUsers extends Page {
             }
          }
 
+         showLoading();
+         
          await request.patch(`/api/users/${_id}`, data);
          actions.updateEntity(UserSchema, _id, data.set);
 
@@ -186,7 +191,7 @@ class UnconnectedUsers extends Page {
                   {
                      this.props.users.map(user => {
 
-                        const _id = user._id;
+                        const { _id, name, surname, email } = user;
                         const disabled = _id === ownUserId;
                         const textColorClass = disabled ? 'text-gray-600 opacity-30' : 'text-red-400';
                         const rowClassName = disabled ? 'pointer-events-none' : '';
@@ -194,22 +199,22 @@ class UnconnectedUsers extends Page {
                         return <TableRow key={_id} className={rowClassName}>
                            <TableCell>
                               <Editable 
-                                 content={user.name} 
-                                 onBlur={this.attributeUpdatorGenerator('name', _id)} 
+                                 content={name} 
+                                 onBlur={this.attributeUpdatorGenerator('name', _id, name)} 
                               />
                            </TableCell>
 
                            <TableCell>
                               <Editable 
-                                 content={user.surname} 
-                                 onBlur={this.attributeUpdatorGenerator('surname', _id)} 
+                                 content={surname} 
+                                 onBlur={this.attributeUpdatorGenerator('surname', _id, surname)} 
                               />
                            </TableCell>
 
                            <TableCell>
                               <Editable 
-                                 content={user.email} 
-                                 onBlur={this.attributeUpdatorGenerator('email', _id)} 
+                                 content={email} 
+                                 onBlur={this.attributeUpdatorGenerator('email', _id, email)} 
                               />
                            </TableCell>
                            
