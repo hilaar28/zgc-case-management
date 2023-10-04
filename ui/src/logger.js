@@ -22,11 +22,17 @@ function log(msg) {
    Sentry.captureMessage(msg);
 }
 
-const logger = {
-   init,
-   error,
-   log,
-};
+let logger;
+
+if (process.env.NODE_ENV === 'production') {
+   logger = {
+      init,
+      error,
+      log,
+   };
+} else {
+   logger = console;
+}
 
 
 export default logger;

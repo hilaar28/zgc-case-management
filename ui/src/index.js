@@ -4,7 +4,8 @@ import './index.css';
 import App from './App';
 import logger from './logger';
 
-logger.init();
+if (typeof logger.init === 'function')
+  logger.init();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
