@@ -31,6 +31,10 @@ import { thisRoleOrHigher } from "../shared-utils";
 
 
 function stringifyNumericDate(date) {
+
+   if (!date)
+      return '';
+   
    const { year, month, day } = date;
    date = '';
 
@@ -360,7 +364,8 @@ class UnconnectedCase extends Component {
 
          showLoading();
 
-         await request.delete(`/api/cases/${this.props._id}/updates/${_id}`);
+         const caseIdEncoded = window.encodeURIComponent(this.props._id);
+         await request.delete(`/api/cases/${caseIdEncoded}/updates/${_id}`);
          
          const updates = this.state.case_.updates.filter(update => update._id !== _id);
          const case_ = { ...this.state.case_, updates };
@@ -380,7 +385,9 @@ class UnconnectedCase extends Component {
          showLoading();
 
          const update = { status: CASE_STATUS.RESOLVED };
-         await request.post(`/api/cases/${this.props._id}/status`, update);
+         const caseIdEncoded = window.encodeURIComponent(this.props._id);
+         
+         await request.post(`/api/cases/${caseIdEncoded}/status`, update);
          
          const case_ = { ...this.state.case_, ...update };
          actions.updateEntity(CaseSchema, this.props._id, update);
@@ -401,7 +408,9 @@ class UnconnectedCase extends Component {
 
          showLoading();
 
-         const res = await request.get(`/api/cases/${this.props._id}`);
+         const caseIdEncoded = window.encodeURIComponent(this.props._id);
+         const res = await request.get(`/api/cases/${caseIdEncoded}`);
+
          const case_ = res.data;
 
          this.updateState({ case_ });
@@ -426,7 +435,9 @@ class UnconnectedCase extends Component {
          showLoading();
 
          const update = { status: CASE_STATUS.REJECTED };
-         await request.post(`/api/cases/${this.props._id}/status`, update);
+         
+         const caseIdEncoded = window.encodeURIComponent(this.props._id);
+         await request.post(`/api/cases/${caseIdEncoded}/status`, update);
          
          const case_ = { ...this.state.case_, ...update };
          this.updateState({ case_ });

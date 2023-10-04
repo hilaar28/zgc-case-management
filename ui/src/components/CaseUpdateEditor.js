@@ -23,7 +23,8 @@ export default class CaseUpdateEditor extends Component {
 
          const { caseId } = this.props;
 
-         let url = `/api/cases/${caseId}/updates`;
+         const caseIdEncoded = window.encodeURIComponent(caseId);
+         let url = `/api/cases/${caseIdEncoded}/updates`;
          let method, data, updateId;
 
          if (this.props.mode === 'edit') {
