@@ -7,6 +7,8 @@ const { flattenDocumentUpdate } = require("./utils");
 const { default: mongoose } = require("mongoose");
 const User = require("./db/User");
 const { thisRoleOrHigher } = require("./shared-utils");
+const CaseNumberGenerator = require("./CaseNumberGenerator");
+const { LockFactory } = require('@xavisoft/critical-section');
 
 // constants
 const personalDetailsSchema = {
@@ -89,6 +91,8 @@ const caseJoiSchema = {
    more_assistance_required: Joi.string(),
 }
 
+const lockFactory = new LockFactory();
+
 // helpers
 async function areYouAssignedToThisCase(userId, caseId) {
    const count = await Case.countDocuments().where({ _id: caseId, case_officer: userId });
@@ -161,13 +165,24 @@ cases.post('/', async (req, res) => {
          return res.status(400).send(error);
 
       // add case
-      const case_ = await Case.create({
+      /// acquire lock
+      const lock = await lockFactory.acquire('ADDING_CASE');
+
+      ///save case to DB
+      const _id = await CaseNumberGenerator.generate();
+
+      await Case.create({
          ...req.body,
          recorded_by: req.auth.user._id,
+         _id,
       });
 
+      /// release lock
+      CaseNumberGenerator.increment();
+      lock.release();
+
       // respond
-      res.send({ _id: case_._id });
+      res.send({ _id });
 
    } catch (err) {
       status_500(err, res);

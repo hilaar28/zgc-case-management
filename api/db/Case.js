@@ -37,6 +37,9 @@ const personalDetails = {
 
 
 const schema = new mongoose.Schema({
+   _id: {
+      type: String,
+   },
    type: {
       type: String,
       enum: Object.values(CASE_TYPE),

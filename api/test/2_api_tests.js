@@ -362,7 +362,7 @@ suite("API Tests", function () {
 
          // retrieve cases
          const res = await requester
-            .get(`/api/cases/${case_._id}`)
+            .get(`/api/cases/${encodeURIComponent(case_._id)}`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send();
 
@@ -427,7 +427,7 @@ suite("API Tests", function () {
          }
 
          const res = await requester
-            .patch(`/api/cases/${case_._id}`)
+            .patch(`/api/cases/${encodeURIComponent(case_._id)}`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 
@@ -449,7 +449,7 @@ suite("API Tests", function () {
          }
 
          const res = await requester
-            .post(`/api/cases/${case_._id}/status`)
+            .post(`/api/cases/${encodeURIComponent(case_._id)}/status`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 
@@ -471,7 +471,7 @@ suite("API Tests", function () {
          }
 
          const res = await requester
-            .post(`/api/cases/${case_._id}/referral`)
+            .post(`/api/cases/${encodeURIComponent(case_._id)}/referral`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 
@@ -495,7 +495,7 @@ suite("API Tests", function () {
          }
 
          const res = await requester
-            .post(`/api/cases/${case_._id}/updates`)
+            .post(`/api/cases/${encodeURIComponent(case_._id)}/updates`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 
@@ -529,7 +529,7 @@ suite("API Tests", function () {
          const caseUpdateId = case_.updates[0]._id;
 
          const res = await requester
-            .patch(`/api/cases/${case_._id}/updates/${caseUpdateId}`)
+            .patch(`/api/cases/${encodeURIComponent(case_._id)}/updates/${caseUpdateId}`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 
@@ -548,7 +548,7 @@ suite("API Tests", function () {
          const caseUpdateId = case_.updates[0]._id;
 
          const res = await requester
-            .delete(`/api/cases/${case_._id}/updates/${caseUpdateId}`)
+            .delete(`/api/cases/${encodeURIComponent(case_._id)}/updates/${caseUpdateId}`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send();
 
@@ -600,7 +600,7 @@ suite("API Tests", function () {
          }
 
          const res = await requester
-            .post(`/api/cases/${case_._id}/assignment`)
+            .post(`/api/cases/${encodeURIComponent(case_._id)}/assignment`)
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 

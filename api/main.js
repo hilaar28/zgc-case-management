@@ -14,6 +14,7 @@ const users = require('./users');
 const cases = require('./cases');
 const accounts = require('./accounts');
 const { ACCESS_TOKEN_HEADER_NAME, REFRESH_TOKEN_HEADER_NAME } = require('@xavisoft/auth/constants');
+const CaseNumberGenerator = require('./CaseNumberGenerator');
 
 const app = express();
 
@@ -48,6 +49,7 @@ const PORT = process.env.PORT;
    
    // db init
    await initDB();
+   await CaseNumberGenerator.init();
 
    // start server
    app.listen(PORT, () => {

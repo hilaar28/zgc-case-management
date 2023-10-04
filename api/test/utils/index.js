@@ -8,6 +8,7 @@ const axios = require('axios');
 const { default: mongoose } = require('mongoose');
 const { USER_ROLES, GENDER, MARITAL_STATUS, CASE_SOURCES, PROVINCES, AGE_RANGES, VIOLATION_NATURE, VIOLATION_IMPACT, CASE_TYPE } = require('../../constants');
 const Case = require('../../db/Case');
+const CaseNumberGenerator = require('../../CaseNumberGenerator');
 
 
 chai.use(chaiHttp);
@@ -53,8 +54,10 @@ function createUser(attributes={}) {
 }
 
 
-function createCase(attributes={}) {
-   return Case.create({
+async function createCase(attributes={}) {
+   
+   const _case = await Case.create({
+      _id: await CaseNumberGenerator.generate(),
       type: casual.random_element(Object.values(CASE_TYPE)),
       applicant: {
          name: casual.first_name,
@@ -154,6 +157,10 @@ function createCase(attributes={}) {
 
       ...attributes,
    });
+
+   CaseNumberGenerator.increment();
+   return _case;
+
 }
 
 async function waitForServer(url = `http://localhost:${process.env.PORT}`) {

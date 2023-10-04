@@ -14,6 +14,7 @@
   "dependencies": {
     "@sentry/node": "^7.60.0",
     "@xavisoft/auth": "^2.0.0",
+    "@xavisoft/critical-section": "^0.1.0",
     "@xavisoft/joi": "^0.2.0",
     "bcrypt": "^5.1.0",
     "capitalize": "^2.0.4",
