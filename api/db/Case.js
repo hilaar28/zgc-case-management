@@ -56,7 +56,7 @@ const schema = new mongoose.Schema({
       required: true,
       index: true,
    },
-   case_officer: {
+   assigned_to: {
       type: mongoose.Schema.ObjectId,
       ref: "User",
    },
@@ -175,6 +175,7 @@ const schema = new mongoose.Schema({
    village: String,
    evidence: [ String ],
    more_assistance_required: String,
+   recommendation: String,
 }, { timestamps: true, });
 
 

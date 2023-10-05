@@ -11,8 +11,10 @@ const Joi = require('@xavisoft/joi');
 const { compare } = require("bcrypt");
 const Temp = require("../db/Temp");
 
+// constants
 const { assert, expect } = chai;
 const requester = createRequester();
+chai.use(chaiSpies);
 
 
 // helpers
@@ -22,9 +24,7 @@ function generateSchemaObjectFromKeyList(values=[], joi) {
    return schema;
 }
 
-
-chai.use(chaiSpies);
-
+// tests
 suite("API Tests", function () {
 
    this.beforeAll(waitForServer);
@@ -268,23 +268,42 @@ suite("API Tests", function () {
             village: casual.city,
          }
 
-         const res = await requester
+         /// as any other role but monitor
+         const rolesButMonitor = Object
+            .values(USER_ROLES)
+            .filter(role => role !== USER_ROLES.MONITOR);
+
+         let user = await createUser({ role: casual.random_element(rolesButMonitor) });
+         let accessToken = createAccessToken(user);
+
+         let res = await requester
             .post('/api/cases')
             .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
             .send(payload);
 
          assert.equal(res.status, 200);
 
-         // check schema
+         //// check schema
          const _id = res.body._id;
          assert.isString(_id);
 
-         // check db
+         //// check db
          const case_ = await Case.findById(_id);
          assert.isObject(case_);
 
          assert.equal(case_.title, payload.title);
          assert.equal(case_.applicant.work_address, payload.applicant.work_address);
+
+         /// as monitor
+         user = await createUser({ role: USER_ROLES.MONITOR });
+         accessToken = createAccessToken(user);
+
+         res = await requester
+            .post('/api/cases')
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send(payload);
+
+         assert.equal(res.status, 403);
 
       });
 
@@ -334,7 +353,7 @@ suite("API Tests", function () {
                   name: Joi.string().required(),
                   surname: Joi.string().required(),
                }).allow(null),
-               case_officer: Joi.object({
+               assigned_to: Joi.object({
                   _id: Joi.string(),
                   name: Joi.string().required(),
                   surname: Joi.string().required(),
@@ -383,7 +402,7 @@ suite("API Tests", function () {
                name: Joi.string().required(),
                surname: Joi.string().required(),
             }).allow(null),
-            case_officer: Joi.object({
+            assigned_to: Joi.object({
                _id: Joi.string(),
                name: Joi.string().required(),
                surname: Joi.string().required(),
@@ -485,6 +504,28 @@ suite("API Tests", function () {
 
       });
 
+      test("Add recommendation to a case", async () => {
+
+         // send request
+         let case_ = await createCase();
+
+         const payload = {
+            recommendation: casual.sentence,
+         }
+
+         const res = await requester
+            .post(`/api/cases/${encodeURIComponent(case_._id)}/recommendation`)
+            .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+            .send(payload);
+
+         assert.equal(res.status, 200);
+
+         // check db
+         case_ = await Case.findById(case_._id);
+         assert.equal(case_.recommendation, payload.recommendation);
+
+      });
+
       test("Add update to case", async () => {
 
          // send request
@@ -561,7 +602,7 @@ suite("API Tests", function () {
          
       });
 
-      test("Retrive case officers", async () => {
+      test("Retrieve investigating officers", async () => {
 
          // send request
          const res = await requester
@@ -583,7 +624,7 @@ suite("API Tests", function () {
          assert.isNull(error);
 
          // check db
-         const count = await User.countDocuments().where({ role: USER_ROLES.CASE_OFFICER });
+         const count = await User.countDocuments().where({ role: USER_ROLES.INVESTIGATING_OFFICER });
          assert.equal(res.body.length, count);
 
 
@@ -593,10 +634,10 @@ suite("API Tests", function () {
 
          // send request
          let case_ = await createCase();
-         const user = await createUser({ role: USER_ROLES.CASE_OFFICER });
+         const user = await createUser({ role: USER_ROLES.INVESTIGATING_OFFICER });
 
          const payload = {
-            case_officer: user._id
+            assign_to: user._id
          }
 
          const res = await requester
@@ -608,9 +649,8 @@ suite("API Tests", function () {
 
          // check db
          case_ = await Case.findById(case_._id);
-         assert.equal(case_.case_officer, String(payload.case_officer));
+         assert.equal(case_.assigned_to, String(payload.assign_to));
          assert.equal(case_.status, CASE_STATUS.IN_PROGRESS);
-
 
       });
    });
@@ -735,7 +775,7 @@ suite("API Tests", function () {
       let accessToken;
 
       this.beforeAll(async () => {
-         const user = await createUser({ role: USER_ROLES.SUPERVISOR });
+         const user = await createUser({ role: USER_ROLES.MONITOR });
          accessToken = createAccessToken(user);
       });
 

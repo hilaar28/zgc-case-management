@@ -1,10 +1,10 @@
 
 
 const USER_ROLES = {
-   AGENT: 'agent',
-   CASE_OFFICER: 'case_officer',
    INVESTIGATING_OFFICER: 'investigating_officer',
-   SUPERVISOR: 'supervisor',
+   MANAGER: 'manager',
+   DIRECTOR: 'director',
+   MONITOR: 'monitor',
    SUPER_ADMIN: 'super_admin',
 }
 
