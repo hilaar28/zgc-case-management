@@ -20,7 +20,6 @@ import request from '../request';
 import { Case as CaseSchema } from '../reducer/schema';
 import { ArrowBackIcon, ArrowForwardIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { delay }  from '../utils';
-import logger from '../logger';
 
 
 function removeEmptyProperties(data) {
@@ -107,7 +106,7 @@ const defaultState = {
 
 class UnconnectedCaseEditor extends Component {
 
-   state = defaultState
+   state = { ...defaultState }
 
    incrementDefendantCount = (inc=1) => {
       const defendantCount = this.state.defendantCount + inc;
@@ -115,7 +114,7 @@ class UnconnectedCaseEditor extends Component {
    }
 
    resetEditor = () => {
-      return this.updateState(defaultState);
+      return this.overwriteState({ ...defaultState });
    }
 
    retrievePersonalDetails = (container=document) => {
@@ -593,7 +592,7 @@ class UnconnectedCaseEditor extends Component {
                input[elementTargetAttribute] = value;
 
          } catch (err) {
-            logger.error(err);
+            
          }
       }
    }

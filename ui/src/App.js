@@ -46,6 +46,19 @@ Component.prototype.updateState = function (updates={}) {
 	})
 }
 
+Component.prototype.overwriteState = function (newState={}) {
+	return new Promise(resolve => {
+		const oldState = { ...this.state };
+		
+		for (let key in oldState)
+			oldState[key] = undefined;
+
+		const effectiveState = { ...oldState, ...newState }
+		this.setState(effectiveState, resolve);
+
+	});
+}
+
 function setDimensions() {
 	
 	const width = window.innerWidth + 'px';
