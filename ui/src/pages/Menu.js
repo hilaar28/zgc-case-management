@@ -10,7 +10,6 @@ import { connect } from "react-redux";
 import { Button } from "@mui/material";
 import { showLoading, hideLoading } from '../loading';
 import swal from 'sweetalert';
-import { thisRoleOrHigher } from "../shared-utils";
 
 
 function Option(props) {
@@ -82,10 +81,10 @@ class UnconnectedMenu extends Page {
          const userRole = this.props.user.role;
 
          jsx = <div className="w-[500px] grid grid-cols-2 gap-2">
-            <Option icon={AddIcon} caption="Add case" onClick={actions.openCaseEditor} roundedCorner='rounded-tl-2xl' />
-            <Option icon={ArticleIcon} caption="View Cases" path="/cases" roundedCorner='rounded-tr-2xl' />
+            <Option icon={AddIcon} caption="Add case" onClick={actions.openCaseEditor} disabled={userRole === USER_ROLES.MONITOR} roundedCorner='rounded-tl-2xl' />
+            <Option icon={ArticleIcon} caption="View Cases" path="/cases" disabled={userRole === USER_ROLES.MONITOR} roundedCorner='rounded-tr-2xl' />
             <Option icon={PeopleIcon} caption="Manage users" path="/users" disabled={userRole !== USER_ROLES.SUPER_ADMIN} roundedCorner='rounded-bl-2xl' />
-            <Option icon={AssessmentIcon} caption="Reports"  path="/reports" disabled={!thisRoleOrHigher(USER_ROLES.SUPERVISOR, userRole)} roundedCorner='rounded-br-2xl' />
+            <Option icon={AssessmentIcon} caption="Reports"  path="/reports"  disabled={userRole === USER_ROLES.INVESTIGATING_OFFICER} roundedCorner='rounded-br-2xl' />
          </div>
       } else {
          jsx = <div className="w-[300px]">
