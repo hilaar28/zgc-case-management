@@ -73,9 +73,9 @@ const caseJoiSchema = {
       impact: Joi.string(),
    }),
    other_entity_reported_to: Joi.object().keys({
-      details: Joi.string(),
-      actions: Joi.string(),
-      why_reporting_to_us_as_well: Joi.string(),
+      details: Joi.string().required(),
+      actions: Joi.string().required(),
+      why_reporting_to_us_as_well: Joi.string().required(),
    }),
    why_violation_is_important_to_our_mandate: Joi.string(),
    expectations_from_us: Joi.string(),
