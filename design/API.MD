@@ -294,7 +294,7 @@
             name: String,
             surname: String,
          },
-         case_officer: {
+         assigned_to: {
             _id: String,
             name: String,
             surname: String,
@@ -320,7 +320,7 @@
       name: String,
       surname: String,
    },
-   case_officer: {
+   assigned_to: {
       _id: String,
       name: String,
       surname: String,
@@ -350,7 +350,18 @@
 }
 ```
 
-### Retrieve case officers
+### Add recommendation to a case
+**POST** `/api/cases/:id/recommendation`
+
+**expects**:
+```js
+// body
+{
+   recommendation: String,
+}
+```
+
+### Retrieve investigating officers
 **GET** `/api/cases/officers`
 
 **returns**:
@@ -374,7 +385,7 @@
 ```js
 // body
 {
-   case_officer: String,
+   assign_to: String,
 }
 ```
 

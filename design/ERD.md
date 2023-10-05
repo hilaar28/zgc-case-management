@@ -87,6 +87,7 @@ erDiagram
       int recorded_by FK
       ENUM status
       TEXT referred_to
+      TEXT recommendation
 
    }
 
