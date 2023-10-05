@@ -95,29 +95,38 @@ const lockFactory = new LockFactory();
 
 // helpers
 async function areYouAssignedToThisCase(userId, caseId) {
-   const count = await Case.countDocuments().where({ _id: caseId, case_officer: userId });
+   const count = await Case.countDocuments().where({ _id: caseId, assigned_to: userId });
    return count == 1;
 }
 
-async function doYouHaveCaseOfficerPriviledgesOnCase(userRole, userId, caseId ) {
-   if (userRole === USER_ROLES.CASE_OFFICER) {
+async function doYouHaveInvestigatingOfficerPriviledgesOnCase(userRole, userId, caseId ) {
+   if (userRole === USER_ROLES.INVESTIGATING_OFFICER) {
       return  await areYouAssignedToThisCase(userId, caseId);
    } else {
-      return thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, userRole)
+      return userRole !== USER_ROLES.MONITOR;
    }
 }
-
 
 function canViewReports(req, res, next) {
 
    const userRole = req.auth.user.role;
 
-   if (!thisRoleOrHigher(USER_ROLES.SUPERVISOR, userRole))
+   if (userRole === USER_ROLES.INVESTIGATING_OFFICER)
       return res.sendStatus(403);
 
    next();
 }
 
+
+function isNotMonitor(req, res, next) {
+
+   const userRole = req.auth.user.role;
+
+   if (userRole === USER_ROLES.MONITOR)
+      return res.sendStatus(403);
+
+   next();
+}
 
 async function countCasesByField($match, attr) {
 
@@ -156,9 +165,10 @@ cases.use((req, res, next) => {
 
 // routes
 /// add case
-cases.post('/', async (req, res) => {
+cases.post('/', isNotMonitor, async (req, res) => {
 
    try {
+      
       // validate
       const error = Joi.getError(req.body, caseJoiSchema);
       if (error)
@@ -190,7 +200,7 @@ cases.post('/', async (req, res) => {
 });
 
 /// retrieve cases
-cases.get('/', async (req, res) => {
+cases.get('/', isNotMonitor, async (req, res) => {
 
    try {
 
@@ -200,12 +210,10 @@ cases.get('/', async (req, res) => {
       /// authorization
       const userId = req.auth.user._id;
 
-      if (req.auth.user.role === USER_ROLES.AGENT) {
-         where.recorded_by = userId;
-      } else if (req.auth.user.role === USER_ROLES.CASE_OFFICER) {
+      if (req.auth.user.role === USER_ROLES.INVESTIGATING_OFFICER) {
          where.$or = [
-            { recorded_by:  userId },
-            { case_officer: userId }
+            { recorded_by: userId },
+            { assigned_to: userId }
          ];
       }
 
@@ -239,7 +247,7 @@ cases.get('/', async (req, res) => {
          .limit(limit)
          .sort({ createdAt: -1 })
          .populate("recorded_by", "_id name surname")
-         .populate("case_officer", "_id name surname")
+         .populate("assigned_to", "_id name surname")
 
       // respond
       res.send({ cases, count });
@@ -399,20 +407,20 @@ cases.get('/trend', canViewReports,async (req, res) => {
 });
 
 /// get case officers
-cases.get('/officers', async (req, res) => {
+cases.get('/officers', isNotMonitor, async (req, res) => {
 
    try {
 
       // auth
       const userRole = req.auth.user.role;
-      if (!thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, userRole))
+      if (userRole === USER_ROLES.INVESTIGATING_OFFICER)
          return res.sendStatus(403);
 
 
       // get officers
       let officers = await User
          .find()
-         .where({ role: USER_ROLES.CASE_OFFICER })
+         .where({ role: USER_ROLES.INVESTIGATING_OFFICER })
          .select('_id name surname')
 
       officers = officers.map(item => item.toObject());
@@ -422,7 +430,7 @@ cases.get('/officers', async (req, res) => {
          const officer = officers[i];
          officer.active_cases = await Case
             .countDocuments()
-            .where({ case_officer: officer._id });
+            .where({ assigned_to: officer._id });
       }
 
       // respond
@@ -434,7 +442,7 @@ cases.get('/officers', async (req, res) => {
 });
 
 /// retrieve case 
-cases.get('/:id', async (req, res) => {
+cases.get('/:id', isNotMonitor, async (req, res) => {
 
    try {
 
@@ -448,12 +456,10 @@ cases.get('/:id', async (req, res) => {
       /// authorization
       const userId = req.auth.user._id;
 
-      if (req.auth.user.role === USER_ROLES.AGENT) {
-         where.recorded_by = userId;
-      } else if (req.auth.user.role === USER_ROLES.CASE_OFFICER) {
+      if (req.auth.user.role === USER_ROLES.INVESTIGATING_OFFICER) {
          where.$or = [
-            { recorded_by:  userId },
-            { case_officer: userId }
+            { recorded_by: userId },
+            { assigned_to: userId }
          ];
       }
 
@@ -461,7 +467,7 @@ cases.get('/:id', async (req, res) => {
          .findOne()
          .where(where)
          .populate("recorded_by", "_id name surname")
-         .populate("case_officer", "_id name surname")
+         .populate("assigned_to", "_id name surname")
 
       if (!case_)
          return res.sendStatus(404);
@@ -477,7 +483,7 @@ cases.get('/:id', async (req, res) => {
 });
 
 /// update case
-cases.patch('/:id', async (req, res) => {
+cases.patch('/:id', isNotMonitor, async (req, res) => {
 
    try {
 
@@ -495,17 +501,17 @@ cases.patch('/:id', async (req, res) => {
       const userId = req.auth.user._id;
       const caseId = req.params.id;
 
-      if (userRole === USER_ROLES.AGENT) {
-         // did you record this case
-         const count = await Case.countDocuments().where({ recorded_by: userId, _id: caseId });
+      if (userRole === USER_ROLES.INVESTIGATING_OFFICER) {
+         // did you record or are you assigned this case
+         const count = await Case.countDocuments().where({ 
+            _id: caseId,
+            $or: [
+               { recorded_by: userId },
+               { assigned_to: userId }
+            ]
+         });
 
          if (count === 0)
-            return res.sendStatus(403);
-      } else if (userRole === USER_ROLES.CASE_OFFICER) {
-         // are you assigned to this case
-         const assignedToThisCase = await areYouAssignedToThisCase(userId, caseId);
-
-         if (!assignedToThisCase)
             return res.sendStatus(403);
       }
 
@@ -522,9 +528,18 @@ cases.patch('/:id', async (req, res) => {
 });
 
 /// update case status
-cases.post('/:id/status', async (req, res) => {
+cases.post('/:id/status', isNotMonitor, async (req, res) => {
 
    try {
+
+      // authorize
+      const userRole = req.auth.user.role;
+      const userId = req.auth.user._id;
+      const caseId = req.params.id;
+
+      const proceed = [ USER_ROLES.DIRECTOR, USER_ROLES.SUPER_ADMIN ].includes(userRole);
+      if (!proceed)
+         return res.sendStatus(403);
 
       // validate
       const schema = {
@@ -534,15 +549,6 @@ cases.post('/:id/status', async (req, res) => {
       const error = Joi.getError(req.body, schema); 
       if (error)
          return res.status(400).send(error);
-
-      // authorize
-      const userRole = req.auth.user.role;
-      const userId = req.auth.user._id;
-      const caseId = req.params.id;
-
-      const proceed = await doYouHaveCaseOfficerPriviledgesOnCase(userRole, userId, caseId);
-      if (!proceed)
-         return res.sendStatus(403);
 
       // update
       const $set = {
@@ -560,37 +566,41 @@ cases.post('/:id/status', async (req, res) => {
 });
 
 /// assign person to case
-cases.post('/:id/assignment', async (req, res) => {
+cases.post('/:id/assignment', isNotMonitor, async (req, res) => {
 
    try {
 
+      // authorize
+      const userRole = req.auth.user.role;
+      if (![ USER_ROLES.DIRECTOR, USER_ROLES.SUPER_ADMIN ].includes(userRole)) 
+         return res.sendStatus(403);
+
       // validate
       const schema = {
-         case_officer: Joi.string().hex().required(),
+         assign_to: Joi.string().hex().required(),
       }
 
       const error = Joi.getError(req.body, schema); 
       if (error)
          return res.status(400).send(error);
 
-      // authorize
-      const userRole = req.auth.user.role;
+      // is the suppied user really an investigating officer
       const caseId = req.params.id;
+      const officerId = req.body.assign_to;
 
-      if (!thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, userRole)) 
-         return res.sendStatus(403);
-
-
-      // is case_officer really a case officer
-      const caseOfficerId = req.body.case_officer;
-      const count = await User.countDocuments().where({ _id: caseOfficerId, role: USER_ROLES.CASE_OFFICER });
+      const count = await User
+         .countDocuments()
+         .where({ 
+            _id: officerId, 
+            role: USER_ROLES.INVESTIGATING_OFFICER
+         });
 
       if (count === 0)
-         return res.status(400).send('Not a case officer');
+         return res.status(400).send('Not an investigating officer');
 
       // update
       const $set = {
-         case_officer: caseOfficerId,
+         assigned_to: officerId,
          status: CASE_STATUS.IN_PROGRESS,
       }
 
@@ -605,9 +615,15 @@ cases.post('/:id/assignment', async (req, res) => {
 });
 
 /// refer case
-cases.post('/:id/referral', async (req, res) => {
+cases.post('/:id/referral', isNotMonitor, async (req, res) => {
 
    try {
+
+      // authorize
+      const userRole = req.auth.user.role;
+
+      if (![ USER_ROLES.DIRECTOR, USER_ROLES.SUPER_ADMIN ].includes(userRole))
+         return res.sendStatus(403);
 
       // validate
       const schema = {
@@ -618,14 +634,9 @@ cases.post('/:id/referral', async (req, res) => {
       if (error)
          return res.status(400).send(error);
 
-      // authorize
-      const userRole = req.auth.user.role;
+      // update
       const caseId = req.params.id;
 
-      if (!thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, userRole)) 
-         return res.sendStatus(403);
-
-      // update
       const $set = {
          status: CASE_STATUS.IN_PROGRESS,
          referred_to: req.body.refer_to,
@@ -641,8 +652,44 @@ cases.post('/:id/referral', async (req, res) => {
    }
 });
 
+/// add recommendation to a case
+cases.post('/:id/recommendation', isNotMonitor, async (req, res) => {
+
+   try {
+
+      // validate
+      const schema = {
+         recommendation: Joi.string().required(),
+      }
+
+      const error = Joi.getError(req.body, schema); 
+      if (error)
+         return res.status(400).send(error);
+
+      // authorize
+      const userRole = req.auth.user.role;
+      const caseId = req.params.id;
+
+      if (![ USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN ].includes(userRole)) 
+         return res.sendStatus(403);
+
+      // update
+      const $set = {
+         recommendation: req.body.recommendation,
+      }
+
+      await Case.updateOne({ _id: caseId }, { $set });
+
+      // respond
+      res.send();
+
+   } catch (err) {
+      status_500(err, res);
+   }
+});
+
 /// add update to case
-cases.post('/:id/updates', async (req, res) => {
+cases.post('/:id/updates', isNotMonitor, async (req, res) => {
 
    try {
 
@@ -660,7 +707,7 @@ cases.post('/:id/updates', async (req, res) => {
       const userId = req.auth.user._id;
       const caseId = req.params.id;
 
-      const proceed = await doYouHaveCaseOfficerPriviledgesOnCase(userRole, userId, caseId);
+      const proceed = await doYouHaveInvestigatingOfficerPriviledgesOnCase(userRole, userId, caseId);
       if (!proceed)
          return res.sendStatus(403);
 
@@ -704,7 +751,7 @@ cases.patch('/:caseId/updates/:updateId', async (req, res) => {
       const userId = req.auth.user._id;
       const { caseId } = req.params;
 
-      const proceed = await doYouHaveCaseOfficerPriviledgesOnCase(userRole, userId, caseId);
+      const proceed = await doYouHaveInvestigatingOfficerPriviledgesOnCase(userRole, userId, caseId);
       if (!proceed)
          return res.sendStatus(403);
 
@@ -736,7 +783,7 @@ cases.delete('/:caseId/updates/:updateId', async (req, res) => {
       const userId = req.auth.user._id;
       const { caseId } = req.params;
 
-      const proceed = await doYouHaveCaseOfficerPriviledgesOnCase(userRole, userId, caseId);
+      const proceed = await doYouHaveInvestigatingOfficerPriviledgesOnCase(userRole, userId, caseId);
       if (!proceed)
          return res.sendStatus(403);
 

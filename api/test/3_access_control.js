@@ -8,7 +8,7 @@ const casual = require("casual");
 const requester = createRequester();
 
 // helper functions
-async function requestShouldReturnHttp403(method, path, role, errorMessage=undefined) {
+async function requestShouldReturnHttp403(method, path, role, errorMessage=undefined, body={}) {
 
    const user = await createUser({ role });
    const accessToken = createAccessToken(user);
@@ -16,7 +16,7 @@ async function requestShouldReturnHttp403(method, path, role, errorMessage=undef
    const res = await requester
       [method.toLowerCase()](path)
       .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
-      .send({});
+      .send(body);
 
    assert.equal(res.status, 403, errorMessage);
 
@@ -102,7 +102,7 @@ suite("Access control", function() {
                .send();
 
             assert.equal(res.status, 200);
-            assert.equal(res.body.length, 2);
+            assert.equal(res.body.cases.length, 2);
 
          });
 
@@ -115,13 +115,23 @@ suite("Access control", function() {
       suite("GET /api/cases/:id", function () {
    
          test("INVESTIGATING_OFFICER should not access a case unless they recorded it or working on it", async () => {
+            
+            const user = await createUser({ role: USER_ROLES.INVESTIGATING_OFFICER });
+            const accessToken = createAccessToken(user);
             const _case = await createCase();
             const caseIdEncoded = encodeURIComponent(_case._id);
-            await requestShouldReturnHttp403('POST', `/api/cases/${caseIdEncoded}`, USER_ROLES.INVESTIGATING_OFFICER);
+            
+            const res = await requester
+               .get(`/api/cases/${caseIdEncoded}`)
+               .set(ACCESS_TOKEN_HEADER_NAME, accessToken)
+               .send();
+
+            assert.equal(res.status, 404);
+
          });
 
          test("MONITOR should not access a case", async () => {
-            await requestShouldReturnHttp403('POST', `/api/cases/SOMETHING`, USER_ROLES.MONITOR);
+            await requestShouldReturnHttp403('GET', `/api/cases/SOMETHING`, USER_ROLES.MONITOR);
          });
 
       });
@@ -133,7 +143,7 @@ suite("Access control", function() {
 
             for (let i in rolesButDirector) {
                const role = rolesButDirector[i];
-               await requestShouldReturnHttp403('POST', `/api/cases/ANYTHING`, role, `${role.toUpperCase()} should not update case status`);
+               await requestShouldReturnHttp403('POST', `/api/cases/ANYTHING/status`, role, `${role.toUpperCase()} should not update case status`);
             }
          });
       });
@@ -156,7 +166,7 @@ suite("Access control", function() {
 
             for (let i in roles) {
                const role = roles[i];
-               await requestShouldReturnHttp403('GET', `/api/cases/ANYTHING/assignment`, role, `${role.toUpperCase()} should not assign cases`);
+               await requestShouldReturnHttp403('POST', `/api/cases/ANYTHING/assignment`, role, `${role.toUpperCase()} should not assign cases`);
             }
          });
       });
@@ -190,9 +200,13 @@ suite("Access control", function() {
 
             const roles = excludeRoles(USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN);
 
+            const payload = {
+               recommendation: casual.text
+            }
+
             for (let i in roles) {
                const role = roles[i];
-               await requestShouldReturnHttp403('POST', `/api/cases/ANYTHING/recommendation`, role, `${role.toUpperCase()} should not add recommendation to a case`);
+               await requestShouldReturnHttp403('POST', `/api/cases/ANYTHING/recommendation`, role, `${role.toUpperCase()} should not add recommendation to a case`, payload);
             }
          });
       });
@@ -208,8 +222,10 @@ suite("Access control", function() {
             const _case = await createCase();
             const caseIdEncoded = encodeURIComponent(_case._id);
 
-            await requestShouldReturnHttp403('POST', `/api/cases/${caseIdEncoded}/updates`, USER_ROLES.INVESTIGATING_OFFICER);
-            await requestShouldReturnHttp403('PATCH', `/api/cases/${caseIdEncoded}/updates/SOMETHING`, USER_ROLES.INVESTIGATING_OFFICER);
+            const description = casual.sentence;
+
+            await requestShouldReturnHttp403('POST', `/api/cases/${caseIdEncoded}/updates`, USER_ROLES.INVESTIGATING_OFFICER, undefined, { description});
+            await requestShouldReturnHttp403('PATCH', `/api/cases/${caseIdEncoded}/updates/SOMETHING`, USER_ROLES.INVESTIGATING_OFFICER, undefined, { set: { description } });
             await requestShouldReturnHttp403('DELETE', `/api/cases/${caseIdEncoded}/updates/SOMETHING`, USER_ROLES.INVESTIGATING_OFFICER);
          });
       });
