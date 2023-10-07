@@ -25,7 +25,6 @@ import DoneIcon from '@mui/icons-material/Done';
 import capitalize from "capitalize";
 import anonymousImg from '../media/img/anonymous.png';
 import ChakraCheckbox from "./ChakraCheckbox";
-import logger from "../logger";
 import { connect } from "react-redux";
 import RecommendationEditor from "./RecommendationEditor";
 
@@ -105,9 +104,7 @@ function PersonalDetails(props) {
                const value = details[key];
                details[key] = value.replace(/\S/g, "●");
             }
-         } catch (err) {
-            logger.error(err);
-         }
+         } catch (err) {}
       }
 
       anonymityControl = <div className="grid grid-cols-[auto,1fr] gap-4 mt-6">
