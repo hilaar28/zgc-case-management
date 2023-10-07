@@ -27,6 +27,7 @@ import anonymousImg from '../media/img/anonymous.png';
 import ChakraCheckbox from "./ChakraCheckbox";
 import logger from "../logger";
 import { connect } from "react-redux";
+import RecommendationEditor from "./RecommendationEditor";
 
 // helpers
 function stringifyNumericDate(date) {
@@ -293,6 +294,10 @@ function canUpdateCase(_case, user) {
    return false;
 }
 
+function canAddRecommendation(role) {
+   return [ USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN].includes(role);
+}
+
 // the component
 class UnconnectedCase extends Component {
 
@@ -302,6 +307,22 @@ class UnconnectedCase extends Component {
       updateBeingUpdated: null,
       caseReferralModalOpen: false,
       assignCaseModalOpen: false,
+      recommendationEditorOpen: false,
+   }
+
+   openRecommendationEditor = () => {
+      return this.updateState({ recommendationEditorOpen: true });
+   }
+
+   closeRecommendationEditor = (recommendation) => {
+
+      const updates = { recommendationEditorOpen: false };
+
+      if (recommendation) {
+         updates.case_ = { ...this.state.case_, recommendation };
+      }
+
+      return this.updateState(updates);
    }
 
    openAssignCaseModal = () => {
@@ -617,6 +638,48 @@ class UnconnectedCase extends Component {
                info={`${recorded_by.name} ${recorded_by.surname}`}
             />
          }
+
+         // recommendation section
+         let recommendationSectionBody;
+         const { recommendation } = this.state.case_;
+         const canRecommend = canAddRecommendation(user.role);
+
+         if (recommendation) {
+
+            let editButton;
+
+            if (canRecommend) {
+               editButton = <div className="text-right">
+                  <IconButton onClick={this.openRecommendationEditor}>
+                     <EditIcon className="text-lg" />
+                  </IconButton>
+               </div>
+            }
+
+            recommendationSectionBody = <div>
+               <p>
+                  {recommendation}
+               </p>
+               {editButton}
+            </div>
+         } else {
+            recommendationSectionBody = <div className="mt-2">
+               <Button 
+                  variant="contained" 
+                  size="small" 
+                  className={`bg-orange-600 ${canRecommend ? '' : 'opacity-50 pointer-events-none'}`}
+                  onClick={this.openRecommendationEditor} 
+                  startIcon={<AddIcon />} 
+               >
+                  ADD
+               </Button>
+            </div>
+         }
+
+         const recommendationSection = <Section
+            title="RECOMMENDATION"
+            body={recommendationSectionBody}
+         />
 
          // referred to section
          const { referred_to } = this.state.case_;
@@ -953,6 +1016,17 @@ class UnconnectedCase extends Component {
             />
          }
 
+         /// recommendation modal
+         let recommendationModal;
+
+         if (this.state.recommendationEditorOpen) {
+            recommendationModal = <RecommendationEditor
+               caseId={this.props._id}
+               previousRecommendation={this.state.case_.recommendation}
+               close={this.closeRecommendationEditor}
+            />
+         }
+
          // dialog content
          dialogContent = <div>
 
@@ -997,6 +1071,7 @@ class UnconnectedCase extends Component {
 
             <Divider className="my-5" />
 
+            {recommendationSection}
             {referredToSection}
             {geographicSection}
             {violationSection}
@@ -1010,6 +1085,7 @@ class UnconnectedCase extends Component {
             {updateEditorModal}
             {caseReferralModal}
             {assignCaseModal}
+            {recommendationModal}
 
 
          </div>
