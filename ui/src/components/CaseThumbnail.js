@@ -32,7 +32,7 @@ function UnconnectedCaseThumbnail(props) {
    if (expanded) {
 
       // info pieces
-      const { victim, applicant, defendants, recorded_by, case_officer } = props;
+      const { victim, applicant, defendants, recorded_by, assigned_to } = props;
       let victimInfoPiece;
 
       if (victim) {
@@ -42,12 +42,12 @@ function UnconnectedCaseThumbnail(props) {
          />
       }
 
-      let caseOfficerPiece
+      let assignedToPiece;
 
-      if (case_officer) {
-         caseOfficerPiece = <InfoPiece
-            label="Case officer"
-            info={`${case_officer.name} ${case_officer.surname}`}
+      if (assigned_to) {
+         assignedToPiece = <InfoPiece
+            label="Assigned To"
+            info={`${assigned_to.name} ${assigned_to.surname}`}
          />
       }
 
@@ -105,7 +105,7 @@ function UnconnectedCaseThumbnail(props) {
                {filedByInfoPiece}
                {defendantInfoPiece}
                {recordedByInfoPiece}
-               {caseOfficerPiece}
+               {assignedToPiece}
 
             </div>
          </div>

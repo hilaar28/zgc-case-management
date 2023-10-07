@@ -27,9 +27,8 @@ import anonymousImg from '../media/img/anonymous.png';
 import ChakraCheckbox from "./ChakraCheckbox";
 import logger from "../logger";
 import { connect } from "react-redux";
-import { thisRoleOrHigher } from "../shared-utils";
 
-
+// helpers
 function stringifyNumericDate(date) {
 
    if (!date)
@@ -275,7 +274,26 @@ function WitnessDetails(props) {
    />
 }
 
+function canUpdateCase(_case, user) {
 
+   if (_case.status !== CASE_STATUS.IN_PROGRESS)
+      return false;
+
+   const role = user.role;
+   if ([ USER_ROLES.DIRECTOR, USER_ROLES.MANAGER, USER_ROLES.SUPER_ADMIN ].includes(role))
+      return true;
+
+   if (role === USER_ROLES.INVESTIGATING_OFFICER) {
+      if (user._id === _case.assigned_to._id)
+         return true;
+      else
+         return false;
+   }
+
+   return false;
+}
+
+// the component
 class UnconnectedCase extends Component {
 
    state = {
@@ -290,11 +308,11 @@ class UnconnectedCase extends Component {
       return this.updateState({ assignCaseModalOpen: true })
    }
 
-   closeAssignCaseModal  = (case_officer) => {
+   closeAssignCaseModal  = (assigned_to) => {
       const updates = { assignCaseModalOpen: false };
 
-      if (case_officer) {
-         const caseUpdate = { case_officer, status: CASE_STATUS.IN_PROGRESS }
+      if (assigned_to) {
+         const caseUpdate = { assigned_to, status: CASE_STATUS.IN_PROGRESS }
          updates.case_ = { ...this.state.case_, ...caseUpdate };
          actions.updateEntity(CaseSchema, this.props._id, caseUpdate );
       }
@@ -480,11 +498,11 @@ class UnconnectedCase extends Component {
          /// add update button
          const { status } = this.state.case_;
          const { user } = this.props;
-         const isInvestigatingOfficer = thisRoleOrHigher(USER_ROLES.INVESTIGATING_OFFICER, user.role);
+         const isDirector = [ USER_ROLES.DIRECTOR, USER_ROLES.SUPER_ADMIN ].includes(user.role);
 
-         let referButton, rejectButton, assignButton;
+         let referButton, rejectButton, assignButton, markAsResolvedButton;
 
-         if (isInvestigatingOfficer) {
+         if (isDirector) {
             rejectButton = <Button 
                variant="outlined" 
                size="small" 
@@ -514,6 +532,17 @@ class UnconnectedCase extends Component {
             >
                REFER
             </Button>
+
+            markAsResolvedButton = <Button 
+               variant="contained" 
+               size="small" 
+               startIcon={<DoneIcon />} 
+               className="bg-orange-600 rounded-full px-6"
+               onClick={this.markAsResolved}
+               >
+               RESOLVED
+            </Button>
+            
          }
 
          const updateButton = <Button 
@@ -526,23 +555,13 @@ class UnconnectedCase extends Component {
             UPDATE
          </Button>
 
-         const markAsResolvedButton = <Button 
-            variant="contained" 
-            size="small" 
-            startIcon={<DoneIcon />} 
-            className="bg-orange-600 rounded-full px-6"
-            onClick={this.markAsResolved}
-         >
-            RESOLVED
-         </Button>
-
-
          if (status === CASE_STATUS.IN_PROGRESS) {
 
-            if (!this.state.case_.case_officer)
+            if (!this.state.case_.assigned_to)
                actionButtons.push(assignButton);
 
-            actionButtons.push(updateButton);
+            if (canUpdateCase(this.state.case_, user))
+               actionButtons.push(updateButton);
 
             if (this.state.case_.updates.length > 0) {
                actionButtons.push(markAsResolvedButton);
@@ -582,13 +601,13 @@ class UnconnectedCase extends Component {
          }
 
          // case officer and recorded by
-         let recordedBy, caseOfficer;
-         const { case_officer, recorded_by } = this.state.case_;
+         let recordedBy, assignedTo;
+         const { assigned_to, recorded_by } = this.state.case_;
 
-         if (case_officer) {
-            caseOfficer = <InfoPiece
-               label="CASE OFFICER"
-               info={`${case_officer.name} ${case_officer.surname}`}
+         if (assigned_to) {
+            assignedTo = <InfoPiece
+               label="ASSIGNED TO"
+               info={`${assigned_to.name} ${assigned_to.surname}`}
             />
          }
 
@@ -972,7 +991,7 @@ class UnconnectedCase extends Component {
             </div>
 
             <div className="mt-2">
-               {caseOfficer}
+               {assignedTo}
                {recordedBy}
             </div>
 

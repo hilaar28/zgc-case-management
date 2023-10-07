@@ -12,17 +12,17 @@ export default class AssignCase extends Component {
       officers: null,
    }
 
-   assign = async (caseOfficer) => {
+   assign = async (officer) => {
 
       try {
          showLoading();
 
-         const data = { case_officer: caseOfficer._id };
+         const data = { assign_to: officer._id };
          const caseIdEncoded = window.encodeURIComponent(this.props.caseId);
 
          await request.post(`/api/cases/${caseIdEncoded}/assignment`, data);
          
-         this.props.close(caseOfficer);
+         this.props.close(officer);
 
       } catch (err) {
          swal(String(err))
