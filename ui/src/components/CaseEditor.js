@@ -355,18 +355,30 @@ class UnconnectedCaseEditor extends Component {
 
       const more_assistance_required = txtMoreAssistanceRequired ? txtMoreAssistanceRequired.value : undefined;
 
-      const otherEntityReportedToDetails = txtOtherEntityReportedToDetails ? txtOtherEntityReportedToDetails.value : undefined;
-      const otherEntityReportedToActions = txtOtherEntityReportedToActions ? txtOtherEntityReportedToActions.value : undefined;
-      const otherEntityReportedToWhyReportingToUsAsWell= txtOtherEntityReportedToWhyReportingToUsAsWell ? txtOtherEntityReportedToWhyReportingToUsAsWell.value : undefined;
 
       let other_entity_reported_to;
 
-      if (otherEntityReportedToDetails || otherEntityReportedToActions || otherEntityReportedToWhyReportingToUsAsWell) {
-         other_entity_reported_to = {
-            details: otherEntityReportedToDetails,
-            actions: otherEntityReportedToActions,
-            why_reporting_to_us_as_well: otherEntityReportedToWhyReportingToUsAsWell,
+      if (this.state.haveReportedToThirdParty) {
+         const details = txtOtherEntityReportedToDetails.value;
+         const actions = txtOtherEntityReportedToActions.value;
+         const why_reporting_to_us_as_well = txtOtherEntityReportedToWhyReportingToUsAsWell.value;
+
+         if (!details) {
+            txtOtherEntityReportedToDetails.focus();
+            throw new Error("Provide the details of the party you reported to");
          }
+
+         if (!actions) {
+            txtOtherEntityReportedToActions.focus();
+            throw new Error("Describe what the party you reported to did to help the situation");
+         }
+
+         if (!why_reporting_to_us_as_well) {
+            txtOtherEntityReportedToWhyReportingToUsAsWell.focus();
+            throw new Error("Explaining why you are also reporting the case to ZGC");
+         }
+
+         other_entity_reported_to = { details, actions, why_reporting_to_us_as_well };
       }
 
       const data = {
