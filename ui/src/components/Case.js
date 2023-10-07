@@ -51,6 +51,23 @@ function stringifyNumericDate(date) {
    return date
 }
 
+function timestampToReadableDateAndTime(timestamp) {
+
+   const date = new Date(timestamp);
+
+   const dayOfMonth = date.getDate().toString().padStart(2, 0);
+   const month = (date.getMonth() + 1).toString().padStart(2, 0);
+   const year = date.getFullYear();
+   const strDate = `${year}/${month}/${dayOfMonth}`;
+   
+   const hour = date.getHours().toString().padStart(2, 0);
+   const minute = date.getMinutes().toString().padStart(2, 0);
+   const strTime = `${hour}:${minute}`
+
+   return `${strDate} — ${strTime}`;
+
+}
+
 function InfoPiece(props) {
    return <div className="mr-5 inline-block">
       <span className="text-sm text-gray-500 font-bold uppercase">
@@ -1049,7 +1066,7 @@ class UnconnectedCase extends Component {
 
                <div className="ml-5 text-sm text-gray-600 font-bold">
                   FILED @ <Tag>
-                  {this.state.case_.createdAt}
+                  {timestampToReadableDateAndTime(this.state.case_.createdAt)}
                </Tag>
                </div>
                
