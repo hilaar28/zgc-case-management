@@ -6,7 +6,6 @@ const Case = require("./db/Case");
 const { flattenDocumentUpdate } = require("./utils");
 const { default: mongoose } = require("mongoose");
 const User = require("./db/User");
-const { thisRoleOrHigher } = require("./shared-utils");
 const CaseNumberGenerator = require("./CaseNumberGenerator");
 const { LockFactory } = require('@xavisoft/critical-section');
 
