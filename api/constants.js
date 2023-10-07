@@ -1,3 +1,4 @@
+const { deepFreezeObject } = require("./shared-utils")
 
 
 const USER_ROLES = {
@@ -191,7 +192,7 @@ const WHERE_DID_YOU_HEAR_ABOUT_US = [
    'BILLBOARD',
 ]
 
-module.exports = {
+module.exports = deepFreezeObject({
    AGE_RANGES,
    CASE_SOURCES,
    CASE_STATUS,
@@ -205,4 +206,4 @@ module.exports = {
    VIOLATION_IMPACT,
    VIOLATION_NATURE,
    WHERE_DID_YOU_HEAR_ABOUT_US,
-}
+});
