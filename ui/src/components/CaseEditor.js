@@ -187,7 +187,15 @@ class UnconnectedCaseEditor extends Component {
       /// contact details
       const mobile = txtMobile ? txtMobile.value : undefined;
       const telephone = txtTelephone ? txtTelephone.value : undefined;
+
       const email = txtEmail ? txtEmail.value : undefined;
+
+      if (email) {
+         if (!(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email))) {
+            txtEmail.focus();
+            throw new Error("Invalid email");
+         }
+      }
       const address = txtAddress ? txtAddress.value : undefined;
       const next_of_kin_phone = txtNextOfKinNumber ? txtNextOfKinNumber.value : undefined;
       const friend_phone = txtFriendNumber ? txtFriendNumber.value : undefined;
@@ -375,7 +383,7 @@ class UnconnectedCaseEditor extends Component {
 
          if (!why_reporting_to_us_as_well) {
             txtOtherEntityReportedToWhyReportingToUsAsWell.focus();
-            throw new Error("Explaining why you are also reporting the case to ZGC");
+            throw new Error("Explain why you are also reporting the case to ZGC");
          }
 
          other_entity_reported_to = { details, actions, why_reporting_to_us_as_well };
