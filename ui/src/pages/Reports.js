@@ -48,7 +48,7 @@ function NumberedCard(props) {
       number,
       bgClassname="bg-orange-600"
    } = props;
-   return <div className={`rounded-xl p-4 ${bgClassname}`}>
+   return <div className={`rounded-xl py-4 px-6 ${bgClassname}`}>
       <div className="text-3xl text-white font-bold">
          {number}
       </div>
@@ -305,10 +305,15 @@ export default class Reports extends Page {
                      {filterModal}
                   </div>
 
-                  <div className="my-6">
+                  <div className="my-6 grid grid-cols-2 gap-6">
+                     <NumberedCard
+                        number={this.state.summary.total}
+                        text="Total cases"
+                     />
                      <NumberedCard
                         number={this.state.summary.overdue}
                         text="Overdue cases"
+                        bgClassname={"bg-red-600"}
                      />
                   </div>
 
