@@ -536,6 +536,7 @@ class UnconnectedCase extends Component {
       
       const worker = new Worker({
          filename: `Case ${this.props._id}.pdf`,
+         pagebreak: { mode: 'avoid-all' }
       });
 
       worker.from(elem).save();
