@@ -41,6 +41,8 @@ request.interceptors.response.use(null, err => {
    if (err && err.response) {
       const msg = typeof err.response.data === 'string' ? err.response.data : err.response.statusText;;
       err = new AxiosError(msg, err.response.status);
+   } else if (err.code === 'ERR_NETWORK') {
+      err = new AxiosError('Network Error', 0);
    }
 
    throw err;
