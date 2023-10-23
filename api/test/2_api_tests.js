@@ -21,7 +21,7 @@ chai.use(chaiSpies);
 function generateSchemaObjectFromKeyList(values=[], joi) {
    const schema = {};
    values.forEach(value => schema[value] = joi);
-   return schema;
+   return Joi.object().keys(schema);
 }
 
 // tests
@@ -796,14 +796,15 @@ suite("API Tests", function () {
 
          // verify schema
          const schema = {
-            gender: {
+            gender: Joi.object({
                male: Joi.number().integer().required(),
                female: Joi.number().integer().required(),
-            },
-            province: generateSchemaObjectFromKeyList(Object.keys(PROVINCES), Joi.number().integer()),
-            status: generateSchemaObjectFromKeyList(Object.values(CASE_STATUS), Joi.number().integer()),
-            age_range: generateSchemaObjectFromKeyList(AGE_RANGES, Joi.number().integer()),
+            }).required(),
+            province: generateSchemaObjectFromKeyList(Object.keys(PROVINCES), Joi.number().integer()).required(),
+            status: generateSchemaObjectFromKeyList(Object.values(CASE_STATUS), Joi.number().integer()).required(),
+            age_range: generateSchemaObjectFromKeyList(AGE_RANGES, Joi.number().integer()).required(),
             overdue: Joi.number().integer().min(0).required(),
+            violation_nature: generateSchemaObjectFromKeyList([ ...VIOLATION_NATURE, 'OTHER' ], Joi.number().integer()).required(),
          };
 
          const error = Joi.getError(res.body, schema);

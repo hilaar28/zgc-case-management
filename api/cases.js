@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES, TREND_PERIODS, AGE_RANGES, CASE_TYPE } = require("./constants");
+const { USER_ROLES, CASE_SOURCES, MARITAL_STATUS, GENDER, CASE_STATUS, PROVINCES, TREND_PERIODS, AGE_RANGES, CASE_TYPE, VIOLATION_NATURE } = require("./constants");
 const status_500 = require("./status_500");
 const Joi = require("@xavisoft/joi");
 const Case = require("./db/Case");
@@ -266,7 +266,7 @@ cases.get('/summary', canViewReports,async (req, res) => {
       // retrieve stats
       const from = parseInt(req.query.from) || 0
       const to = parseInt(req.query.to) || Date.now();
-      const { gender, status, province, age_range } = req.query;
+      const { gender, status, province, age_range, violation_nature } = req.query;
 
       const query = {
          createdAt: {
@@ -294,8 +294,15 @@ cases.get('/summary', canViewReports,async (req, res) => {
       if (province)
          query.province = province;
 
-      if (age_range) {
+      if (age_range)
          query["violation.victim_age_range"] = age_range;
+
+      if (violation_nature) {
+         query["violation.natures.nature"] = {
+            $elemMatch: {
+               nature: violation_nature
+            }
+         }
       }
 
       const statistics = {}
@@ -339,6 +346,37 @@ cases.get('/summary', canViewReports,async (req, res) => {
       /// age range
       if (!age_range)
          statistics.age_range = await countCasesByField(query, "violation.victim_age_range");
+
+      /// violation nature
+      if (!violation_nature) {
+
+         let nonOtherCount = 0;
+         const results = {};
+         
+         for (let i in VIOLATION_NATURE) {
+
+            const nature = VIOLATION_NATURE[i];
+
+            const count = await Case.countDocuments({
+               ...query,
+               "violation.natures": {
+                  $elemMatch: {
+                     nature
+                  }
+               }
+            });
+
+            results[nature] = count;
+            nonOtherCount+= count;
+
+         }
+
+         const total = await Case.countDocuments(query);
+         const otherCount = total - nonOtherCount;
+         results.OTHER = otherCount;
+
+         statistics.violation_nature = results;
+      }
 
       /// overdue cases
       const overdueThresholdTimestamp = Date.now() - process.env.CASE_DURATION * DAY_MILLIS;
