@@ -738,10 +738,14 @@ class UnconnectedCase extends Component {
             </div>
          }
 
-         const recommendationSection = <Section
-            title="RECOMMENDATION"
-            body={recommendationSectionBody}
-         />
+         let recommendationSection;
+
+         if (!this.state.generatingPDF || recommendation) {
+            recommendationSection = <Section
+               title="RECOMMENDATION"
+               body={recommendationSectionBody}
+            />
+         }
 
          // referred to section
          const { referred_to } = this.state.case_;
