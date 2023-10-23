@@ -384,7 +384,8 @@ cases.get('/summary', canViewReports,async (req, res) => {
             },
             status: {
                $ne: CASE_STATUS.RESOLVED,
-            }
+            },
+            ...query,
          });
 
       statistics.total = total;
