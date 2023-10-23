@@ -26,6 +26,7 @@
     "capitalize": "^2.0.4",
     "chart.js": "^4.3.3",
     "framer-motion": "^10.15.0",
+    "html-to-pdf-js": "^0.9.3",
     "normalizr": "^3.6.2",
     "notiflix": "^3.2.6",
     "notyf": "^3.10.0",

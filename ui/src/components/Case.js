@@ -27,6 +27,8 @@ import anonymousImg from '../media/img/anonymous.png';
 import ChakraCheckbox from "./ChakraCheckbox";
 import { connect } from "react-redux";
 import RecommendationEditor from "./RecommendationEditor";
+import DownloadIcon from '@mui/icons-material/Download';
+
 
 // helpers
 function stringifyNumericDate(date) {
@@ -511,6 +513,20 @@ class UnconnectedCase extends Component {
       this.openAssignCaseModal();
    }
 
+   generatePDF = () => {
+
+      const { Worker } = require('html-to-pdf-js');
+
+      const elem = document.getElementById('dialog-content');
+      
+      const worker = new Worker({
+         filename: `Case ${this.props._id}.pdf`,
+      });
+
+      worker.from(elem).save();
+
+   }
+
    componentDidMount() {
 
       if (!this.props.user) {
@@ -524,8 +540,13 @@ class UnconnectedCase extends Component {
    render() {
 
       let dialogContent;
+
+
+      const caseToPdfButton = <IconButton onClick={this.generatePDF}>
+         <DownloadIcon />
+      </IconButton>
       
-      const actionButtons = [];
+      const actionButtons = [ caseToPdfButton ];
 
       if (this.state.case_) {
 
@@ -1133,7 +1154,7 @@ class UnconnectedCase extends Component {
             </div>
          </DialogTitle>
 
-         <DialogContent dividers>
+         <DialogContent dividers id="dialog-content">
             {dialogContent}
          </DialogContent>
 
