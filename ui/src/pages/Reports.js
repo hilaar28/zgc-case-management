@@ -61,11 +61,12 @@ function NumberedCard(props) {
 
 function PieChart(props) {
 
-   const sum = Object
-      .values(props.data)
-      .reduce((sum, current) => sum + current, 0);
+   for (let key in props.data) {
+      if (props.data[key] === 0)
+         delete props.data[key];
+   }
 
-   if (sum === 0) {
+   if (Object.keys(props.data).length === 0) {
       return <div className="h-full vh-align">
          <div className="text-5xl font-bold text-gray-600">
             0
