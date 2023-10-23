@@ -225,6 +225,13 @@ function Tag(props) {
 
 function CaseUpdate(props) {
 
+   let createdAt;
+
+   if (props.showActualTime)
+      createdAt = timestampToReadableDateAndTime(props.createdAt);
+   else
+      createdAt = <TimeAgo date={props.createdAt} />
+
    return <div className="my-4 mx-3 bg-gray-50 shadow p-3">
       <p className="text-xs mb-2">
          {props.description}
@@ -234,7 +241,7 @@ function CaseUpdate(props) {
 
          <div>
             <Tag>
-               <TimeAgo date={props.createdAt} />
+               {createdAt}
             </Tag>
          </div>
             
@@ -1016,6 +1023,7 @@ class UnconnectedCase extends Component {
                   {...update}
                   edit={() => this.openUpdateEditor('edit', update)}
                   delete={() => this.deleteCaseUpdate(update._id)}
+                  showActualTime={this.state.generatingPDF}
                />
             });
          } else {
