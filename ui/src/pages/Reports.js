@@ -265,8 +265,8 @@ export default class Reports extends Page {
          }
 
          jsx = <div className="h-full grid grid-rows-[1fr,auto]">
-            <div className="h-full container overflow-auto">
-               <div className="h-full">
+            <div className="h-full overflow-auto">
+               <div className="container">
 
                   <div className="border-solid border-[1px] border-[#CCC] rounded-xl mt-6 text-right p-2 text-gray-500 text-xs">
 
