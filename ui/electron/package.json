@@ -9,7 +9,8 @@
     "package": "electron-packager . --platform=${PLATFORM=all} --arch=${ARCH:=all} --out=build --asar --overwrite",
     "package-win": "PLATFORM=win32 npm run package",
     "package-mac": "PLATFORM=darwin npm run package",
-    "package-linux": "PLATFORM=linux npm run package"
+    "package-linux": "PLATFORM=linux npm run package",
+    "package-zgc": "npx electron-packager . --out=build --asar --overwrite && node winstaller"
   },
   "keywords": [],
   "author": "Qurious Consulting, Xavisoft Digital",
