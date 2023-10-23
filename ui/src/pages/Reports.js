@@ -147,8 +147,8 @@ export default class Reports extends Page {
          showLoading();
 
          // build query
-         const { from, to, status, age_range, province, gender } = this.state.summaryStatisticsFilter;
-         let query = { status, age_range, province, gender };
+         const { from, to, status, age_range, province, gender, violation_nature } = this.state.summaryStatisticsFilter;
+         let query = { status, age_range, province, gender, violation_nature };
          
 
          if (from)

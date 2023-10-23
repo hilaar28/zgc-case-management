@@ -2,7 +2,7 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Divider } from "@mui/material";
 import Component from "@xavisoft/react-component";
 import DatePicker from "./DatePicker";
-import { AGE_RANGES, CASE_STATUS, GENDER, PROVINCES } from "../backend-constants";
+import { AGE_RANGES, CASE_STATUS, GENDER, PROVINCES, VIOLATION_NATURE } from "../backend-constants";
 import { ageRangeToWords, delay } from "../utils";
 import { v4 as uuid } from 'uuid';
 import capitalize from "capitalize";
@@ -30,6 +30,7 @@ export default class CaseFilter extends Component {
       const province = document.getElementById('txt-province').value;
       const gender = document.getElementById('txt-gender').value;
       const age_range = document.getElementById('txt-age-range').value;
+      const violation_nature = document.getElementById('txt-violation-nature').value;
 
       this.props.close({
          from,
@@ -38,6 +39,7 @@ export default class CaseFilter extends Component {
          province,
          gender,
          age_range,
+         violation_nature,
       });
 
    }
@@ -183,6 +185,25 @@ export default class CaseFilter extends Component {
                            .map(value => {
                               return <option value={value} key={value}>
                                  {ageRangeToWords(value)}
+                              </option>
+                           })
+                     }
+                  </select>
+                  <Divider className="my-4" />
+               </div>
+
+               <div>
+                  <Label>VIOLATION NATURE</Label>
+                  <select 
+                     className="border-solid border-[#ccc] border-[1px] rounded px-2 py-1 text-sm"
+                     id="txt-violation-nature"
+                  >
+                     <option value="">ALL</option>
+                     {
+                        VIOLATION_NATURE
+                           .map(value => {
+                              return <option value={value} key={value}>
+                                 {value}
                               </option>
                            })
                      }
