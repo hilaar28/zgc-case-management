@@ -251,6 +251,18 @@ export default class Reports extends Page {
             </Statistic>
          }
 
+         /// by violation nature
+         let byViolationNature;
+         const { violation_nature } = this.state.summary;
+
+         if (violation_nature) {
+            byViolationNature = <Statistic title="CASES BY VIOLATION NATURE">
+               <PieChart 
+                  data={violation_nature}
+               />
+            </Statistic>
+         }
+
          jsx = <div className="h-full grid grid-rows-[1fr,auto]">
             <div className="h-full container overflow-auto">
                <div className="h-full">
@@ -304,6 +316,7 @@ export default class Reports extends Page {
                      {byStatus}
                      {byProvince}
                      {byAgeRange}
+                     {byViolationNature}
                   </div>
                </div>
             </div>
