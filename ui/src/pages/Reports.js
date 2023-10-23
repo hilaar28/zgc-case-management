@@ -41,6 +41,23 @@ function Statistic(props) {
    </div>
 }
 
+function NumberedCard(props) {
+
+   const {
+      text,
+      number,
+      bgClassname="bg-orange-600"
+   } = props;
+   return <div className={`rounded-xl p-4 ${bgClassname}`}>
+      <div className="text-3xl text-white font-bold">
+         {number}
+      </div>
+      <div className="text-lg text-gray-300">
+         {text}
+      </div>
+   </div>
+}
+
 
 function PieChart(props) {
 
@@ -273,6 +290,13 @@ export default class Reports extends Page {
                      </IconButton>
 
                      {filterModal}
+                  </div>
+
+                  <div className="my-6">
+                     <NumberedCard
+                        number={this.state.summary.overdue}
+                        text="Overdue cases"
+                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-6 pt-6">
