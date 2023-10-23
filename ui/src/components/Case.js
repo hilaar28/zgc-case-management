@@ -28,6 +28,14 @@ import ChakraCheckbox from "./ChakraCheckbox";
 import { connect } from "react-redux";
 import RecommendationEditor from "./RecommendationEditor";
 import DownloadIcon from '@mui/icons-material/Download';
+import { css } from '@emotion/css';
+
+
+const hideButtonsCssClass = css({
+   '& button': {
+      opacity: `0 !important`
+   }
+})
 
 
 // helpers
@@ -1174,7 +1182,11 @@ class UnconnectedCase extends Component {
             </div>
          </DialogTitle>
 
-         <DialogContent dividers id="dialog-content">
+         <DialogContent 
+            dividers 
+            id="dialog-content" 
+            className={this.state.generatingPDF ? hideButtonsCssClass : ''}
+         >
             {dialogContent}
          </DialogContent>
 
