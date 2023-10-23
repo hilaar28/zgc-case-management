@@ -298,7 +298,7 @@ cases.get('/summary', canViewReports,async (req, res) => {
          query["violation.victim_age_range"] = age_range;
 
       if (violation_nature) {
-         query["violation.natures.nature"] = {
+         query["violation.natures"] = {
             $elemMatch: {
                nature: violation_nature
             }
