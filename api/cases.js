@@ -10,6 +10,8 @@ const CaseNumberGenerator = require("./CaseNumberGenerator");
 const { LockFactory } = require('@xavisoft/critical-section');
 
 // constants
+const DAY_MILLIS = 24 * 3600 * 1000;
+
 const personalDetailsSchema = {
    name: Joi.string(),
    surname: Joi.string(),
@@ -337,6 +339,21 @@ cases.get('/summary', canViewReports,async (req, res) => {
       /// age range
       if (!age_range)
          statistics.age_range = await countCasesByField(query, "violation.victim_age_range");
+
+      /// overdue cases
+      const overdueThresholdTimestamp = Date.now() - process.env.CASE_DURATION * DAY_MILLIS;
+      const overdueThreshold = new Date(overdueThresholdTimestamp);
+
+      statistics.overdue = await Case
+         .countDocuments()
+         .where({
+            createdAt: {
+               $lte: overdueThreshold
+            },
+            status: {
+               $ne: CASE_STATUS.RESOLVED,
+            }
+         });
    
       // respond
       res.send(statistics);
@@ -357,7 +374,6 @@ cases.get('/trend', canViewReports,async (req, res) => {
       let period = req.query.period || TREND_PERIODS.WEEKLY;
 
       let interval;
-      const DAY_MILLIS = 24 * 3600 * 1000;
 
       switch (period) {
          case TREND_PERIODS.WEEKLY:

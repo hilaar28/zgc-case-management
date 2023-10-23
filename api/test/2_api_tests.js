@@ -803,6 +803,7 @@ suite("API Tests", function () {
             province: generateSchemaObjectFromKeyList(Object.keys(PROVINCES), Joi.number().integer()),
             status: generateSchemaObjectFromKeyList(Object.values(CASE_STATUS), Joi.number().integer()),
             age_range: generateSchemaObjectFromKeyList(AGE_RANGES, Joi.number().integer()),
+            overdue: Joi.number().integer().min(0).required(),
          };
 
          const error = Joi.getError(res.body, schema);
