@@ -324,6 +324,7 @@ cases.get('/summary', canViewReports,async (req, res) => {
             });
          
          const count = await Case.countDocuments({
+            ...query,
             $and: [
                { createdAt: { $gte: new Date(from) } },
                { createdAt: { $lte: new Date(to) } }
