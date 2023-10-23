@@ -805,6 +805,7 @@ suite("API Tests", function () {
             age_range: generateSchemaObjectFromKeyList(AGE_RANGES, Joi.number().integer()).required(),
             overdue: Joi.number().integer().min(0).required(),
             violation_nature: generateSchemaObjectFromKeyList([ ...VIOLATION_NATURE, 'OTHER' ], Joi.number().integer()).required(),
+            total: Joi.number().integer().required(),
          };
 
          const error = Joi.getError(res.body, schema);
@@ -819,10 +820,13 @@ suite("API Tests", function () {
          const totalFromGender = sumNumbers(res.body.gender);
          const totalFromProvince = sumNumbers(res.body.province);
          const totalFromStatus = sumNumbers(res.body.status);
+         const totalFromViolationNature = sumNumbers(res.body.violation_nature);
 
          assert.equal(caseCount, totalFromGender);
          assert.equal(caseCount, totalFromProvince);
          assert.equal(caseCount, totalFromStatus);
+         assert.equal(caseCount, totalFromViolationNature);
+         assert.equal(caseCount, res.body.total);
 
       });
 

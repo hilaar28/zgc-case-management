@@ -308,6 +308,8 @@ cases.get('/summary', canViewReports,async (req, res) => {
       const statistics = {}
 
       /// gender
+      const total = await Case.countDocuments(query);
+
       if (!gender) {
          const male = await Case
             .countDocuments({
@@ -322,16 +324,8 @@ cases.get('/summary', canViewReports,async (req, res) => {
                   }
                ],
             });
-         
-         const count = await Case.countDocuments({
-            ...query,
-            $and: [
-               { createdAt: { $gte: new Date(from) } },
-               { createdAt: { $lte: new Date(to) } }
-            ],
-         });
 
-         const female = count - male;
+         const female = total - male;
          statistics.gender = { male, female };
 
       }
@@ -372,7 +366,6 @@ cases.get('/summary', canViewReports,async (req, res) => {
 
          }
 
-         const total = await Case.countDocuments(query);
          const otherCount = total - nonOtherCount;
          results.OTHER = otherCount;
 
@@ -393,6 +386,8 @@ cases.get('/summary', canViewReports,async (req, res) => {
                $ne: CASE_STATUS.RESOLVED,
             }
          });
+
+      statistics.total = total;
    
       // respond
       res.send(statistics);
