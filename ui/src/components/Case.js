@@ -186,11 +186,13 @@ function PersonalDetails(props) {
 function Question(props) {
 
    const [ expanded, setExpanded ] = useState(false);
-   const Icon = expanded ? CollapsIcon : ExpandIcon;
+
+   const ultimateExpanded = props.forceExpand || expanded;
+   const Icon = ultimateExpanded ? CollapsIcon : ExpandIcon;
 
    let answer;
 
-   if (expanded) {
+   if (ultimateExpanded) {
       answer = <p className="text-sm">
          {props.answer}
       </p>
@@ -324,6 +326,7 @@ class UnconnectedCase extends Component {
       caseReferralModalOpen: false,
       assignCaseModalOpen: false,
       recommendationEditorOpen: false,
+      generatingPDF: false,
    }
 
    openRecommendationEditor = () => {
@@ -513,8 +516,13 @@ class UnconnectedCase extends Component {
       this.openAssignCaseModal();
    }
 
-   generatePDF = () => {
+   generatePDF = async () => {
 
+      // set generatingPDF to true
+      // so that collapsed elements expand
+      await this.updateState({ generatingPDF: true });
+
+      // generate PDF
       const { Worker } = require('html-to-pdf-js');
 
       const elem = document.getElementById('dialog-content');
@@ -524,6 +532,9 @@ class UnconnectedCase extends Component {
       });
 
       worker.from(elem).save();
+
+      // set generatingPDF to false
+      await this.updateState({ generatingPDF: false });
 
    }
 
@@ -952,39 +963,31 @@ class UnconnectedCase extends Component {
          } = this.state.case_;
 
          if (why_violation_is_important_to_our_mandate) {
-            questions.push(
-               <Question
-                  question="Why is the violation mentioned a barrier to gender equality?"
-                  answer={why_violation_is_important_to_our_mandate}
-               />
-            );
+            questions.push({
+               question: "Why is the violation mentioned a barrier to gender equality?",
+               answer: why_violation_is_important_to_our_mandate,
+            });
          }
 
          if (who_referred_you_to_us) {
-            questions.push(
-               <Question
-                  question="How did you get to know about ZGC?"
-                  answer={who_referred_you_to_us}
-               />
-            );
+            questions.push({
+               question: "How did you get to know about ZGC?",
+               answer: who_referred_you_to_us
+            });
          }
 
          if (expectations_from_us) {
-            questions.push(
-               <Question
-                  question="What remedy are you expecting to get from the ZGC in this case?"
-                  answer={expectations_from_us}
-               />
-            );
+            questions.push({
+               question: "What remedy are you expecting to get from the ZGC in this case?",
+               answer: expectations_from_us
+            });
          }
 
          if (more_assistance_required) {
-            questions.push(
-               <Question
-                  question="What other assistance/services do you need?"
-                  answer={more_assistance_required}
-               />
-            );
+            questions.push({
+               question: "What other assistance/services do you need?",
+               answer: more_assistance_required
+            });
          }
 
          let questionsSection;
@@ -992,7 +995,15 @@ class UnconnectedCase extends Component {
          if (questions.length > 0) {
             questionsSection = <Section
                title="QUESTIONS"
-               body={questions}
+               body={
+                  questions
+                     .map(question => {
+                        return <Question
+                           {...question}
+                           forceExpand={this.state.generatingPDF}
+                        />
+                     })
+               }
             />
          }
 
