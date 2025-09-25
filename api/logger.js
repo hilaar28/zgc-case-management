@@ -26,7 +26,8 @@ const sentryLogger = {
    log
 }
 
-const logger = process.env.NODE_ENV === 'production' ? sentryLogger : console;
+// const logger = process.env.NODE_ENV === 'production' ? sentryLogger : console;
+const logger = console;
 
 Object.defineProperty(console, 'init', {
    get: () => {
