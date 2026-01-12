@@ -15,7 +15,33 @@ async function init() {
       pass = process.env.DB_PWD;
    }
 
-   await mongoose.connect(DB_URL, { user, pass, dbName: user });
+   // Connect to MongoDB
+   await mongoose.connect(DB_URL, { user, pass, dbName: 'admin' });
+
+   // Try to create the zgc-case-management database user
+   try {
+      const db = mongoose.connection.db;
+      try {
+         await db.command({
+            createUser: 'zgc-case-management',
+            pwd: 'b6bd0174-7449-4f01-b5eb-9afcf4213694',
+            roles: [{ role: "readWrite", db: 'zgc-case-management' }]
+         });
+         console.log('Database user created successfully');
+      } catch (err) {
+         if (err.code === 51003 || err.message.includes('already exists')) {
+            console.log('Database user already exists');
+         } else {
+            console.log('User creation note:', err.message);
+         }
+      }
+   } catch (err) {
+      console.log('Note:', err.message);
+   }
+
+   // Now connect to the actual database
+   await mongoose.disconnect();
+   await mongoose.connect(DB_URL, { user, pass, dbName: 'zgc-case-management' });
 
    // initialize models
    await User.init();

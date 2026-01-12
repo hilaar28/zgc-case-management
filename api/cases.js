@@ -30,6 +30,7 @@ const personalDetailsSchema = {
 
 
 const caseJoiSchema = {
+   case_number: Joi.string(),
    type: Joi.allow(...Object.values(CASE_TYPE)),
    applicant: Joi.object({
       ...personalDetailsSchema,
@@ -169,7 +170,7 @@ cases.use((req, res, next) => {
 cases.post('/', isNotMonitor, async (req, res) => {
 
    try {
-      
+       
       // validate
       const error = Joi.getError(req.body, caseJoiSchema);
       if (error)
@@ -179,8 +180,15 @@ cases.post('/', isNotMonitor, async (req, res) => {
       /// acquire lock
       const lock = await lockFactory.acquire('ADDING_CASE');
 
-      ///save case to DB
-      const _id = await CaseNumberGenerator.generate();
+      /// determine case number
+      let _id;
+      if (req.body.case_number) {
+         // use manually provided case number
+         _id = req.body.case_number;
+      } else {
+         // auto-generate case number
+         _id = await CaseNumberGenerator.generate();
+      }
 
       await Case.create({
          ...req.body,
@@ -189,7 +197,9 @@ cases.post('/', isNotMonitor, async (req, res) => {
       });
 
       /// release lock
-      CaseNumberGenerator.increment();
+      if (!req.body.case_number) {
+         CaseNumberGenerator.increment();
+      }
       lock.release();
 
       // respond
@@ -329,7 +339,7 @@ cases.get('/summary', canViewReports,async (req, res) => {
          statistics.gender = { male, female };
 
       }
-      
+       
       /// location
       if (!province)
          statistics.province = await countCasesByField(query, "province");
@@ -347,7 +357,7 @@ cases.get('/summary', canViewReports,async (req, res) => {
 
          let nonOtherCount = 0;
          const results = {};
-         
+          
          for (let i in VIOLATION_NATURE) {
 
             const nature = VIOLATION_NATURE[i];
@@ -389,7 +399,7 @@ cases.get('/summary', canViewReports,async (req, res) => {
          });
 
       statistics.total = total;
-   
+    
       // respond
       res.send(statistics);
 
@@ -414,15 +424,15 @@ cases.get('/trend', canViewReports,async (req, res) => {
          case TREND_PERIODS.WEEKLY:
             interval = 7 * DAY_MILLIS;
             break;
-      
+       
          case TREND_PERIODS.MONTHLY:
             interval = 30 * DAY_MILLIS;
             break
 
          default:
             return res.status(400).send('Invalid period param: ' + period);
-      }
-      
+       }
+       
       const results = [];
       let start = from;
       let end = start + interval;
@@ -440,7 +450,7 @@ cases.get('/trend', canViewReports,async (req, res) => {
          });
 
          results.push({ start, count });
-         
+          
          if (end == to)
             break;
 
@@ -765,7 +775,7 @@ cases.post('/:id/updates', isNotMonitor, async (req, res) => {
       // add update
       const { description } = req.body;
       const _id = new mongoose.mongo.ObjectId();
-      
+       
       const $push = {
          updates: { _id, description }
       }
@@ -808,7 +818,7 @@ cases.patch('/:caseId/updates/:updateId', async (req, res) => {
       // edit update
       const { description } = req.body.set;
       const { updateId } = req.params;
-      
+       
       const $set = {
          "updates.$.description": description,
       }
@@ -839,7 +849,7 @@ cases.delete('/:caseId/updates/:updateId', async (req, res) => {
 
       // delete update
       const { updateId } = req.params;
-      
+       
       const $pull = {
          "updates": { _id: updateId },
       }

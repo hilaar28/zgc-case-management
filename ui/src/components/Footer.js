@@ -51,12 +51,14 @@ class FooterUnconnected extends Component {
 
    setDimensions = () => {
       const footer = document.getElementById('footer');
-      
+
       const width = footer.scrollWidth + 'px';
       const height = footer.scrollHeight + 'px';
 
-      document.documentElement.style.setProperty('--footer-width', width);
-      document.documentElement.style.setProperty('--footer-height', height);
+      setTimeout(() => {
+         document.documentElement.style.setProperty('--footer-width', width);
+         document.documentElement.style.setProperty('--footer-height', height);
+      }, 0);
    }
 
    componentWillUnmount() {

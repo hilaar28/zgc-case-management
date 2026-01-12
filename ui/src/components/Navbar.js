@@ -246,12 +246,14 @@ class NavbarUnconnected extends Component {
 
    setDimensions = () => {
       const navbar = document.getElementById('navbar');
-      
+
       const width = navbar.scrollWidth + 'px';
       const height = navbar.scrollHeight + 'px';
 
-      document.documentElement.style.setProperty('--navbar-width', width);
-      document.documentElement.style.setProperty('--navbar-height', height);
+      setTimeout(() => {
+         document.documentElement.style.setProperty('--navbar-width', width);
+         document.documentElement.style.setProperty('--navbar-height', height);
+      }, 0);
    }
 
    componentWillUnmount() {

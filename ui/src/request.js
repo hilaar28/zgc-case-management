@@ -28,7 +28,7 @@ initAuth({
 request.interceptors.request.use(config => {
 
    if (process.env.NODE_ENV === 'development')
-      config.url = `http://localhost:8081${config.url}`
+      config.url = `http://localhost:8080${config.url}`
    else {
       config.url = `${process.env.REACT_APP_BACKEND}${config.url}`
    }

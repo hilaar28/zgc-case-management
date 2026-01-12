@@ -101,6 +101,8 @@ const defaultState = {
    village: '',
    haveReportedToThirdParty: false,
    showScrollIndicator: false,
+   autoGenerateCaseNumber: true,
+   manualCaseNumber: '',
 }
 
 
@@ -253,7 +255,7 @@ class UnconnectedCaseEditor extends Component {
                return false;
             return true;
          });
-      
+       
       if (natures.length === 0) {
          txtNatures.focus();
          throw new Error('Provide at least one violation nature');
@@ -279,7 +281,7 @@ class UnconnectedCaseEditor extends Component {
          txtVictimAgeRange.focus();
          throw new Error('Victim age range is required');
       }
-      
+       
       /// continuing
       const continuing = txtContinuing ? txtContinuing.checked : undefined;
 
@@ -301,7 +303,7 @@ class UnconnectedCaseEditor extends Component {
 
       const location = txtLocation ? txtLocation.value : undefined; // location
       const witnessDetails = txtWitnessDetails ? txtWitnessDetails.value : undefined; 
-      
+       
       // witness details
       const witnessAnonymity = txtWitnessAnonymity ? txtWitnessAnonymity.checked : undefined;
 
@@ -352,7 +354,7 @@ class UnconnectedCaseEditor extends Component {
          txtWhoReferredYouToUs.focus();
          throw new Error('Provide how you got to know about us');
       }
-      
+       
       let evidence;
 
       if (txtEvidence) {
@@ -480,7 +482,7 @@ class UnconnectedCaseEditor extends Component {
             case 5:
                {
                   const data = await this.retrieveMoreDetails();
-                  
+                   
                   Object.keys(data).forEach(key => {
                      update[key] = data[key];
                   });
@@ -550,6 +552,11 @@ class UnconnectedCaseEditor extends Component {
             other_entity_reported_to,
          }
 
+         // add case number if manually provided
+         if (!this.state.autoGenerateCaseNumber && this.state.manualCaseNumber) {
+            data.case_number = this.state.manualCaseNumber;
+         }
+
          removeEmptyProperties(data);
 
          try {
@@ -612,7 +619,7 @@ class UnconnectedCaseEditor extends Component {
                input[elementTargetAttribute] = value;
 
          } catch (err) {
-            
+             
          }
       }
    }
@@ -630,13 +637,13 @@ class UnconnectedCaseEditor extends Component {
             return;
 
          case 3:
-            
+             
             if (Array.isArray(this.state.defendants)) {
                this.state.defendants.forEach((defendant, i) => {
                   this.setInputValues(defendant, `div-defendant-${i+1}`);
                });
             }
-                    
+                     
             return;
 
          case 4:
@@ -647,11 +654,11 @@ class UnconnectedCaseEditor extends Component {
             this.setInputValues(this.state);
             return;
       }
-      
+       
    }
 
    previous = async () => {
-      
+       
       const stage = Math.max(this.state.stage - 1, 1);
       await this.updateState({ stage });
       await delay(100);
@@ -672,7 +679,7 @@ class UnconnectedCaseEditor extends Component {
       } else {
          // The div is scrolled to the bottom
          showScrollIndicator = false;
-         
+          
       }
 
       return this.updateState({ showScrollIndicator });
@@ -743,6 +750,24 @@ class UnconnectedCaseEditor extends Component {
                         }
                      </ChakraSelect>
 
+                     <div className='col-span-2'>
+                        <ChakraCheckbox
+                           label="Auto-generate case number"
+                           checked={this.state.autoGenerateCaseNumber}
+                           onChange={autoGenerateCaseNumber => this.updateState({ autoGenerateCaseNumber })}
+                        />
+                     </div>
+
+                     {!this.state.autoGenerateCaseNumber && (
+                        <ChakraTextBox
+                           id="txt-case-number"
+                           label="Case Number"
+                           value={this.state.manualCaseNumber}
+                           onChange={manualCaseNumber => this.updateState({ manualCaseNumber })}
+                           placeholder="e.g., ZGC/123/25"
+                        />
+                     )}
+
                      <ChakraSelect
                         id="txt-province"
                         label="Which province did the case occur?"
@@ -806,7 +831,7 @@ class UnconnectedCaseEditor extends Component {
                   displayWhyCompletingFormOnBehalfField={!formIsElectoral}
                   displayRelationshipToIncidentField={formIsElectoral}
                   displayLocationField={formIsElectoral}
-                  displayAnonymityField
+                  displayAnonymityField={true}
                />
                
             </>
@@ -844,9 +869,9 @@ class UnconnectedCaseEditor extends Component {
             }
 
             break;
-      
+       
          case 3:
-            
+             
             {
 
                let defendantsJSX;
@@ -896,7 +921,7 @@ class UnconnectedCaseEditor extends Component {
                            ADD ANOTHER RESPONDENT
                         </Button>
                      </div>
-                  </>
+                   </>
 
                }
 
@@ -922,7 +947,7 @@ class UnconnectedCaseEditor extends Component {
             break;
 
          case 4:
-            
+             
             form = <>
                <div className='text-lg text-gray-600 font-extrabold mt-5'>
                   VIOLATION DETAILS
@@ -944,7 +969,7 @@ class UnconnectedCaseEditor extends Component {
             break;
 
          case 5:
-            
+             
             form = <>
                <div className='text-lg text-gray-600 font-extrabold my-5'>
                   MORE DETAILS
@@ -957,7 +982,7 @@ class UnconnectedCaseEditor extends Component {
                />
             </>
             break;
-      
+       
          default:
             break;
       }

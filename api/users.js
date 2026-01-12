@@ -54,9 +54,6 @@ users.post('/', async (req, res) => {
          return res.status(409).send(`Email "${email}" already exists`);
 
       // save user and send password via email
-      const session = await mongoose.startSession();
-      session.startTransaction();
-
       let _id;
 
       try {
@@ -68,31 +65,14 @@ users.post('/', async (req, res) => {
             password,
          });
 
-         await user.save({ session });
+         await user.save();
          _id = user._id;
 
-         // send email
-         const { name, email } = req.body;
-         const text = `Hi ${capitalize.words(name)},\n\n.An account hase been created for you on the ZGC Case Management Platform. Here is your password:\n${password}`;
-         const to = email;
-         const subject  = "Account created";
-
-         await mail.send({ to, subject, text });
-
-         await session.commitTransaction();
+         // log password for dev
+         console.log(`New user password for ${req.body.email}: ${password}`);
 
       } catch (err) {
-         
-         try {
-            await session.abortTransaction();
-         } catch (err) {
-            logger.error(err);
-         }
-
          throw err;
-
-      } finally {
-         await session.endSession();
       }
 
       // respond
@@ -140,39 +120,17 @@ users.patch('/:id', async (req, res) => {
          user[attr] = updates[attr];
       }
 
-      /// transaction
-      const session = await mongoose.startSession();
-      session.startTransaction();
-
       try {
          // save
-         await user.save({ session });
+         await user.save();
 
-         // send email
+         // log password for dev
          if (email) {
-            const { name } = user;
-            const text = `Hi ${capitalize.words(name)},\n\n.An account hase been created for you on the ZGC Case Management Platform. Here is your password:\n${password}`;
-            const to = email;
-            const subject  = "Account created";
-
-            await mail.send({ to, subject, text });
-
+            console.log(`Updated user password for ${user.email}: ${password}`);
          }
-         
-         await session.commitTransaction();
 
       } catch (err) {
-         
-         try {
-            await session.abortTransaction();
-         } catch (err) {
-            logger.error(err);
-         }
-
          throw err;
-
-      } finally {
-         await session.endSession();
       }
 
       // respond
@@ -206,33 +164,16 @@ users.delete('/:id', async (req, res) => {
 
    try {
 
-      // delete user
-      const session = await mongoose.startSession();
-      session.startTransaction();
-
       try {
          // delete user
          const _id = req.params.id
-         await User.deleteOne().where({ _id }).session(session);
+         await User.deleteOne().where({ _id });
 
          // remove case references reference
-         await Case.updateMany({ case_officer: _id }, { $unset: { case_officer: 1 }}).session(session);
-        
-         // commit
-         await session.commitTransaction();
+         await Case.updateMany({ case_officer: _id }, { $unset: { case_officer: 1 }});
 
       } catch (err) {
-         
-         try {
-            await session.abortTransaction();
-         } catch (err) {
-            logger.error(err);
-         }
-
          throw err;
-
-      } finally {
-         await session.endSession();
       }
 
       // respond
