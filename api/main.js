@@ -10,6 +10,7 @@ const { init: initAuth } = require('./auth');
 const { init: initDB } = require('./db');
 const morgan = require('morgan');
 const cors = require('cors');
+const path = require('path');
 const users = require('./users');
 const cases = require('./cases');
 const accounts = require('./accounts');
@@ -42,6 +43,14 @@ api.use('/users', users);
 api.use('/cases', cases);
 api.use('/accounts', accounts);
 
+// Serve static files from the React UI build
+app.use(express.static(path.join(__dirname, '../ui/build')));
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+   res.sendFile(path.join(__dirname, '../ui/build', 'index.html'));
+});
+
 // initialization
 const PORT = process.env.PORT;
 
@@ -52,7 +61,7 @@ const PORT = process.env.PORT;
    await CaseNumberGenerator.init();
 
    // start server
-   app.listen(PORT, () => {
+   app.listen(PORT, '0.0.0.0', () => {
       if (process.env.NODE_ENV !== 'test')
          console.log("Server started!!!");
    });

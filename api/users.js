@@ -71,6 +71,18 @@ users.post('/', async (req, res) => {
          // log password for dev
          console.log(`New user password for ${req.body.email}: ${password}`);
 
+         // send password via email
+         const text = `Hi ${capitalize.words(req.body.name)},\n\nYour account has been created on the ZGC Case Management System.\n\nEmail: ${req.body.email}\nPassword: ${password}\n\nPlease login at ${process.env.SYSTEM_URL} and change your password after logging in.\n\nBest regards,\nZGC Case Management System`;
+
+         const to = req.body.email;
+         const subject = 'Account Confirmation';
+
+         try {
+            await mail.send({ to, subject, text });
+         } catch (err) {
+            logger.log('Failed to send account confirmation email:', err.message);
+         }
+
       } catch (err) {
          throw err;
       }
@@ -127,6 +139,18 @@ users.patch('/:id', async (req, res) => {
          // log password for dev
          if (email) {
             console.log(`Updated user password for ${user.email}: ${password}`);
+
+            // send password via email
+            const text = `Hi ${capitalize.words(user.name)},\n\nYour account email has been updated. A new password has been generated for your account.\n\nEmail: ${user.email}\nPassword: ${password}\n\nPlease login at ${process.env.SYSTEM_URL} and change your password after logging in.\n\nBest regards,\nZGC Case Management System`;
+
+            const to = user.email;
+            const subject = 'Password Reset';
+
+            try {
+               await mail.send({ to, subject, text });
+            } catch (err) {
+               logger.log('Failed to send password reset email:', err.message);
+            }
          }
 
       } catch (err) {

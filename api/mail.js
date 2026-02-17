@@ -4,14 +4,12 @@ const nodemailer = require('nodemailer');
 
 const transport = nodemailer.createTransport({
 	host: 'mail.zgc.co.zw',
-	port: 587,
-   auth: {
-      user: process.env.IMAP_USERNAME,
-      pass: process.env.IMAP_PASSWORD,
-   },
-	tls: {
-		rejectUnauthorized: false
-	}
+	port: 465,
+    secure: true,
+    auth: {
+       user: process.env.IMAP_USERNAME,
+       pass: process.env.IMAP_PASSWORD,
+    },
 });
 
 

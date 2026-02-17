@@ -106,10 +106,6 @@ accounts.post('/password-reset', async (req, res) => {
          return res.status(400).send('No user with that email');
 
       // reset password
-      /// create transaction
-      const session = await mongoose.startSession();
-      session.startTransaction();
-
       try {
 
          // create a temporary document
@@ -123,7 +119,7 @@ accounts.post('/password-reset', async (req, res) => {
             }
          });
 
-         await temp.save({ session });
+         await temp.save();
 
          // send new password to email
          let text = `Hi ${capitalize.words(user.name)},\n\n`;
@@ -133,23 +129,14 @@ accounts.post('/password-reset', async (req, res) => {
          const to = email;
          const subject = 'Password reset';
 
-         await mail.send({ to, subject, text });
-
-         // commit transaction
-         await session.commitTransaction();
-
-      } catch (err) {
-         
          try {
-            await session.abortTransaction();
+            await mail.send({ to, subject, text });
          } catch (err) {
-            logger.log(err);
+            logger.log('Failed to send password reset email:', err.message);
          }
 
+      } catch (err) {
          throw err;
-
-      } finally {
-         session.endSession();
       }
 
       // respond
@@ -173,10 +160,6 @@ accounts.post('/password-reset/:ref_code/verification', async (req, res) => {
          return res.sendStatus(404);
 
       // update password
-      /// create transaction
-      const session = await mongoose.startSession();
-      session.startTransaction();
-
       try {
 
          // update password
@@ -184,28 +167,15 @@ accounts.post('/password-reset/:ref_code/verification', async (req, res) => {
          const user = await User.findById(userId);
 
          user.password = password;
-         await user.save({ session });
+         await user.save();
 
          // delete temp
-         await temp.deleteOne({ session });
-
-         // commit transaction
-         await session.commitTransaction();
+         await temp.deleteOne();
 
       } catch (err) {
-         
-         try {
-            await session.abortTransaction();
-         } catch (err) {
-            logger.log(err);
-         }
-
          throw err;
-
-      } finally {
-         session.endSession();
       }
-     
+      
       // respond
       res.send();
 
